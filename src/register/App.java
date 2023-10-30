@@ -24,9 +24,9 @@ public class App extends Application {
         register.nama = "Revo";
         register.nim = "2002071047";
 
-        // VBox vbox = new VBox();
+        VBox vbox = new VBox();
 
-        Scene scene = new Scene(null, 500, 500);
+        Scene scene = new Scene(vbox, 500, 500);
         System.out.println(scene.getWidth());
         primaryStage.setScene(scene);
         primaryStage.show();
