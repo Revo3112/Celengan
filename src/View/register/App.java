@@ -4,8 +4,10 @@ import javafx.application.Application;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.geometry.Insets;
 
 /**
@@ -19,12 +21,15 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Buat scene dengan ukuran fleksibel
-        Scene scene = new Scene(new VBox(), 400, 400);
+        Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
         // Tambahkan button ke dalam scene
         Button button1 = new Button("Register");
-        VBox vBox = new VBox();
 
+        // Tambahkan icon ke sebelah kiri
+        Image icon = new Image("https://image.flaticon.com/icons/png/512/25/25231.png");
+
+        VBox vBox = new VBox();
         vBox.getChildren().addAll(button1);
         VBox.setMargin(button1, new Insets(20, 0, 0, scene.getWidth() / 2));
         scene.setRoot(vBox);
@@ -33,7 +38,6 @@ public class App extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Register");
         primaryStage.show();
-
     }
 
     public static void main(String[] args) throws Exception {
