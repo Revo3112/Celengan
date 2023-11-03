@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Registration_form",
+            "request": "launch",
+            "mainClass": "View.register.Registration_form",
+            "projectName": "Celengan_520246c7"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

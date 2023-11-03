@@ -30,8 +30,7 @@ public class Login_form {
         Button button1 = new Button("Pindah Register");
 
         // Tambahkan icon ke sebelah kiri
-        Image icon = new Image(
-                "C:\\Penyimpanan Utama\\Documents\\Project\\Celengan_Ayam\\Image\\ICON\\_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        Image icon = new Image("Assets/Icons/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
         primaryStage.getIcons().add(icon);
         primaryStage.setWidth(500);
         primaryStage.setHeight(500);
