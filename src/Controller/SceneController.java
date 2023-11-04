@@ -21,7 +21,7 @@ public class SceneController {
         // registration_form.start(registrationStage); // pass the Stage object to the
         // start method
         root = new VBox();
-        scene = new Scene(root, 1000, 500);
+        scene = new Scene(root, 500, 500);
         registration_form.start(scene);
     }
 
@@ -30,7 +30,7 @@ public class SceneController {
         // Stage loginStage = new Stage(); // create a new Stage object
         // login_form.start(loginStage); // pass the Stage object to the start method
         root = new VBox();
-        scene = new Scene(root, 50, 50);
+        scene = new Scene(root, 500, 500);
         login_form.start(scene);
     }
 
