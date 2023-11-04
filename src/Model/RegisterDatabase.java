@@ -43,14 +43,7 @@ public class RegisterDatabase {
                 try {
                     java.sql.Statement statement = connection.createStatement();
                     ResultSet result = statement.executeQuery(sql);
-                    while (result.next()) {
-                        System.out.println(result.getString("id"));
-                        System.out.println(result.getString("username"));
-                        System.out.println(result.getString("password"));
-                        System.out.println(result.getString("last_edited"));
-                        System.out.println(result.getString("remember_me"));
-                    }
-                    System.out.println("Connection closed.");
+                    System.out.println("Connection closed." + result);
                 } catch (SQLException e) {
                     System.out.println("Failed to execute query: " + e.getMessage());
                 } finally {

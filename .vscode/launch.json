@@ -6,22 +6,15 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Registration_form",
-            "request": "launch",
-            "mainClass": "View.register.Registration_form",
-            "projectName": "Celengan_520246c7"
-        },
-        {
-            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
         },
         {
             "type": "java",
-            "name": "Registration_form",
+            "name": "OpenAplication",
             "request": "launch",
-            "mainClass": "View.register.Registration_form",
+            "mainClass": "Controller.OpenAplication",
             "projectName": "Celengan_Ayam_b6ee000a",
             "vmArgs": "--module-path \"C:/Program Files/Java/javafx-sdk-20.0.2/lib\" --add-modules javafx.controls,javafx.fxml"
         }

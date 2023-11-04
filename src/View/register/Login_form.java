@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Login_form {
-    private Stage stage;
+    public Stage stage;
 
     public void start(Stage primaryStage) {
         // Buat scene dengan ukuran fleksibel
@@ -45,8 +45,9 @@ public class Login_form {
         VBox.setMargin(button1, new Insets(20, 0, 0, scene.getWidth() / 2));
 
         button1.setOnAction(e -> {
-            SceneController sceneController = new SceneController(stage, scene);
+            SceneController sceneController = new SceneController();
             primaryStage.close();
+            root.getChildren().clear();
             sceneController.switchToRegistration();
         });
 
@@ -61,4 +62,9 @@ public class Login_form {
         System.out.println(stage.getScene().getRoot());
         return stage.getScene().getRoot();
     }
+
+    public Scene getScene() {
+        return stage.getScene();
+    }
+
 }

@@ -1,7 +1,6 @@
 package View.register;
 
 import Controller.SceneController;
-import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -20,11 +19,10 @@ import javafx.geometry.*;
  * register
  */
 
-public class Registration_form extends Application {
+public class Registration_form {
 
-    private Stage stage;
+    public Stage stage;
 
-    @Override
     public void start(Stage primaryStage) {
         // Buat scene dengan ukuran fleksibel
         Scene scene = new Scene(new VBox(), Color.gray(0.2));
@@ -56,10 +54,11 @@ public class Registration_form extends Application {
         this.stage = primaryStage;
 
         button1.setOnAction(e -> {
-            SceneController sceneController = new SceneController(stage, scene);
+            // stage and scene
+            SceneController sceneController = new SceneController();
             primaryStage.close();
+            root.getChildren().clear();
             sceneController.switchToLogin();
-
         });
 
         // Tampilkan scene
@@ -68,20 +67,13 @@ public class Registration_form extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) throws Exception {
-        launch(args);
-
-        /*
-         * Tree di java terbagi menjadi beberapa
-         * 1. Stage -> Window
-         * 2. Scene -> Content
-         * 3. Layout -> Layout
-         */
-    }
-
     public Parent getRoot() {
         System.out.println(stage.getScene().getRoot());
         return stage.getScene().getRoot();
+    }
+
+    public Scene getScene() {
+        return stage.getScene();
     }
 
 }
