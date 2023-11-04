@@ -1,7 +1,7 @@
 package View.register;
 
 import Controller.SceneController;
-import javafx.scene.Parent;
+// import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -67,13 +67,13 @@ public class Registration_form {
         stage.show();
     }
 
-    public Parent getRoot() {
-        System.out.println(stage.getScene().getRoot());
-        return stage.getScene().getRoot();
-    }
+    // public Parent getRoot() {
+    // System.out.println(stage.getScene().getRoot());
+    // return stage.getScene().getRoot();
+    // }
 
-    public Scene getScene() {
-        return stage.getScene();
-    }
+    // public Scene getScene() {
+    // return stage.getScene();
+    // }
 
 }

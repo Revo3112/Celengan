@@ -3,7 +3,7 @@ package View.register;
 import Controller.SceneController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
+// import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -62,14 +62,14 @@ public class Login_form {
         stage.show();
     }
 
-    public Parent getRoot() {
-        if (stage == null || stage.getScene() == null) {
-            return null;
-        }
-        return stage.getScene().getRoot();
-    }
+    // public Parent getRoot() {
+    // if (stage == null || stage.getScene() == null) {
+    // return null;
+    // }
+    // return stage.getScene().getRoot();
+    // }
 
-    public Scene getScene() {
-        return stage.getScene();
-    }
+    // public Scene getScene() {
+    // return stage.getScene();
+    // }
 }
