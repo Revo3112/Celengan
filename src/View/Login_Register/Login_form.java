@@ -1,4 +1,4 @@
-package View.register;
+package View.Login_Register;
 
 import Controller.SceneController;
 import javafx.geometry.Insets;
@@ -20,7 +20,7 @@ public class Login_form {
         this.stage = stage;
 
         // Set the application icon
-        Image icon = new Image("Assets/Icons/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
         stage.getIcons().add(icon);
     }
 

@@ -1,10 +1,10 @@
 package Controller;
 
+import View.Login_Register.Login_form;
+import View.Login_Register.Registration_form;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import View.register.Login_form;
-import View.register.Registration_form;
 
 public class SceneController {
     private VBox root;

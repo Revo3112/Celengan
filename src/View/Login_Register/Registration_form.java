@@ -1,4 +1,4 @@
-package View.register;
+package View.Login_Register;
 
 import Controller.SceneController;
 // import javafx.scene.Parent;
