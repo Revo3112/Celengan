@@ -1,14 +1,10 @@
 package Controller;
 
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import View.register.Login_form;
 import View.register.Registration_form;
 
 public class SceneController {
-    private VBox root;
-
     public void switchToRegistration() {
         Registration_form registration_form = new Registration_form();
         Stage registrationStage = new Stage(); // create a new Stage object
