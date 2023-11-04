@@ -24,7 +24,7 @@ public class Login_form {
         stage.getIcons().add(icon);
     }
 
-    public void start(Scene scene2) {
+    public void start() {
         if (stage == null) {
             // Handle the case where the stage is null
             return;
