@@ -25,8 +25,6 @@ public class Login_form {
     }
 
     public void start() {
-        // Buat scene dengan ukuran fleksibel
-        Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
         // Text
         Text text = new Text();
@@ -40,15 +38,11 @@ public class Login_form {
         // Scene
         VBox root = new VBox();
         root.getChildren().add(text);
-        root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(button1);
+        root.setAlignment(Pos.CENTER);
+        // Buat scene dengan ukuran fleksibel
+        Scene scene = new Scene(root, Color.gray(0.2));
         scene.setRoot(root);
-
-        // Handle button click
-        button1.setOnAction(e -> {
-            SceneController sceneController = new SceneController(stage);
-            sceneController.switchToRegistration();
-        });
 
         stage.setScene(scene);
         // stage.setFullScreen(true);
@@ -56,6 +50,13 @@ public class Login_form {
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.show();
+
+        // Handle button click
+        button1.setOnAction(e -> {
+            SceneController sceneController = new SceneController(stage);
+            sceneController.switchToRegistration();
+        });
+
     }
 
     // public Parent getRoot() {

@@ -31,7 +31,6 @@ public class Registration_form {
 
     public void start() {
         // Buat scene dengan ukuran fleksibel
-        Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
         // Text
         Text text = new Text();
@@ -45,15 +44,10 @@ public class Registration_form {
         // Scene
         VBox root = new VBox();
         root.getChildren().add(text);
-        root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(button1);
+        root.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(root, Color.gray(0.2));
         scene.setRoot(root);
-
-        button1.setOnAction(e -> {
-            // stage and scene
-            SceneController sceneController = new SceneController(stage);
-            sceneController.switchToLogin();
-        });
 
         // Tampilkan scene
         stage.setScene(scene);
@@ -61,6 +55,12 @@ public class Registration_form {
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.show();
+
+        button1.setOnAction(e -> {
+            // stage and scene
+            SceneController sceneController = new SceneController(stage);
+            sceneController.switchToLogin();
+        });
     }
 
     // public Parent getRoot() {
