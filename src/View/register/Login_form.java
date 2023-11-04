@@ -14,10 +14,23 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Login_form {
-    public Stage stage;
+    private Stage stage;
 
-    public void start(Stage primaryStage) {
-        // Buat scene dengan ukuran fleksibel
+    public Login_form(Stage stage) {
+        this.stage = stage;
+
+        // Set the application icon
+        Image icon = new Image("Assets/Icons/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        stage.getIcons().add(icon);
+    }
+
+    public void start(Scene scene2) {
+        if (stage == null) {
+            // Handle the case where the stage is null
+            return;
+        }
+
+        // Create the scene
         Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
         // Text
@@ -26,45 +39,37 @@ public class Login_form {
         text.setFont(Font.font("Verdana", 20));
         text.setFill(Color.BLACK);
 
-        // Tambahkan button ke dalam scene
+        // Add button to the scene
         Button button1 = new Button("Pindah Register");
 
-        // Tambahkan icon ke sebelah kiri
-        Image icon = new Image("Assets/Icons/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
-        primaryStage.getIcons().add(icon);
-        primaryStage.setWidth(500);
-        primaryStage.setHeight(500);
-        // primaryStage.setFullScreen(true);
-
-        // Scene
+        // Set the scene
         VBox root = new VBox();
         scene.setRoot(root);
         root.getChildren().add(text);
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(button1);
-        VBox.setMargin(button1, new Insets(20, 0, 0, scene.getWidth() / 2));
+        VBox.setMargin(button1, new Insets(20, 0, 0, 0));
 
+        // Handle button click
         button1.setOnAction(e -> {
-            SceneController sceneController = new SceneController();
-            primaryStage.close();
-            root.getChildren().clear();
+            SceneController sceneController = new SceneController(stage);
             sceneController.switchToRegistration();
         });
 
-        this.stage = primaryStage;
-        // Tampilkan scene
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Login");
-        primaryStage.show();
+        // Show the scene
+        stage.setScene(scene);
+        stage.setTitle("Login");
+        stage.show();
     }
 
     public Parent getRoot() {
-        System.out.println(stage.getScene().getRoot());
+        if (stage == null || stage.getScene() == null) {
+            return null;
+        }
         return stage.getScene().getRoot();
     }
 
     public Scene getScene() {
         return stage.getScene();
     }
-
 }

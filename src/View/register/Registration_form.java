@@ -23,7 +23,11 @@ public class Registration_form {
 
     public Stage stage;
 
-    public void start(Stage primaryStage) {
+    public Registration_form(Stage stage) {
+        this.stage = stage;
+    }
+
+    public void start(Scene scene2) {
         // Buat scene dengan ukuran fleksibel
         Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
@@ -37,34 +41,30 @@ public class Registration_form {
         Button button1 = new Button("Register");
 
         // Tambahkan icon ke sebelah kiri
-        Image icon = new Image("Assets/Icons/pixelart.jpg");
-        primaryStage.getIcons().add(icon);
-        primaryStage.setWidth(500);
-        primaryStage.setHeight(500);
+        Image icon = new Image("Assets/Icons/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        stage.getIcons().add(icon);
+        stage.setHeight(500);
+        stage.setWidth(500);
         // primaryStage.setFullScreen(true);
 
         // Scene
         VBox root = new VBox();
-        scene.setRoot(root);
         root.getChildren().add(text);
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(button1);
         VBox.setMargin(button1, new Insets(20, 0, 0, scene.getWidth() / 2));
 
-        this.stage = primaryStage;
-
         button1.setOnAction(e -> {
             // stage and scene
-            SceneController sceneController = new SceneController();
-            primaryStage.close();
-            root.getChildren().clear();
+            SceneController sceneController = new SceneController(stage);
             sceneController.switchToLogin();
         });
 
         // Tampilkan scene
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Register");
-        primaryStage.show();
+        scene2.setRoot(root);
+        stage.setTitle("Register");
+        stage.setScene(scene2);
+        stage.show();
     }
 
     public Parent getRoot() {
