@@ -10,7 +10,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.geometry.Insets;
 import javafx.geometry.*;
 
 /**
@@ -25,6 +24,9 @@ public class Registration_form {
 
     public Registration_form(Stage stage) {
         this.stage = stage;
+        // Tambahkan icon ke sebelah kiri
+        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        stage.getIcons().add(icon);
     }
 
     public void start() {
@@ -40,19 +42,12 @@ public class Registration_form {
         // Tambahkan button ke dalam scene
         Button button1 = new Button("Register");
 
-        // Tambahkan icon ke sebelah kiri
-        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
-        stage.getIcons().add(icon);
-        stage.setHeight(500);
-        stage.setWidth(500);
-        // primaryStage.setFullScreen(true);
-
         // Scene
         VBox root = new VBox();
         root.getChildren().add(text);
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(button1);
-        VBox.setMargin(button1, new Insets(20, 0, 0, scene.getWidth() / 2));
+        scene.setRoot(root);
 
         button1.setOnAction(e -> {
             // stage and scene
@@ -61,7 +56,8 @@ public class Registration_form {
         });
 
         // Tampilkan scene
-        scene.setRoot(root);
+        stage.setScene(scene);
+        // stage.setFullScreen(true);
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.show();

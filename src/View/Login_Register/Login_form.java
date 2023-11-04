@@ -25,12 +25,7 @@ public class Login_form {
     }
 
     public void start() {
-        if (stage == null) {
-            // Handle the case where the stage is null
-            return;
-        }
-
-        // Create the scene
+        // Buat scene dengan ukuran fleksibel
         Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
         // Text
@@ -39,16 +34,15 @@ public class Login_form {
         text.setFont(Font.font("Verdana", 20));
         text.setFill(Color.BLACK);
 
-        // Add button to the scene
-        Button button1 = new Button("Pindah Register");
+        // Tambahkan button ke dalam scene
+        Button button1 = new Button("Login");
 
-        // Set the scene
+        // Scene
         VBox root = new VBox();
-        scene.setRoot(root);
         root.getChildren().add(text);
         root.setAlignment(Pos.CENTER);
         root.getChildren().addAll(button1);
-        VBox.setMargin(button1, new Insets(20, 0, 0, 0));
+        scene.setRoot(root);
 
         // Handle button click
         button1.setOnAction(e -> {
@@ -56,9 +50,11 @@ public class Login_form {
             sceneController.switchToRegistration();
         });
 
-        // Show the scene
         stage.setScene(scene);
-        stage.setTitle("Login");
+        // stage.setFullScreen(true);
+
+        stage.setTitle("Register");
+        stage.setScene(scene);
         stage.show();
     }
 
