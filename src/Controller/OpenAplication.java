@@ -13,7 +13,6 @@ public class OpenAplication extends Application {
         // TODO: Add your code here
         // 3. Layout -> Layout;
         VBox root = new VBox();
-        root.setAlignment(Pos.CENTER);
         Scene scene = new Scene(root, Color.gray(0.2));
         /*
          * KODE SPLASH SCREEN
