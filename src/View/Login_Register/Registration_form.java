@@ -27,7 +27,7 @@ public class Registration_form {
         this.stage = stage;
     }
 
-    public void start(Scene scene2) {
+    public void start() {
         // Buat scene dengan ukuran fleksibel
         Scene scene = new Scene(new VBox(), Color.gray(0.2));
 
@@ -61,9 +61,9 @@ public class Registration_form {
         });
 
         // Tampilkan scene
-        scene2.setRoot(root);
+        scene.setRoot(root);
         stage.setTitle("Register");
-        stage.setScene(scene2);
+        stage.setScene(scene);
         stage.show();
     }
 
