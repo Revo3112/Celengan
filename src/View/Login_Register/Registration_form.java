@@ -41,7 +41,7 @@ public class Registration_form {
         Button button1 = new Button("Register");
 
         // Tambahkan icon ke sebelah kiri
-        Image icon = new Image("Assets/Icons/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
         stage.getIcons().add(icon);
         stage.setHeight(500);
         stage.setWidth(500);
