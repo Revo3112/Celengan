@@ -10,6 +10,7 @@
             "request": "launch",
             "mainClass": "${file}"
         },
+        // Runtime Revo
         {
             "type": "java",
             "name": "OpenAplication",
@@ -17,6 +18,16 @@
             "mainClass": "Controller.OpenAplication",
             "projectName": "Celengan_Ayam_b6ee000a",
             "vmArgs": "--module-path \"C:/Program Files/Java/javafx-sdk-20.0.2/lib\" --add-modules javafx.controls,javafx.fxml"
-        }
+        },
+        // Runtime Rio
+        {
+            "type": "java",
+            "name": "OpenAplication",
+            "request": "launch",
+            "mainClass": "Controller.OpenAplication",
+            "projectName": "Celengan_520246c7",
+            "vmArgs": "--module-path \"C:/Program Files/Java/javafx-sdk-20.0.2/lib\" --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.media"
+        },
+
     ]
 }
