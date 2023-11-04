@@ -50,6 +50,7 @@ public class Login_form {
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.show();
+        root.setPrefWidth(stage.getWidth());
 
         // Handle button click
         button1.setOnAction(e -> {
