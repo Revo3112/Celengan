@@ -12,6 +12,11 @@ public class OpenAplication extends Application {
         // TODO: Add your code here
         // 3. Layout -> Layout;
         Scene scene = new Scene(new VBox(), Color.gray(0.2));
+        /*
+         * KODE SPLASH SCREEN
+         * 
+         * 
+         */
         primaryStage.setScene(scene);
         CheckingData checkingData = new CheckingData();
         int count = checkingData.Checkdata();
