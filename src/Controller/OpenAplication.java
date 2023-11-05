@@ -1,6 +1,6 @@
 package Controller;
 
-import Model.CheckingData;
+import Model.LoginModel;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -22,8 +22,8 @@ public class OpenAplication extends Application {
         primaryStage.setScene(scene);
         primaryStage.setHeight(500);
         primaryStage.setWidth(1000);
-        CheckingData checkingData = new CheckingData();
-        int count = checkingData.Checkdata();
+        LoginModel checkingData = new LoginModel();
+        int count = checkingData.checkData();
         SceneController sceneController = new SceneController(primaryStage);
         if (count == 0) {
             sceneController.switchToRegistration();

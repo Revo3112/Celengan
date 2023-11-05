@@ -1,31 +1,30 @@
 package View.Login_Register;
 
 import Controller.SceneController;
+import Model.*;
+
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-// import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Login_form {
+public class LoginPage {
     private Stage stage;
 
-    public Login_form(Stage stage) {
+    public LoginPage(Stage stage) {
         this.stage = stage;
 
         // Set the application icon
         Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
-        stage.getIcons().add(icon);
+        this.stage.getIcons().add(icon);
     }
 
     public void start() {
@@ -36,9 +35,6 @@ public class Login_form {
         title.setFont(Font.font("Verdana", 20));
         title.setFill(Color.BLACK);
         title.setTranslateY(-40);
-
-        Button btnLogin = new Button("Login");
-        btnLogin.setTranslateY(80);
 
         TextField fieldUsername = new TextField();
         fieldUsername.setMaxWidth(200);
@@ -54,33 +50,47 @@ public class Login_form {
         labelPassword.setTranslateX(-50);
         labelPassword.setTranslateY(40);
 
+        Hyperlink registerLink = new Hyperlink("Register");
+        registerLink.setTranslateX(-50);
+        registerLink.setTranslateY(80);
+        registerLink.setStyle(
+            "-fx-underline: true;" + 
+            "-fx-font-family: Verdana"
+        );
+        registerLink.setOnAction(e -> {
+            SceneController sceneController = new SceneController(this.stage);
+            sceneController.switchToRegistration();
+        });
+
+        Button btnLogin = new Button("Login");
+        btnLogin.setTranslateY(120);
+
         // Scene
         StackPane root = new StackPane();
         StackPane.setMargin(root, new Insets(20, 0, 0, 0));
-        root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, fieldPassword, btnLogin);
+        root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, fieldPassword, registerLink, btnLogin);
 
         Scene scene = new Scene(root, Color.gray(0.2));
-        stage.setScene(scene);
         // stage.setFullScreen(true);
-        stage.setTitle("Register");
-        stage.setScene(scene);
-        stage.show();
+        this.stage.setTitle("Register");
+        this.stage.setScene(scene);
+        this.stage.show();
 
         // Handle button click
         btnLogin.setOnAction(e -> {
-            SceneController sceneController = new SceneController(stage);
-            sceneController.switchToRegistration();
+
+            String username = fieldUsername.getText();
+            String password = fieldPassword.getText();
+            
+            LoginModel login = new LoginModel();
+            SceneController sceneController = new SceneController(this.stage);
+
+            if (login.isValidated(username, password)) {
+                sceneController.switchToDashboard();
+            } else {
+                sceneController.switchToRegistration();
+            }
+
         });
     }
-
-    // public Parent getRoot() {
-    // if (stage == null || stage.getScene() == null) {
-    // return null;
-    // }
-    // return stage.getScene().getRoot();
-    // }
-
-    // public Scene getScene() {
-    // return stage.getScene();
-    // }
 }
