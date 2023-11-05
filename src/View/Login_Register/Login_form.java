@@ -57,7 +57,6 @@ public class Login_form {
             SceneController sceneController = new SceneController(stage);
             sceneController.switchToRegistration();
         });
-
     }
 
     // public Parent getRoot() {
