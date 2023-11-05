@@ -2,12 +2,13 @@ package View.Login_Register;
 
 import Controller.SceneController;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 // import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -26,34 +27,44 @@ public class Login_form {
 
     public void start() {
 
-        // Text
-        Text text = new Text();
-        text.setText("Please Login");
-        text.setFont(Font.font("Verdana", 20));
-        text.setFill(Color.BLACK);
+        // Components
+        Text title = new Text();
+        title.setText("Please Login");
+        title.setFont(Font.font("Verdana", 20));
+        title.setFill(Color.BLACK);
+        title.setTranslateY(-40);
 
-        // Tambahkan button ke dalam scene
-        Button button1 = new Button("Login");
+        Button btnLogin = new Button("Login");
+        btnLogin.setTranslateY(80);
+
+        TextField fieldUsername = new TextField();
+        fieldUsername.setMaxWidth(200);
+        fieldUsername.setTranslateX(90);
+        TextField fieldPassword = new TextField();
+        fieldPassword.setMaxWidth(200);
+        fieldPassword.setTranslateX(90);
+        fieldPassword.setTranslateY(40);
+
+        Label labelUsername = new Label("Username:");
+        labelUsername.setTranslateX(-50);
+        Label labelPassword = new Label("Password:");
+        labelPassword.setTranslateX(-50);
+        labelPassword.setTranslateY(40);
 
         // Scene
-        VBox root = new VBox();
-        root.getChildren().add(text);
-        root.getChildren().addAll(button1);
-        root.setAlignment(Pos.CENTER);
-        // Buat scene dengan ukuran fleksibel
-        Scene scene = new Scene(root, Color.gray(0.2));
-        scene.setRoot(root);
+        StackPane root = new StackPane();
+        StackPane.setMargin(root, new Insets(20, 0, 0, 0));
+        root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, fieldPassword, btnLogin);
 
+        Scene scene = new Scene(root, Color.gray(0.2));
         stage.setScene(scene);
         // stage.setFullScreen(true);
-
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.show();
-        root.setPrefWidth(stage.getWidth());
 
         // Handle button click
-        button1.setOnAction(e -> {
+        btnLogin.setOnAction(e -> {
             SceneController sceneController = new SceneController(stage);
             sceneController.switchToRegistration();
         });

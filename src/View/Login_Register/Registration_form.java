@@ -55,7 +55,6 @@ public class Registration_form {
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.show();
-        root.setPrefWidth(stage.getWidth());
 
         button1.setOnAction(e -> {
             // stage and scene
