@@ -2,9 +2,8 @@ package Controller;
 
 import Model.CheckingData;
 import javafx.application.Application;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -12,7 +11,7 @@ public class OpenAplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         // TODO: Add your code here
         // 3. Layout -> Layout;
-        VBox root = new VBox();
+        StackPane root = new StackPane();
         Scene scene = new Scene(root, Color.gray(0.2));
         /*
          * KODE SPLASH SCREEN
