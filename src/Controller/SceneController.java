@@ -29,6 +29,7 @@ public class SceneController {
     /* SPLASH SCREEN */
     public void switchToSplashScreen() {
         SplashScreen splashScreen = new SplashScreen(this.stage);
+        splashScreen.start();
     }
 
 }
