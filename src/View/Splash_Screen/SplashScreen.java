@@ -1,16 +1,10 @@
 package View.Splash_Screen;
-
 import View.Splash_Screen.Animation.DialogWithAudio;
 
-import java.io.IOException;
-
 /* MAIN */
-import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Parent;
-
 
 /* GEOMETRY */
 
