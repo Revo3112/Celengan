@@ -21,9 +21,9 @@ public class LoginModel {
                 }
                 System.out.println("Connection closed." + result);        
 
-                result.close();
-                statement.close();
-                connection.close();
+                // result.close();
+                // statement.close();
+                // connection.close();
 
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
@@ -46,9 +46,9 @@ public class LoginModel {
             this.password = result.getString("password");
 
             if (this.username.equals(username) && this.password.equals(password)) {
-                result.close();
-                statement.close();
-                connection.close();
+                // result.close();
+                // statement.close();
+                // connection.close();
 
                 return true;
             }
@@ -81,8 +81,8 @@ public class LoginModel {
                 int result = statement.executeUpdate(sql);
 
                 if (result == 1) {
-                    statement.close();
-                    connection.close();
+                    // statement.close();
+                    // connection.close();
 
                     return true;
                 }
