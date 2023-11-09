@@ -1,9 +1,10 @@
 package Controller;
 
-import Model.CheckingData;
+import Model.LoginModel;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -11,25 +12,24 @@ public class OpenAplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         // TODO: Add your code here
         // 3. Layout -> Layout;
-        StackPane root = new StackPane();
+        VBox root = new VBox();
         Scene scene = new Scene(root, Color.gray(0.2));
         /*
          * KODE SPLASH SCREEN
-         *
-         *
+         * 
+         * 
          */
         primaryStage.setScene(scene);
         primaryStage.setHeight(500);
         primaryStage.setWidth(1000);
-        CheckingData checkingData = new CheckingData();
-        int count = checkingData.Checkdata();
+        LoginModel checkingData = new LoginModel();
+        int count = checkingData.checkData();
         SceneController sceneController = new SceneController(primaryStage);
         if (count == 0) {
             sceneController.switchToRegistration();
         } else {
             sceneController.switchToLogin();
         }
-        // sceneController.switchToSplashScreen();
     }
 
     public static void main(String[] args) throws Exception {
