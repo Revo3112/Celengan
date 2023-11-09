@@ -9,27 +9,27 @@ import javafx.stage.Stage;
 
 public class OpenAplication extends Application {
     public void start(Stage primaryStage) throws Exception {
-        // // TODO: Add your code here
-        // // 3. Layout -> Layout;
-        // StackPane root = new StackPane();
-        // Scene scene = new Scene(root, Color.gray(0.2));
-        // /*
-        // * KODE SPLASH SCREEN
-        // *
-        // *
-        // */
-        // primaryStage.setScene(scene);
-        // primaryStage.setHeight(500);
-        // primaryStage.setWidth(1000);
-        // CheckingData checkingData = new CheckingData();
-        // int count = checkingData.Checkdata();
+        // TODO: Add your code here
+        // 3. Layout -> Layout;
+        StackPane root = new StackPane();
+        Scene scene = new Scene(root, Color.gray(0.2));
+        /*
+         * KODE SPLASH SCREEN
+         *
+         *
+         */
+        primaryStage.setScene(scene);
+        primaryStage.setHeight(500);
+        primaryStage.setWidth(1000);
+        CheckingData checkingData = new CheckingData();
+        int count = checkingData.Checkdata();
         SceneController sceneController = new SceneController(primaryStage);
-        // if (count == 0) {
-        // sceneController.switchToRegistration();
-        // } else {
-        // sceneController.switchToLogin();
-        // }
-        sceneController.switchToSplashScreen();
+        if (count == 0) {
+            sceneController.switchToRegistration();
+        } else {
+            sceneController.switchToLogin();
+        }
+        // sceneController.switchToSplashScreen();
     }
 
     public static void main(String[] args) throws Exception {
