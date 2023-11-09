@@ -1,7 +1,8 @@
 package Controller;
 
-import View.Login_Register.Login_form;
-import View.Login_Register.Registration_form;
+import View.Dashboard.DashboardPage;
+import View.Login_Register.LoginPage;
+import View.Login_Register.RegistrationPage;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 
@@ -15,15 +16,21 @@ public class SceneController {
     /* LOGIN_REGISTRATION */
     // Registration
     public void switchToRegistration() {
-        Registration_form registration_form = new Registration_form(this.stage);
+        RegistrationPage registration_form = new RegistrationPage(this.stage);
         // start method
         registration_form.start();
     }
 
     // Login
     public void switchToLogin() {
-        Login_form login_form = new Login_form(this.stage);
+        LoginPage login_form = new LoginPage(this.stage);
         login_form.start();
+    }
+
+    // Dashboard
+    public void switchToDashboard() {
+        DashboardPage dashboard = new DashboardPage(this.stage);
+        dashboard.start();
     }
 
     /* SPLASH SCREEN */
