@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 11, 2023 at 08:03 AM
+-- Generation Time: Nov 11, 2023 at 03:58 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -37,9 +37,12 @@ CREATE TABLE `pemasukan_kategori` (
 --
 
 INSERT INTO `pemasukan_kategori` (`id`, `name`) VALUES
-(1, 'makanan'),
-(2, 'minuman'),
-(3, 'Transportasi');
+(1, 'Gaji'),
+(2, 'Investasi'),
+(3, 'Penjualan'),
+(4, 'Deposito'),
+(5, 'Penyewaan'),
+(6, 'Tabungan');
 
 -- --------------------------------------------------------
 
@@ -50,6 +53,30 @@ INSERT INTO `pemasukan_kategori` (`id`, `name`) VALUES
 CREATE TABLE `pengeluaran_kategori` (
   `id` int NOT NULL,
   `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `pengeluaran_kategori`
+--
+
+INSERT INTO `pengeluaran_kategori` (`id`, `name`) VALUES
+(1, 'Makanan'),
+(2, 'Minuman'),
+(3, 'Transportasi'),
+(4, 'Pajak'),
+(5, 'Pulsa'),
+(6, 'Tagihan');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `saldo`
+--
+
+CREATE TABLE `saldo` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `balance` decimal(15,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -74,7 +101,7 @@ CREATE TABLE `transac` (
 --
 
 INSERT INTO `transac` (`id`, `user_id`, `nominal`, `keterangan`, `category_id`, `payment_type`, `date`, `tipe_transaksi`) VALUES
-(1, 1, '100000.00', 'membeli sarapan', 1, 'Cash', '2023-10-30', 'pemasukan');
+(1, 1, '100000.00', 'membeli sarapan', 1, 'Cash', '2023-10-30', 'pengeluaran');
 
 -- --------------------------------------------------------
 
@@ -95,7 +122,30 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`) VALUES
-(1, 'Revo Rahmat', '1234', '2023-10-30 16:33:25', 'True');
+(1, 'Revo Rahmat', '1234', '2023-10-30 16:33:25', 'True'),
+(2, 'Kafka', '4321', '2023-11-11 13:19:19', 'False');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_kategori`
+--
+
+CREATE TABLE `user_kategori` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `tipe_kategori` enum('pengeluaran','pemasukan') NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_kategori`
+--
+
+INSERT INTO `user_kategori` (`id`, `user_id`, `tipe_kategori`, `name`) VALUES
+(1, 1, 'pengeluaran', 'Traktir Temen'),
+(2, 2, 'pengeluaran', 'Beli Merch'),
+(3, 2, 'pemasukan', 'Freelance');
 
 --
 -- Indexes for dumped tables
@@ -114,6 +164,13 @@ ALTER TABLE `pengeluaran_kategori`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `saldo`
+--
+ALTER TABLE `saldo`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_unique` (`user_id`);
+
+--
 -- Indexes for table `transac`
 --
 ALTER TABLE `transac`
@@ -127,6 +184,12 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user_kategori`
+--
+ALTER TABLE `user_kategori`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -134,12 +197,18 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `pemasukan_kategori`
 --
 ALTER TABLE `pemasukan_kategori`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `pengeluaran_kategori`
 --
 ALTER TABLE `pengeluaran_kategori`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `saldo`
+--
+ALTER TABLE `saldo`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -152,11 +221,23 @@ ALTER TABLE `transac`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `user_kategori`
+--
+ALTER TABLE `user_kategori`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `saldo`
+--
+ALTER TABLE `saldo`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `transac`
