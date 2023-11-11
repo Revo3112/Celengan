@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 30, 2023 at 04:43 PM
+-- Generation Time: Nov 11, 2023 at 08:03 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -24,6 +24,37 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `pemasukan_kategori`
+--
+
+CREATE TABLE `pemasukan_kategori` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `pemasukan_kategori`
+--
+
+INSERT INTO `pemasukan_kategori` (`id`, `name`) VALUES
+(1, 'makanan'),
+(2, 'minuman'),
+(3, 'Transportasi');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pengeluaran_kategori`
+--
+
+CREATE TABLE `pengeluaran_kategori` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `transac`
 --
 
@@ -31,18 +62,19 @@ CREATE TABLE `transac` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `nominal` decimal(15,2) NOT NULL,
-  `description` text NOT NULL,
-  `category` enum('Makanan','Minuman','Transportasi','Belanja') NOT NULL,
+  `keterangan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `category_id` int NOT NULL,
   `payment_type` enum('Cash','Transfer') NOT NULL,
-  `date` date NOT NULL
+  `date` date NOT NULL,
+  `tipe_transaksi` enum('pemasukan','pengeluaran') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `transac`
 --
 
-INSERT INTO `transac` (`id`, `user_id`, `nominal`, `description`, `category`, `payment_type`, `date`) VALUES
-(1, 1, '100000.00', 'membeli sarapan', 'Makanan', 'Cash', '2023-10-30');
+INSERT INTO `transac` (`id`, `user_id`, `nominal`, `keterangan`, `category_id`, `payment_type`, `date`, `tipe_transaksi`) VALUES
+(1, 1, '100000.00', 'membeli sarapan', 1, 'Cash', '2023-10-30', 'pemasukan');
 
 -- --------------------------------------------------------
 
@@ -70,6 +102,18 @@ INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`)
 --
 
 --
+-- Indexes for table `pemasukan_kategori`
+--
+ALTER TABLE `pemasukan_kategori`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pengeluaran_kategori`
+--
+ALTER TABLE `pengeluaran_kategori`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `transac`
 --
 ALTER TABLE `transac`
@@ -85,6 +129,18 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `pemasukan_kategori`
+--
+ALTER TABLE `pemasukan_kategori`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `pengeluaran_kategori`
+--
+ALTER TABLE `pengeluaran_kategori`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transac`
