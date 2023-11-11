@@ -14,17 +14,17 @@ public class LoginModel {
         int count = 0;
 
         try {
-                String sql = "SELECT COUNT(*) FROM users";
-                Statement statement = connection.createStatement();
-                ResultSet result = statement.executeQuery(sql);
-                if (result.next()) {
-                    count = result.getInt(1);
-                }
-                System.out.println("Connection closed." + result);        
+            String sql = "SELECT COUNT(*) FROM users";
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+            if (result.next()) {
+                count = result.getInt(1);
+            }
+            System.out.println("Connection closed." + result);
 
-                result.close();
-                statement.close();
-                connection.close();
+            // result.close();
+            // statement.close();
+            // connection.close();
 
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
@@ -47,9 +47,9 @@ public class LoginModel {
             this.password = result.getString("password");
 
             if (this.username.equals(username) && this.password.equals(password)) {
-                result.close();
-                statement.close();
-                connection.close();
+                // result.close();
+                // statement.close();
+                // connection.close();
 
                 return true;
             }
@@ -58,25 +58,24 @@ public class LoginModel {
         }
 
         return false;
-    } 
+    }
 
     public boolean registerAccount(String username, String password, boolean rememberMe) {
 
         if (username.equals("") && password.equals("")) {
             AlertHelper.alert("Kolom Username dan Password tidak boleh kosong!");
-        }
-        else if (username.equals("")) {
+        } else if (username.equals("")) {
             AlertHelper.alert("Kolom Username tidak boleh kosong!");
-        } 
-        else if (password.equals("")) {
-            AlertHelper.alert("Kolom Password tidak boleh kosong!");            
-        }
-        else {
+        } else if (password.equals("")) {
+            AlertHelper.alert("Kolom Password tidak boleh kosong!");
+        } else {
             try {
                 DBConnection dbc = DBConnection.getDatabaseConnection();
                 Connection connection = dbc.getConnection();
 
-                String sql = String.format("INSERT INTO users(username, password, last_edited, remember_me) VALUES('%s', '%s', CURRENT_TIMESTAMP, '%s')", username, password, rememberMe);
+                String sql = String.format(
+                        "INSERT INTO users(username, password, last_edited, remember_me) VALUES('%s', '%s', CURRENT_TIMESTAMP, '%s')",
+                        username, password, rememberMe);
 
                 Statement statement = connection.createStatement();
                 int result = statement.executeUpdate(sql);
@@ -92,7 +91,7 @@ public class LoginModel {
                 System.out.println("Query Failed: " + e.getMessage());
             }
         }
-        return false;        
+        return false;
 
     }
 }
