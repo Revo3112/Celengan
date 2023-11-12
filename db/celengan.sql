@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 12, 2023 at 11:38 AM
+-- Generation Time: Nov 12, 2023 at 06:58 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -20,18 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `celengan`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `saldo`
---
-
-CREATE TABLE `saldo` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `balance` decimal(15,2) NOT NULL DEFAULT '0.00'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -112,16 +100,22 @@ INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`)
 (1, 'Revo Rahmat', '1234', '2023-10-30 16:33:25', 'True'),
 (2, 'Kafka', '4321', '2023-11-11 13:19:19', 'False');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wallet`
+--
+
+CREATE TABLE `wallet` (
+  `id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `saldo` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `batas_kritis` decimal(15,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `saldo`
---
-ALTER TABLE `saldo`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_unique` (`user_id`);
 
 --
 -- Indexes for table `transac`
@@ -143,14 +137,15 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- Indexes for table `wallet`
 --
+ALTER TABLE `wallet`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_unique` (`user_id`);
 
 --
--- AUTO_INCREMENT for table `saldo`
+-- AUTO_INCREMENT for dumped tables
 --
-ALTER TABLE `saldo`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transac`
@@ -171,20 +166,26 @@ ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Constraints for dumped tables
+-- AUTO_INCREMENT for table `wallet`
 --
+ALTER TABLE `wallet`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for table `saldo`
+-- Constraints for dumped tables
 --
-ALTER TABLE `saldo`
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `transac`
 --
 ALTER TABLE `transac`
   ADD CONSTRAINT `FK_transac` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `wallet`
+--
+ALTER TABLE `wallet`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
