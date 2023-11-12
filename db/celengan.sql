@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 12, 2023 at 06:58 PM
+-- Generation Time: Nov 12, 2023 at 07:26 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -20,6 +20,18 @@ SET time_zone = "+00:00";
 --
 -- Database: `celengan`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `panen`
+--
+
+CREATE TABLE `panen` (
+  `user_id` int NOT NULL,
+  `harga` decimal(15,2) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -110,12 +122,18 @@ CREATE TABLE `wallet` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `saldo` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `batas_kritis` decimal(15,2) NOT NULL
+  `batas_kritis` decimal(15,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `panen`
+--
+ALTER TABLE `panen`
+  ADD KEY `fk_panen_user_id` (`user_id`);
 
 --
 -- Indexes for table `transac`
@@ -174,6 +192,12 @@ ALTER TABLE `wallet`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `panen`
+--
+ALTER TABLE `panen`
+  ADD CONSTRAINT `fk_panen_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `transac`
