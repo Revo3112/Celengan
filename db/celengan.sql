@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 11, 2023 at 03:58 PM
+-- Generation Time: Nov 12, 2023 at 11:38 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -20,52 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `celengan`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pemasukan_kategori`
---
-
-CREATE TABLE `pemasukan_kategori` (
-  `id` int NOT NULL,
-  `name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `pemasukan_kategori`
---
-
-INSERT INTO `pemasukan_kategori` (`id`, `name`) VALUES
-(1, 'Gaji'),
-(2, 'Investasi'),
-(3, 'Penjualan'),
-(4, 'Deposito'),
-(5, 'Penyewaan'),
-(6, 'Tabungan');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pengeluaran_kategori`
---
-
-CREATE TABLE `pengeluaran_kategori` (
-  `id` int NOT NULL,
-  `name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `pengeluaran_kategori`
---
-
-INSERT INTO `pengeluaran_kategori` (`id`, `name`) VALUES
-(1, 'Makanan'),
-(2, 'Minuman'),
-(3, 'Transportasi'),
-(4, 'Pajak'),
-(5, 'Pulsa'),
-(6, 'Tagihan');
 
 -- --------------------------------------------------------
 
@@ -90,8 +44,8 @@ CREATE TABLE `transac` (
   `user_id` int NOT NULL,
   `nominal` decimal(15,2) NOT NULL,
   `keterangan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `category_id` int NOT NULL,
-  `payment_type` enum('Cash','Transfer') NOT NULL,
+  `kategori_id` int NOT NULL,
+  `tipe_pembayaran` enum('Cash','Transfer') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date` date NOT NULL,
   `tipe_transaksi` enum('pemasukan','pengeluaran') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -100,8 +54,41 @@ CREATE TABLE `transac` (
 -- Dumping data for table `transac`
 --
 
-INSERT INTO `transac` (`id`, `user_id`, `nominal`, `keterangan`, `category_id`, `payment_type`, `date`, `tipe_transaksi`) VALUES
-(1, 1, '100000.00', 'membeli sarapan', 1, 'Cash', '2023-10-30', 'pengeluaran');
+INSERT INTO `transac` (`id`, `user_id`, `nominal`, `keterangan`, `kategori_id`, `tipe_pembayaran`, `date`, `tipe_transaksi`) VALUES
+(1, 1, '100000.00', 'membeli sarapan', 1, 'Cash', '2023-10-30', 'pengeluaran'),
+(2, 1, '20000.00', 'naik ojol', 3, 'Cash', '2023-11-12', 'pengeluaran'),
+(3, 2, '45000.00', 'beli pulsa', 5, 'Cash', '2023-11-12', 'pengeluaran'),
+(4, 2, '200000.00', 'untung jual merch', 9, 'Transfer', '2023-11-12', 'pemasukan');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transac_kategori`
+--
+
+CREATE TABLE `transac_kategori` (
+  `id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `tipe` enum('pemasukan','pengeluaran') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `transac_kategori`
+--
+
+INSERT INTO `transac_kategori` (`id`, `name`, `tipe`) VALUES
+(1, 'Makanan', 'pengeluaran'),
+(2, 'Minuman', 'pengeluaran'),
+(3, 'Transportasi', 'pengeluaran'),
+(4, 'Pajak', 'pengeluaran'),
+(5, 'Pulsa', 'pengeluaran'),
+(6, 'Tagihan', 'pengeluaran'),
+(7, 'Gaji', 'pemasukan'),
+(8, 'Investasi', 'pemasukan'),
+(9, 'Penjualan', 'pemasukan'),
+(10, 'Deposito', 'pemasukan'),
+(11, 'Penyewaan', 'pemasukan'),
+(12, 'Tabungan', 'pemasukan');
 
 -- --------------------------------------------------------
 
@@ -125,43 +112,9 @@ INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`)
 (1, 'Revo Rahmat', '1234', '2023-10-30 16:33:25', 'True'),
 (2, 'Kafka', '4321', '2023-11-11 13:19:19', 'False');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `user_kategori`
---
-
-CREATE TABLE `user_kategori` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `tipe_kategori` enum('pengeluaran','pemasukan') NOT NULL,
-  `name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `user_kategori`
---
-
-INSERT INTO `user_kategori` (`id`, `user_id`, `tipe_kategori`, `name`) VALUES
-(1, 1, 'pengeluaran', 'Traktir Temen'),
-(2, 2, 'pengeluaran', 'Beli Merch'),
-(3, 2, 'pemasukan', 'Freelance');
-
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `pemasukan_kategori`
---
-ALTER TABLE `pemasukan_kategori`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `pengeluaran_kategori`
---
-ALTER TABLE `pengeluaran_kategori`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `saldo`
@@ -178,32 +131,20 @@ ALTER TABLE `transac`
   ADD KEY `FK_transac` (`user_id`);
 
 --
+-- Indexes for table `transac_kategori`
+--
+ALTER TABLE `transac_kategori`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_kategori`
---
-ALTER TABLE `user_kategori`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `pemasukan_kategori`
---
-ALTER TABLE `pemasukan_kategori`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `pengeluaran_kategori`
---
-ALTER TABLE `pengeluaran_kategori`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `saldo`
@@ -215,18 +156,18 @@ ALTER TABLE `saldo`
 -- AUTO_INCREMENT for table `transac`
 --
 ALTER TABLE `transac`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `transac_kategori`
+--
+ALTER TABLE `transac_kategori`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `user_kategori`
---
-ALTER TABLE `user_kategori`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
