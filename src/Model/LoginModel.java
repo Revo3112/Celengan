@@ -22,9 +22,6 @@ public class LoginModel {
                 }
                 System.out.println("Connection closed." + result);        
 
-                result.close();
-                statement.close();
-                connection.close();
 
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());

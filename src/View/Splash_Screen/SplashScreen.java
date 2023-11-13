@@ -1,6 +1,4 @@
 package View.Splash_Screen;
-import View.Splash_Screen.Animation.DialogWithAudio;
-
 /* MAIN */
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -144,8 +142,6 @@ public class SplashScreen {
         chat_4.setTranslateX(295);
         chat_4.setTranslateY(900);
         // animation with audio
-        DialogWithAudio dialog1 = new DialogWithAudio(chat_1, chat_2, chat_3, chat_4);
-        dialog1.playDialogWithAudio();
 
         /* ELEMENTS PANE */
         StackPane contentImage = new StackPane(imgAyam, imgRectOverlay);
