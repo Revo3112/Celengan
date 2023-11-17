@@ -2,7 +2,7 @@ package View.Login_Register;
 
 import Controller.SceneController;
 import Model.*;
-
+import Utils.AlertHelper;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 public class LoginPage {
     private Stage stage;
     private boolean statusCheckbox;
+    private TextField fieldUsername;
+    private PasswordField passwordField;
 
     public LoginPage(Stage stage) {
         this.stage = stage;
@@ -31,6 +33,8 @@ public class LoginPage {
     }
 
     public void start() {
+        this.fieldUsername = new TextField(); // Tambahkan ini
+        this.passwordField = new PasswordField(); // Tambahkan ini
 
         // Components
         Text title = new Text();
@@ -39,10 +43,9 @@ public class LoginPage {
         title.setFill(Color.BLACK);
         title.setTranslateY(-40);
 
-        TextField fieldUsername = new TextField();
         fieldUsername.setMaxWidth(200);
         fieldUsername.setTranslateX(200);
-        PasswordField passwordField = new PasswordField();
+
         passwordField.setMaxWidth(200);
         passwordField.setTranslateX(200);
         passwordField.setTranslateY(40);
@@ -92,20 +95,34 @@ public class LoginPage {
         this.stage.show();
 
         // Handle button click
-        btnLogin.setOnAction(e -> {
+        btnLogin.setOnAction(e -> handleLogin(fieldUsername.getText(), passwordField.getText()));
+    }
 
-            String username = fieldUsername.getText();
-            String password = passwordField.getText();
+    private void handleLogin(String username, String password) {
+        LoginModel login = new LoginModel();
+        SceneController sceneController = new SceneController(this.stage);
 
-            LoginModel login = new LoginModel();
-            SceneController sceneController = new SceneController(this.stage);
+        if (login.isValidated(username, password, statusCheckbox)) {
+            sceneController.switchToDashboard();
+        } else if (username.isEmpty() && password.isEmpty()) {
+            applyErrorStyle(fieldUsername, passwordField);
+        } else if (username.isEmpty()) {
+            passwordField.setStyle("");
+            applyErrorStyle(fieldUsername);
+        } else if (password.isEmpty()) {
+            fieldUsername.setStyle("");
+            applyErrorStyle(passwordField);
+        } else {
+            fieldUsername.setStyle("");
+            passwordField.setStyle("");
+            AlertHelper.alert("Username or password is incorrect.");
+        }
 
-            if (login.isValidated(username, password, statusCheckbox)) {
-                sceneController.switchToDashboard();
-            } else {
-                sceneController.switchToRegistration();
-            }
+    }
 
-        });
+    private void applyErrorStyle(TextField... fields2) {
+        for (TextField field : fields2) {
+            field.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        }
     }
 }

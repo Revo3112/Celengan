@@ -2,11 +2,14 @@ package Model;
 
 import Utils.AlertHelper;
 import Utils.DBConnection;
+import javafx.scene.control.TextField;
+
 import java.sql.*;
 
 public class LoginModel {
 
     private String username, password;
+    private String key = "s3cr3t";
 
     public int checkData() throws SQLException {
         DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -34,51 +37,42 @@ public class LoginModel {
     }
 
     public boolean isValidated(String username, String password, boolean rememberMe) {
-        if (username.equals("") && password.equals("")) {
-            AlertHelper.alert("Kolom Username dan Password tidak boleh kosong!");
-        } else if (username.equals("")) {
-            AlertHelper.alert("Kolom Username tidak boleh kosong!");
-        } else if (password.equals("")) {
-            AlertHelper.alert("Kolom Password tidak boleh kosong!");
-        } else {
 
-            DBConnection dbc = DBConnection.getDatabaseConnection();
-            Connection connection = dbc.getConnection();
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
 
-            try {
-                String sql = String.format("SELECT * FROM users WHERE username='%s' AND password='%s'", username,
-                        password);
-                Statement statement = connection.createStatement();
-                ResultSet result = statement.executeQuery(sql);
+        try {
+            String sql = String.format("SELECT * FROM users WHERE username='%s' AND password='%s'", username,
+                    password);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
 
-                result.next();
-                this.username = result.getString("username");
-                this.password = result.getString("password");
-                if (this.username.equals(username) && this.password.equals(password)) {
+            result.next();
+            this.username = result.getString("username");
+            this.password = result.getString("password");
+            if (this.username.equals(username) && this.password.equals(password)) {
 
-                    if (rememberMe) {
-                        String updateSql = String.format(
-                                "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
-                                username, password);
-                        Statement updateStatement = connection.createStatement();
-                        updateStatement.executeUpdate(updateSql);
-                        updateStatement.close();
-                    } else {
-                        String updateSql = String.format(
-                                "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
-                                username, password);
-                        Statement updateStatement = connection.createStatement();
-                        updateStatement.executeUpdate(updateSql);
-                        updateStatement.close();
-                    }
-
-                    return true;
+                if (rememberMe) {
+                    String updateSql = String.format(
+                            "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
+                            username, password);
+                    Statement updateStatement = connection.createStatement();
+                    updateStatement.executeUpdate(updateSql);
+                    updateStatement.close();
+                } else {
+                    String updateSql = String.format(
+                            "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
+                            username, password);
+                    Statement updateStatement = connection.createStatement();
+                    updateStatement.executeUpdate(updateSql);
+                    updateStatement.close();
                 }
-            } catch (SQLException e) {
-                System.out.println("Query Failed: " + e.getMessage());
-            }
-        }
 
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Query Failed: " + e.getMessage());
+        }
         return false;
     }
 
