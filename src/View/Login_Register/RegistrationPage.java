@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.geometry.*;
+import javafx.scene.control.PasswordField;
 
 /**
  * import javafx.scene.Group;
@@ -27,8 +28,6 @@ import javafx.geometry.*;
 public class RegistrationPage {
 
     private Stage stage;
-    private boolean statusCheckbox;
-
 
     public RegistrationPage(Stage stage) {
         this.stage = stage;
@@ -48,7 +47,8 @@ public class RegistrationPage {
         TextField fieldUsername = new TextField();
         fieldUsername.setMaxWidth(200);
         fieldUsername.setTranslateX(90);
-        TextField fieldPassword = new TextField();
+
+        PasswordField fieldPassword = new PasswordField(); // Fixed typo here
         fieldPassword.setMaxWidth(200);
         fieldPassword.setTranslateX(90);
         fieldPassword.setTranslateY(40);
@@ -59,24 +59,14 @@ public class RegistrationPage {
         labelPassword.setTranslateX(-50);
         labelPassword.setTranslateY(40);
 
-        CheckBox checkbox = new CheckBox("Remember Me");
-        checkbox.setTranslateX(-50);
-        checkbox.setTranslateY(80);
-        checkbox.setOnAction(e -> {
-            if (checkbox.isSelected()) {
-                this.statusCheckbox = true;
-            } else {
-                this.statusCheckbox = false;
-            }
-        });
-
         Button btnLogin = new Button("Register");
         btnLogin.setTranslateY(120);
 
         // Scene
         StackPane root = new StackPane();
         StackPane.setMargin(root, new Insets(20, 0, 0, 0));
-        root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, fieldPassword, checkbox, btnLogin);
+        root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, fieldPassword,
+                btnLogin);
 
         Scene scene = new Scene(root, Color.gray(0.2));
         // stage.setFullScreen(true);
@@ -89,13 +79,13 @@ public class RegistrationPage {
 
             String username = fieldUsername.getText();
             String password = fieldPassword.getText();
-            
+
             LoginModel login = new LoginModel();
             SceneController sceneController = new SceneController(this.stage);
 
             // TODO: Apa yang dilakukan jika method registerAccount() bernilai false?
-            if (login.registerAccount(username, password, this.statusCheckbox)) {
-                sceneController.switchToDashboard();
+            if (login.registerAccount(username, password)) {
+                sceneController.switchToLogin();
             } else {
                 AlertHelper.alert(password);
             }
