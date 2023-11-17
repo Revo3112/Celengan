@@ -22,14 +22,16 @@ public class OpenAplication extends Application {
         primaryStage.setScene(scene);
         primaryStage.setHeight(500);
         primaryStage.setWidth(1000);
-        LoginModel checkingData = new LoginModel();
-        int count = checkingData.checkData();
+        // LoginModel checkingData = new LoginModel();
+        // int count = checkingData.checkData();
         SceneController sceneController = new SceneController(primaryStage);
-        if (count == 0) {
-            sceneController.switchToRegistration();
-        } else {
-            sceneController.switchToLogin();
-        }
+        // SPLASH SCREEN (UPDATED)
+        sceneController.switchToSplashScreen();
+        // if (count == 0) {
+        // sceneController.switchToRegistration();
+        // } else {
+        // sceneController.switchToLogin();
+        // }
     }
 
     public static void main(String[] args) throws Exception {
