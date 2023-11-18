@@ -12,16 +12,16 @@ public class OpenAplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         // TODO: Add your code here
         // 3. Layout -> Layout;
-        VBox root = new VBox();
-        Scene scene = new Scene(root, Color.gray(0.2));
+        // VBox root = new VBox(); // (!) affect splash screen
+        // Scene scene = new Scene(root, Color.gray(0.2)); // (!) affect splash screen
         /*
          * KODE SPLASH SCREEN
          * 
          * 
          */
-        primaryStage.setScene(scene);
-        primaryStage.setHeight(500);
-        primaryStage.setWidth(1000);
+        // primaryStage.setScene(scene); // (!) affect splash screen
+        // primaryStage.setHeight(500); // (!) affect splash screen
+        // primaryStage.setWidth(1000); // (!) affect splash screen
         // LoginModel checkingData = new LoginModel();
         // int count = checkingData.checkData();
         SceneController sceneController = new SceneController(primaryStage);
