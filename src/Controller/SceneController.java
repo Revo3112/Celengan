@@ -13,7 +13,7 @@ public class SceneController {
 
     public SceneController(Stage stage) {
         this.stage = stage;
-        stage.setFullScreen(true);
+        stage.setFullScreen(false);
     }
 
     /* LOGIN_REGISTRATION */

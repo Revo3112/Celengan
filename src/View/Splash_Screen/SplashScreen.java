@@ -26,7 +26,6 @@ public class SplashScreen {
     private String assetPath = "Assets/View/Splash_Screen/";
     private String imgPath = assetPath + "images";
     private List<Image> contents;
-    private Runnable onHidden;
 
     public static final double CARO_IMAGE_WIDTH = 100;
     public static final double CARO_IMAGE_HEIGHT = 100;
@@ -110,17 +109,8 @@ public class SplashScreen {
     public void hideSplashScreen() {
         Platform.runLater(() -> {
             stage.hide();
-            // Melakukan aksi setelah splash screen ditutup
-            if (onHidden != null) {
-                onHidden.run();
-            }
         });
     }
-
-    public void setOnHidden(Runnable onHidden) {
-        this.onHidden = onHidden;
-    }
-
 }
 
 class Carousel {
