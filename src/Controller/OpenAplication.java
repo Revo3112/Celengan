@@ -1,48 +1,49 @@
 package Controller;
 
 import Model.LoginModel;
+import View.Splash_Screen.SplashScreen;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.geometry.Pos;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import Model.DatabaseCheckService;
 
 public class OpenAplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         // TODO: Add your code here
-        // 3. Layout -> Layout;
-        // VBox root = new VBox(); // (!) affect splash screen
-        // Scene scene = new Scene(root, Color.gray(0.2)); // (!) affect splash screen
-        /*
-         * KODE SPLASH SCREEN
-         * 
-         * 
-         */
-        // primaryStage.setScene(scene); // (!) affect splash screen
-        // primaryStage.setHeight(500); // (!) affect splash screen
-        // primaryStage.setWidth(1000); // (!) affect splash screen
-        // LoginModel checkingData = new LoginModel();
-        // int count = checkingData.checkData();
         SceneController sceneController = new SceneController(primaryStage);
-        // SPLASH SCREEN (UPDATED)
+        DatabaseCheckService databaseCheckService = new DatabaseCheckService();
         sceneController.switchToSplashScreen();
-        // if (count == 0) {
-        // sceneController.switchToRegistration();
-        // } else {
-        // sceneController.switchToLogin();
-        // }
+
+        // Membuat Timeline untuk mengatur durasi animasi splash screen
+        Timeline splashScreenTimeline = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
+            // Menutup splash screen setelah animasi selesai
+            SplashScreen splashScreen = new SplashScreen(new Stage());
+            splashScreen.hideSplashScreen();
+        }));
+        splashScreenTimeline.play();
+
+        databaseCheckService.setOnSucceeded(e -> {
+            int count = databaseCheckService.getValue();
+            // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+            if (count == 0) {
+                sceneController.switchToRegistration();
+            } else {
+                sceneController.switchToLogin();
+            }
+
+            // Stop animasi splash screen setelah operasi selesai
+            splashScreenTimeline.stop();
+        });
+
+        databaseCheckService.start();
     }
 
     public static void main(String[] args) throws Exception {
         launch(args);
-
-        /*
-         * Tree di java terbagi menjadi beberapa
-         * 1. Stage -> Window
-         * 2. Scene -> Content
-         * 3. Layout -> Layout
-         */
     }
-
 }

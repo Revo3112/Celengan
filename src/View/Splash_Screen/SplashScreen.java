@@ -2,6 +2,8 @@ package View.Splash_Screen;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,6 +18,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.concurrent.Service;
 
 public class SplashScreen {
     private Stage stage;
@@ -62,6 +65,7 @@ public class SplashScreen {
 
         // Start the carousel animation
         carousel.startAnimation();
+
     }
 
     private Rectangle createRectangle(double width, double height, double arcWidth, double arcHeight, Color color) {
@@ -95,6 +99,15 @@ public class SplashScreen {
 
         return newText;
     }
+
+    public void hideSplashScreen() {
+        // menutup atau menyembunyikan splash screen
+        Platform.runLater(() -> {
+            stage.hide();
+        });
+
+    }
+
 }
 
 class Carousel {
@@ -135,6 +148,7 @@ class Carousel {
         });
 
         carouselPane.setOnMouseReleased(event -> isDragging = false);
+
     }
 
     private void initializeCarousel() {
@@ -178,4 +192,5 @@ class Carousel {
     private void fadeInImage(ImageView imageView, double opacity) {
         imageView.setOpacity(opacity);
     }
+
 }
