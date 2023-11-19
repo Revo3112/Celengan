@@ -1,42 +1,67 @@
 package Controller;
 
+import Model.DatabaseCheckService;
 import View.Dashboard.DashboardPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.RegistrationPage;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 
+class Splash {
+    private Stage stage;
+
+    public Splash(Stage stage) {
+        this.stage = stage;
+    }
+
+    /* SPLASH SCREEN */
+    public void switchToSplashScreen() {
+        DatabaseCheckService databaseCheckService = new DatabaseCheckService();
+        SplashScreen splashScreen = new SplashScreen(stage);
+        splashScreen.start();
+
+        databaseCheckService.setOnSucceeded(e -> {
+            SceneController mainScene = new SceneController(stage);
+            int count = databaseCheckService.getValue();
+            // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+            if (count == 0) {
+                mainScene.switchToRegistration();
+            } else {
+                mainScene.switchToLogin();
+            }
+
+            // Menutup splash screen setelah operasi selesai
+            splashScreen.hideSplashScreen();
+        });
+        databaseCheckService.start();
+    }
+}
+
 public class SceneController {
     private Stage stage;
 
     public SceneController(Stage stage) {
         this.stage = stage;
+        stage.setFullScreen(true);
     }
 
     /* LOGIN_REGISTRATION */
     // Registration
     public void switchToRegistration() {
-        RegistrationPage registration_form = new RegistrationPage(this.stage);
-        // start method
-        registration_form.start();
+        RegistrationPage registrationPage = new RegistrationPage(this.stage);
+        registrationPage.start();
     }
 
     // Login
     public void switchToLogin() {
-        LoginPage login_form = new LoginPage(this.stage);
-        login_form.start();
+        LoginPage loginPage = new LoginPage(this.stage);
+        loginPage.start();
     }
 
     // Dashboard
     public void switchToDashboard() {
         DashboardPage dashboard = new DashboardPage(this.stage);
         dashboard.start();
-    }
-
-    /* SPLASH SCREEN */
-    public void switchToSplashScreen() {
-        SplashScreen splashScreen = new SplashScreen(this.stage);
-        splashScreen.start();
     }
 
 }

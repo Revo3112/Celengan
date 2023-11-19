@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -25,12 +26,15 @@ public class SplashScreen {
     private String assetPath = "././Assets/View/Splash_Screen/";
     private String imgPath = assetPath + "images/";
     private List<Image> contents;
+    private Runnable onHidden;
 
     public static final double CARO_IMAGE_WIDTH = 100;
     public static final double CARO_IMAGE_HEIGHT = 100;
 
-    public SplashScreen(Stage stage) {
-        this.stage = stage;
+    public SplashScreen(Window owner) {
+        this.stage = new Stage();
+        this.stage.initOwner(owner);
+        this.stage.initStyle(StageStyle.TRANSPARENT);
     }
 
     public void start() {
@@ -65,7 +69,6 @@ public class SplashScreen {
 
         // Start the carousel animation
         carousel.startAnimation();
-
     }
 
     private Rectangle createRectangle(double width, double height, double arcWidth, double arcHeight, Color color) {
@@ -101,11 +104,17 @@ public class SplashScreen {
     }
 
     public void hideSplashScreen() {
-        // menutup atau menyembunyikan splash screen
         Platform.runLater(() -> {
             stage.hide();
+            // Melakukan aksi setelah splash screen ditutup
+            if (onHidden != null) {
+                onHidden.run();
+            }
         });
+    }
 
+    public void setOnHidden(Runnable onHidden) {
+        this.onHidden = onHidden;
     }
 
 }
