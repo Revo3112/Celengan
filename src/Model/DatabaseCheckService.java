@@ -3,10 +3,10 @@ package Model;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
+// Membuat si check database berjalan di background (parallel)
 public class DatabaseCheckService extends Service<Integer> {
 
     @Override
-
     protected Task<Integer> createTask() {
         return new Task<Integer>() {
             @Override
