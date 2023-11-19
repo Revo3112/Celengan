@@ -2,6 +2,7 @@ package Controller;
 
 import Model.DatabaseCheckService;
 import View.Dashboard.DashboardPage;
+import View.Dashboard.TanamUangPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.RegistrationPage;
 import View.Splash_Screen.SplashScreen;
