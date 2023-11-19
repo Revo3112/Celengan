@@ -8,6 +8,41 @@ import View.Login_Register.RegistrationPage;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 
+public class SceneController {
+    private Stage stage;
+
+    public SceneController(Stage stage) {
+        this.stage = stage;
+        stage.setFullScreen(true);
+    }
+
+    /* LOGIN_REGISTRATION */
+    // Registration
+    public void switchToRegistration() {
+        RegistrationPage registrationPage = new RegistrationPage(this.stage);
+        registrationPage.start();
+    }
+
+    // Login
+    public void switchToLogin() {
+        LoginPage loginPage = new LoginPage(this.stage);
+        loginPage.start();
+    }
+
+    // Dashboard
+    public void switchToDashboard() {
+        DashboardPage dashboard = new DashboardPage(this.stage);
+        dashboard.start();
+    }
+
+    // Tanam Uang
+    public void switchToTanamUang() {
+        TanamUangPage tanamUang = new TanamUangPage(this.stage);
+        tanamUang.start();
+    }
+
+}
+
 class Splash {
     private Stage stage;
 
@@ -36,33 +71,4 @@ class Splash {
         });
         databaseCheckService.start();
     }
-}
-
-public class SceneController {
-    private Stage stage;
-
-    public SceneController(Stage stage) {
-        this.stage = stage;
-        stage.setFullScreen(true);
-    }
-
-    /* LOGIN_REGISTRATION */
-    // Registration
-    public void switchToRegistration() {
-        RegistrationPage registrationPage = new RegistrationPage(this.stage);
-        registrationPage.start();
-    }
-
-    // Login
-    public void switchToLogin() {
-        LoginPage loginPage = new LoginPage(this.stage);
-        loginPage.start();
-    }
-
-    // Dashboard
-    public void switchToDashboard() {
-        DashboardPage dashboard = new DashboardPage(this.stage);
-        dashboard.start();
-    }
-
 }

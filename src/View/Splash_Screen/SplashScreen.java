@@ -70,6 +70,7 @@ public class SplashScreen {
 
         // Start the carousel animation
         carousel.startAnimation();
+
     }
 
     private Rectangle createRectangle(double width, double height, double arcWidth, double arcHeight, Color color) {
