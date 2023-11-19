@@ -83,7 +83,6 @@ public class RegistrationPage {
             LoginModel login = new LoginModel();
             SceneController sceneController = new SceneController(this.stage);
 
-            // TODO: Apa yang dilakukan jika method registerAccount() bernilai false?
             if (login.registerAccount(username, password)) {
                 sceneController.switchToLogin();
             } else {

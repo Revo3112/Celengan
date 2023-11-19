@@ -22,8 +22,8 @@ import javafx.concurrent.Service;
 
 public class SplashScreen {
     private Stage stage;
-    private String assetPath = "././Assets/View/Splash_Screen/";
-    private String imgPath = assetPath + "images/";
+    private String assetPath = "Assets/View/Splash_Screen/";
+    private String imgPath = assetPath + "images";
     private List<Image> contents;
 
     public static final double CARO_IMAGE_WIDTH = 100;
@@ -34,6 +34,7 @@ public class SplashScreen {
     }
 
     public void start() {
+
         Rectangle outBackground = createRectangle(900, 550, 60, 60, Color.rgb(20, 31, 35));
 
         ImageView logo = createImage(imgPath + "/logo/celengan_image_logo.png", 58, 58, -397, -215);
@@ -78,6 +79,8 @@ public class SplashScreen {
     }
 
     private ImageView createImage(String imgPath, double width, double height, double transX, double transY) {
+        System.out.println("IMGPATH: " + imgPath);
+
         ImageView imageView = new ImageView();
         Image imageImg = new Image(imgPath);
 

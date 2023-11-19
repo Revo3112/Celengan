@@ -1,6 +1,7 @@
 package Controller;
 
 import View.Dashboard.DashboardPage;
+import View.Dashboard.TanamUangPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.RegistrationPage;
 import View.Splash_Screen.SplashScreen;
@@ -31,6 +32,12 @@ public class SceneController {
     public void switchToDashboard() {
         DashboardPage dashboard = new DashboardPage(this.stage);
         dashboard.start();
+    }
+
+    // Tanam Uang
+    public void switchToTanamUang() {
+        TanamUangPage tanamUang = new TanamUangPage(this.stage);
+        tanamUang.start();
     }
 
     /* SPLASH SCREEN */
