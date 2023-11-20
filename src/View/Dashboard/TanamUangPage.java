@@ -27,6 +27,7 @@ public class TanamUangPage {
             "ketiga",
             "keempat"
         };
+        
         ComboBox combobox = new ComboBox(FXCollections.observableArrayList(pil));
 
         StackPane root = new StackPane(title, combobox);
