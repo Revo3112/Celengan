@@ -63,6 +63,14 @@ public class SplashScreen {
         chats = new ArrayList<>();
         chats.add(new Image(imgPath + "/carousel/chatCaro1_1.png"));
         chats.add(new Image(imgPath + "/carousel/chatCaro1_2.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro2_1.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro2_2.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro3_1.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro3_2.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro4_1.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro4_2.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro5_1.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro5_2.png"));
 
         Carousel carousel = new Carousel(contents);
         StackPane carouselPane = carousel.getCarouselPane();
