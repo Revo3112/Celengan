@@ -11,6 +11,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -58,7 +60,11 @@ public class SplashScreen {
         Text logoText = createText("Celengan", "-fx-font: 36 Poppins;", "#FFFFFF", -268, -209);
 
         // membuat buttonMasuk menggunakan fungsi createImage
-        ImageView buttonMasuk = createImage(imgPath + "/button/masuk.png", 95, 40, 345, -213);
+        Rectangle buttonMasuk = createRectangle(125, 46, 50, 50, Color.valueOf("#263940"));
+        buttonMasuk.setTranslateX(100);
+        buttonMasuk.setTranslateY(-209);
+        // membuat text buttonMasuk menggunakan fungsi createText
+        Text textButtonMasuk = createText("Masuk", "-fx-font: 24 Poppins;", "#141F23", 100, -209);
 
         /* BAGIAN CAROUSEL */
         contents = new ArrayList<>(); // mendeklarasikan ArrayList untuk menyimpan contents images
@@ -89,7 +95,9 @@ public class SplashScreen {
         // deklarasi object outPan sebagai instansiasi pane dari StackPane
         StackPane outPane = new StackPane(outBackground); // pane yang digunakan untuk menampung outBackground
         // deklarasi object mainContent sebagai instansiasi pane daro StackPane
-        StackPane mainContent = new StackPane(carouselPane, buttonMasuk, logo, logoText); // pane ini digunakan untuk
+        StackPane mainContent = new StackPane(carouselPane, buttonMasuk, textButtonMasuk, logo, logoText); // pane ini
+                                                                                                           // digunakan
+                                                                                                           // untuk
                                                                                           // menampung konten - konten
                                                                                           // utama
 
@@ -119,7 +127,8 @@ public class SplashScreen {
         // deklarasi scene
         Scene scene = new Scene(root, Color.TRANSPARENT);
         // membuat scene untuk memakai font Poppins dari googleapis fonts
-        scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap");
+        scene.getStylesheets().addAll(
+                "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
 
         // inisiasi style stage
         stage.initStyle(StageStyle.TRANSPARENT);
