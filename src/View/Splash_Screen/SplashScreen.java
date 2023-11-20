@@ -4,6 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,6 +18,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import javafx.event.EventHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.concurrent.Service;
@@ -53,12 +55,13 @@ public class SplashScreen {
 
         Carousel carousel = new Carousel(contents);
         StackPane carouselPane = carousel.getCarouselPane();
-
         StackPane outPane = new StackPane(outBackground);
         StackPane mainContent = new StackPane(logo, logoText, carouselPane);
 
         StackPane root = new StackPane();
         root.getChildren().addAll(outPane, mainContent);
+        // on mouse click
+        // setOnMouseClicked(root, logo);
 
         Scene scene = new Scene(root, Color.TRANSPARENT);
         scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap");
@@ -70,6 +73,28 @@ public class SplashScreen {
         // Start the carousel animation
         carousel.startAnimation();
 
+    }
+
+    // Mouse COORDINATES TRACKER
+    private void setOnMouseClicked(StackPane root, Node item) {
+        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent me) {
+                double x = me.getSceneX();
+                double y = me.getSceneY();
+
+                // Calculate the translation values for the item
+                double itemX = x - (root.getWidth() / 2); // Adjust for the center of the root
+                double itemY = y - (root.getHeight() / 2); // Adjust for the center of the root
+
+                // Set the new translation values for the item
+                item.setTranslateX(itemX);
+                item.setTranslateY(itemY);
+
+                System.out.println("Item placed at X -> " + itemX);
+                System.out.println("Item placed at Y -> " + itemY);
+            }
+        });
     }
 
     private Rectangle createRectangle(double width, double height, double arcWidth, double arcHeight, Color color) {
@@ -122,6 +147,10 @@ class Carousel {
     public static final double CARO_IMAGE_WIDTH = 400;
     public static final double CARO_IMAGE_HEIGHT = 400;
 
+    private static final double DRAG_THRESHOLD = 20.0;
+
+    private boolean dragOccurred = false;
+
     public Carousel(List<Image> contents) {
         this.contents = contents;
         initializeCarousel();
@@ -132,11 +161,6 @@ class Carousel {
     }
 
     public void startAnimation() {
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(3), event -> showNextImage()));
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-
         // Add drag event handlers
         carouselPane.setOnMousePressed(event -> {
             dragStartX = event.getSceneX();
@@ -144,14 +168,20 @@ class Carousel {
         });
 
         carouselPane.setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - dragStartX;
             if (isDragging) {
-                double deltaX = event.getSceneX() - dragStartX;
-                showImageByDrag(deltaX);
+                showImageByDrag(event, deltaX);
             }
         });
 
-        carouselPane.setOnMouseReleased(event -> isDragging = false);
-
+        carouselPane.setOnMouseReleased(event -> {
+            if (isDragging) {
+                double deltaX = event.getSceneX() - dragStartX;
+                showImageByDrag(event, deltaX);
+                isDragging = false; // Reset the flag after dragging is complete
+            }
+            dragStartX = 0; // Reset dragStartX after releasing the mouse
+        });
     }
 
     private void initializeCarousel() {
@@ -164,20 +194,25 @@ class Carousel {
         carouselPane.getChildren().add(initialImage);
     }
 
-    private void showNextImage() {
-        currentIndex = (currentIndex + 1) % contents.size();
-        ImageView imageView = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH, CARO_IMAGE_HEIGHT);
-        fadeInImage(imageView);
-        carouselPane.getChildren().set(0, imageView);
-    }
+    private void showImageByDrag(MouseEvent event, double deltaX) {
+        double totalDeltaX = Math.abs(deltaX);
 
-    private void showImageByDrag(double deltaX) {
-        int direction = (deltaX > 0) ? -1 : 1;
-        int newIndex = (currentIndex + direction + contents.size()) % contents.size();
-        double opacity = Math.abs(deltaX) / carouselPane.getWidth();
-        ImageView imageView = createResizedImageView(contents.get(newIndex), CARO_IMAGE_WIDTH, CARO_IMAGE_HEIGHT);
-        fadeInImage(imageView, opacity);
-        carouselPane.getChildren().set(0, imageView);
+        if (totalDeltaX > DRAG_THRESHOLD) {
+            if (deltaX > 0) {
+                // Dragging to the right
+                currentIndex = (currentIndex + 1) % contents.size();
+            } else {
+                // Dragging to the left
+                currentIndex = (currentIndex - 1 + contents.size()) % contents.size();
+            }
+
+            ImageView imageView = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
+                    CARO_IMAGE_HEIGHT);
+            carouselPane.getChildren().set(0, imageView);
+
+            // Reset dragStartX after changing the image
+            dragStartX = event.getSceneX();
+        }
     }
 
     private ImageView createResizedImageView(Image image, double width, double height) {
