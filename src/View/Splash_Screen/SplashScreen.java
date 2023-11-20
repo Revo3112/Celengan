@@ -52,7 +52,7 @@ public class SplashScreen {
         Text logoText = createText("Celengan", "-fx-font: 36 Poppins;", "#FFFFFF", -268, -209);
 
         // create button
-        ImageView buttonMasuk = createImage(imgPath + "/carousel/masuk.png", 100, 100, 334, -179);
+        ImageView buttonMasuk = createImage(imgPath + "/button/masuk.png", 100, 100, 334, -179);
 
         // Create a carousel
         // adding carousel content image
@@ -63,17 +63,17 @@ public class SplashScreen {
         contents.add(new Image(imgPath + "/carousel/caro_4.png"));
         contents.add(new Image(imgPath + "/carousel/caro_5.png"));
         // adding carousel chat image
-        chats = new ArrayList<>();
-        chats.add(new Image(imgPath + "/carousel/chatCaro1_1.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro1_2.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro2_1.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro2_2.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro3_1.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro3_2.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro4_1.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro4_2.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro5_1.png"));
-        chats.add(new Image(imgPath + "/carousel/chatCaro5_2.png"));
+        // chats = new ArrayList<>();
+        // chats.add(new Image(imgPath + "/carousel/chatCaro1_1.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro1_2.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro2_1.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro2_2.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro3_1.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro3_2.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro4_1.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro4_2.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro5_1.png"));
+        // chats.add(new Image(imgPath + "/carousel/chatCaro5_2.png"));
 
         Carousel carousel = new Carousel(contents);
         StackPane carouselPane = carousel.getCarouselPane();
