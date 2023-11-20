@@ -1,5 +1,6 @@
 package View.Dashboard;
 
+import Model.KategoriModel;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
@@ -19,20 +20,14 @@ public class TanamUangPage {
     }
 
     // Menampilkan halaman Tanam Uang
-    public void start() {
+    public void start(String kategori[]) {
         Text title = new Text("This is Tanam Uang Page"); // Membuat objek text dengan isi "This is Tanam Uang Page"
         title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
         title.setFill(Color.BLACK); // Mengatur warna dari text
 
         // ComboBox digunakan untuk menampilkan pilihan
-        String pil[] = {
-                "pertama",
-                "kedua",
-                "ketiga",
-                "keempat"
-        };
         
-        ComboBox combobox = new ComboBox(FXCollections.observableArrayList(pil));
+        ComboBox combobox = new ComboBox(FXCollections.observableArrayList(kategori));
 
         StackPane root = new StackPane(title, combobox);
         Scene scene = new Scene(root);
