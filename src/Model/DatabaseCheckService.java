@@ -5,7 +5,7 @@ import javafx.concurrent.Task;
 
 // Membuat si check database berjalan di background (parallel)
 public class DatabaseCheckService extends Service<Integer> {
-
+    // Membuat task untuk melakukan pengecekan database
     @Override
     protected Task<Integer> createTask() {
         return new Task<Integer>() {

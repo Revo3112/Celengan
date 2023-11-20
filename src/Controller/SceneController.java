@@ -6,8 +6,6 @@ import View.Dashboard.TanamUangPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.RegistrationPage;
 import View.Splash_Screen.SplashScreen;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 // class SceneController digunakan untuk mengatur perpindahan scene
@@ -16,12 +14,9 @@ public class SceneController {
 
     public SceneController(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
-        StackPane root = new StackPane(); // Instansiasi StackPane ke dalam variabel root
         stage.setFullScreen(false); // Set fullscreen menjadi false sehingga tidak fullscreen
-        Scene scene = new Scene(root); // Membuat Scene baru dengan simpul akar
         stage.setWidth(1000); // Mengatur lebar panggung menjadi 1000 pixel
         stage.setHeight(500); // Mengatur tinggi panggung menjadi 500 pixel
-        stage.setScene(scene); // Mengatur scene ke dalam stage
     }
 
     /* LOGIN_REGISTRATION */
@@ -47,38 +42,46 @@ public class SceneController {
 
     // Tanam Uang
     public void switchToTanamUang() {
-        TanamUangPage tanamUang = new TanamUangPage(this.stage);
-        tanamUang.start();
+        TanamUangPage tanamUang = new TanamUangPage(this.stage); // Instansiasi class TanamUangPage ke dalam variable
+                                                                 // tanamUang
+        tanamUang.start(); // Menjalankan method start pada objek tanamUang
     }
 
 }
 
 class Splash {
-    private Stage stage; // Deklarasi pero
+    private Stage stage; // Deklarasi property stage
 
+    // Melakukan inisiasi class Splash dengan parameter stage
     public Splash(Stage stage) {
         this.stage = stage;
     }
 
     /* SPLASH SCREEN */
     public void switchToSplashScreen() {
-        DatabaseCheckService databaseCheckService = new DatabaseCheckService();
-        SplashScreen splashScreen = new SplashScreen(stage);
-        splashScreen.start();
+        DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
+                                                                                // DatabaseCheckService ke dalam
+                                                                                // variabel databaseCheckService
+        SplashScreen splashScreen = new SplashScreen(stage); // Instansiasi class SplashScreen ke dalam variabel
+                                                             // splashScreen
+        splashScreen.start(); // Menjalankan method start() pada class SplashScreen
 
+        // Menjalankan operasi pengecekan database di background
         databaseCheckService.setOnSucceeded(e -> {
-            SceneController mainScene = new SceneController(stage);
-            int count = databaseCheckService.getValue();
+            SceneController mainScene = new SceneController(stage); // Instansiasi class SceneController ke dalam
+                                                                    // variabel mainScene
+            int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
             // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
             if (count == 0) {
-                mainScene.switchToRegistration();
+                mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
             } else {
-                mainScene.switchToLogin();
+                mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
             }
 
             // Menutup splash screen setelah operasi selesai
             splashScreen.hideSplashScreen();
         });
-        databaseCheckService.start();
+
+        databaseCheckService.start(); // Menjalankan operasi pengecekan database
     }
 }

@@ -9,8 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -19,15 +21,19 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+
 import java.util.ArrayList;
 import java.util.List;
 import javafx.concurrent.Service;
+import javafx.animation.FadeTransition;
 
 public class SplashScreen {
     private Stage stage;
     private String assetPath = "Assets/View/Splash_Screen/";
     private String imgPath = assetPath + "images";
     private List<Image> contents;
+    private List<Image> chats;
 
     public static final double CARO_IMAGE_WIDTH = 100;
     public static final double CARO_IMAGE_HEIGHT = 100;
@@ -46,12 +52,17 @@ public class SplashScreen {
         Text logoText = createText("Celengan", "-fx-font: 36 Poppins;", "#FFFFFF", -268, -209);
 
         // Create a carousel
+        // adding carousel content image
         contents = new ArrayList<>();
         contents.add(new Image(imgPath + "/carousel/caro_1.png"));
         contents.add(new Image(imgPath + "/carousel/caro_2.png"));
         contents.add(new Image(imgPath + "/carousel/caro_3.png"));
         contents.add(new Image(imgPath + "/carousel/caro_4.png"));
         contents.add(new Image(imgPath + "/carousel/caro_5.png"));
+        // adding carousel chat image
+        chats = new ArrayList<>();
+        chats.add(new Image(imgPath + "/carousel/chatCaro1_1.png"));
+        chats.add(new Image(imgPath + "/carousel/chatCaro1_2.png"));
 
         Carousel carousel = new Carousel(contents);
         StackPane carouselPane = carousel.getCarouselPane();
@@ -144,12 +155,15 @@ class Carousel {
     private int currentIndex = 0;
     private double dragStartX;
     private boolean isDragging = false;
+
     public static final double CARO_IMAGE_WIDTH = 400;
     public static final double CARO_IMAGE_HEIGHT = 400;
 
     private static final double DRAG_THRESHOLD = 20.0;
 
-    private boolean dragOccurred = false;
+    private HBox dotContainer;
+    final Color activeDots = Color.valueOf("#AEFD3A");
+    final Color passiveDots = Color.valueOf("#263940");
 
     public Carousel(List<Image> contents) {
         this.contents = contents;
@@ -168,19 +182,12 @@ class Carousel {
         });
 
         carouselPane.setOnMouseDragged(event -> {
-            double deltaX = event.getSceneX() - dragStartX;
-            if (isDragging) {
-                showImageByDrag(event, deltaX);
-            }
-        });
-
-        carouselPane.setOnMouseReleased(event -> {
-            if (isDragging) {
+            carouselPane.setOnMouseReleased(event2 -> {
                 double deltaX = event.getSceneX() - dragStartX;
                 showImageByDrag(event, deltaX);
                 isDragging = false; // Reset the flag after dragging is complete
-            }
-            dragStartX = 0; // Reset dragStartX after releasing the mouse
+                dragStartX = 0; // Reset dragStartX after releasing the mouse
+            });
         });
     }
 
@@ -192,6 +199,33 @@ class Carousel {
         ImageView initialImage = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
                 CARO_IMAGE_HEIGHT);
         carouselPane.getChildren().add(initialImage);
+
+        // Create dot indicators
+        dotContainer = createDotIndicators(contents.size());
+        StackPane.setAlignment(dotContainer, Pos.BOTTOM_CENTER);
+        carouselPane.getChildren().add(dotContainer);
+    }
+
+    private HBox createDotIndicators(int numDots) {
+        HBox dots = new HBox(20); // Adjust the spacing between dots
+        dots.setAlignment(Pos.CENTER);
+        dots.setTranslateY(200);
+
+        for (int i = 0; i < numDots; i++) {
+            Circle dot = new Circle(5);
+            dot.setFill(i == 0 ? activeDots : passiveDots); // Highlight the first dot
+            dots.getChildren().add(dot);
+        }
+
+        return dots;
+    }
+
+    private void updateDotIndicators() {
+        for (Node dot : dotContainer.getChildren()) {
+            ((Circle) dot).setFill(passiveDots);
+        }
+
+        ((Circle) dotContainer.getChildren().get(currentIndex)).setFill(activeDots);
     }
 
     private void showImageByDrag(MouseEvent event, double deltaX) {
@@ -200,15 +234,35 @@ class Carousel {
         if (totalDeltaX > DRAG_THRESHOLD) {
             if (deltaX > 0) {
                 // Dragging to the right
-                currentIndex = (currentIndex + 1) % contents.size();
+                currentIndex = (currentIndex - 1 + contents.size()) % contents.size();
             } else {
                 // Dragging to the left
-                currentIndex = (currentIndex - 1 + contents.size()) % contents.size();
+                currentIndex = (currentIndex + 1) % contents.size();
             }
 
+            // Create a new image with opacity set to 0
             ImageView imageView = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
                     CARO_IMAGE_HEIGHT);
-            carouselPane.getChildren().set(0, imageView);
+            imageView.setOpacity(0.0);
+
+            // Add fade-out animation
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(80), carouselPane.getChildren().get(0));
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> {
+                // Update the carousel pane with the new image after fade-out
+                carouselPane.getChildren().set(0, imageView);
+
+                // Add fade-in animation
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(80), imageView);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+
+                // Update dot indicators
+                updateDotIndicators();
+            });
+            fadeOut.play();
 
             // Reset dragStartX after changing the image
             dragStartX = event.getSceneX();
@@ -222,13 +276,4 @@ class Carousel {
         imageView.setPreserveRatio(true);
         return imageView;
     }
-
-    private void fadeInImage(ImageView imageView) {
-        fadeInImage(imageView, 1.0);
-    }
-
-    private void fadeInImage(ImageView imageView, double opacity) {
-        imageView.setOpacity(opacity);
-    }
-
 }
