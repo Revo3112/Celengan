@@ -26,12 +26,11 @@ public class TanamUangPage {
         title.setFill(Color.BLACK); // Mengatur warna dari text
 
         // ComboBox digunakan untuk menampilkan pilihan
-        
         ComboBox combobox = new ComboBox(FXCollections.observableArrayList(kategori));
 
-        StackPane root = new StackPane(title, combobox);
-        Scene scene = new Scene(root);
-        this.stage.setScene(scene);
-        this.stage.show();
+        StackPane root = new StackPane(title, combobox); // Memasukkan node title dan combobox ke dalam root node
+        Scene scene = new Scene(root); // Memasukkan root node ke dalam scene
+        this.stage.setScene(scene); // Memasukkan scene ke dalam stage
+        this.stage.show(); // Menampilkan stage
     }
 }
