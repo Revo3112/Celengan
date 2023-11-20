@@ -51,6 +51,9 @@ public class SplashScreen {
         ImageView logo = createImage(imgPath + "/logo/celengan_image_logo.png", 58, 58, -397, -215);
         Text logoText = createText("Celengan", "-fx-font: 36 Poppins;", "#FFFFFF", -268, -209);
 
+        // create button
+        ImageView buttonMasuk = createImage(imgPath + "/carousel/masuk.png", 100, 100, 334, -179);
+
         // Create a carousel
         // adding carousel content image
         contents = new ArrayList<>();
@@ -72,15 +75,15 @@ public class SplashScreen {
         chats.add(new Image(imgPath + "/carousel/chatCaro5_1.png"));
         chats.add(new Image(imgPath + "/carousel/chatCaro5_2.png"));
 
-        Carousel carousel = new Carousel(contents, chats);
+        Carousel carousel = new Carousel(contents);
         StackPane carouselPane = carousel.getCarouselPane();
         StackPane outPane = new StackPane(outBackground);
-        StackPane mainContent = new StackPane(logo, logoText, carouselPane);
+        StackPane mainContent = new StackPane(carouselPane, buttonMasuk, logo, logoText);
 
         StackPane root = new StackPane();
         root.getChildren().addAll(outPane, mainContent);
         // on mouse click
-        // setOnMouseClicked(root, logo);
+        // setOnMouseClicked(root, buttonMasuk);
 
         Scene scene = new Scene(root, Color.TRANSPARENT);
         scene.getStylesheets().add("https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap");
@@ -158,12 +161,12 @@ public class SplashScreen {
 }
 
 class Carousel {
-    private List<Image> contentImages;
-    private List<Image> chatImages;
+    private List<Image> contents;
     private StackPane carouselPane;
     private int currentIndex = 0;
     private double dragStartX;
     private boolean isDragging = false;
+
     public static final double CARO_IMAGE_WIDTH = 400;
     public static final double CARO_IMAGE_HEIGHT = 400;
 
@@ -173,9 +176,8 @@ class Carousel {
     final Color activeDots = Color.valueOf("#AEFD3A");
     final Color passiveDots = Color.valueOf("#263940");
 
-    public Carousel(List<Image> contentImages, List<Image> chatImages) {
-        this.contentImages = contentImages;
-        this.chatImages = chatImages;
+    public Carousel(List<Image> contents) {
+        this.contents = contents;
         initializeCarousel();
     }
 
@@ -204,19 +206,13 @@ class Carousel {
         carouselPane = new StackPane();
         carouselPane.setPrefSize(CARO_IMAGE_WIDTH, CARO_IMAGE_HEIGHT);
 
-        // Initial content image and chat image
-        ImageView initialContentImage = createResizedImageView(contentImages.get(currentIndex), CARO_IMAGE_WIDTH,
+        // Initial image
+        ImageView initialImage = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
                 CARO_IMAGE_HEIGHT);
-        ImageView initialChatImage = createResizedImageView(chatImages.get(currentIndex), CARO_IMAGE_WIDTH,
-                CARO_IMAGE_HEIGHT);
-
-        HBox imageContainer = new HBox();
-        imageContainer.getChildren().addAll(initialContentImage, initialChatImage);
-
-        carouselPane.getChildren().add(imageContainer);
+        carouselPane.getChildren().add(initialImage);
 
         // Create dot indicators
-        dotContainer = createDotIndicators(contentImages.size());
+        dotContainer = createDotIndicators(contents.size());
         StackPane.setAlignment(dotContainer, Pos.BOTTOM_CENTER);
         carouselPane.getChildren().add(dotContainer);
     }
@@ -249,49 +245,37 @@ class Carousel {
         if (totalDeltaX > DRAG_THRESHOLD) {
             if (deltaX > 0) {
                 // Dragging to the right
-                currentIndex = (currentIndex - 1 + contentImages.size()) % contentImages.size();
+                currentIndex = (currentIndex - 1 + contents.size()) % contents.size();
             } else {
                 // Dragging to the left
-                currentIndex = (currentIndex + 1) % contentImages.size();
+                currentIndex = (currentIndex + 1) % contents.size();
             }
 
-            // Create new content image and chat image with opacity set to 0
-            ImageView contentImageView = createResizedImageView(contentImages.get(currentIndex), CARO_IMAGE_WIDTH,
+            // Create a new image with opacity set to 0
+            ImageView imageView = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
                     CARO_IMAGE_HEIGHT);
-            ImageView chatImageView = createResizedImageView(chatImages.get(currentIndex), CARO_IMAGE_WIDTH,
-                    CARO_IMAGE_HEIGHT);
+            imageView.setOpacity(0.0);
 
-            contentImageView.setOpacity(0.0);
-            chatImageView.setOpacity(0.0);
+            // Add fade-out animation
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(80), carouselPane.getChildren().get(0));
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> {
+                // Update the carousel pane with the new image after fade-out
+                carouselPane.getChildren().set(0, imageView);
 
-            // Add fade-out animation for both content and chat images
-            FadeTransition fadeOutContent = new FadeTransition(Duration.millis(80), carouselPane.getChildren().get(0));
-            fadeOutContent.setFromValue(1.0);
-            fadeOutContent.setToValue(0.0);
-            fadeOutContent.setOnFinished(e -> {
-                // Update the carousel pane with the new images after fade-out
-                HBox imageContainer = new HBox();
-                imageContainer.getChildren().addAll(contentImageView, chatImageView);
-                carouselPane.getChildren().set(0, imageContainer);
-
-                // Add fade-in animation for both content and chat images
-                FadeTransition fadeInContent = new FadeTransition(Duration.millis(80), contentImageView);
-                fadeInContent.setFromValue(0.0);
-                fadeInContent.setToValue(1.0);
-                fadeInContent.play();
-
-                FadeTransition fadeInChat = new FadeTransition(Duration.millis(80), chatImageView);
-                fadeInChat.setFromValue(0.0);
-                fadeInChat.setToValue(1.0);
-                fadeInChat.play();
+                // Add fade-in animation
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(80), imageView);
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
 
                 // Update dot indicators
                 updateDotIndicators();
             });
+            fadeOut.play();
 
-            fadeOutContent.play();
-
-            // Reset dragStartX after changing the images
+            // Reset dragStartX after changing the image
             dragStartX = event.getSceneX();
         }
     }

@@ -68,8 +68,8 @@ class Splash {
 
         // Menjalankan operasi pengecekan database di background
         databaseCheckService.setOnSucceeded(e -> {
-            SceneController mainScene = new SceneController(stage); // Instansiasi class SceneController ke dalam
-                                                                    // variabel mainScene
+            // Instansiasi class SceneController ke dalam variabel mainScene
+            SceneController mainScene = new SceneController(stage);
             int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
             // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
             if (count == 0) {
