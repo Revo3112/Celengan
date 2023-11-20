@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.DatabaseCheckService;
+import Model.KategoriModel;
 import View.Dashboard.DashboardPage;
 import View.Dashboard.TanamUangPage;
 import View.Login_Register.LoginPage;
@@ -44,7 +45,7 @@ public class SceneController {
     public void switchToTanamUang() {
         TanamUangPage tanamUang = new TanamUangPage(this.stage); // Instansiasi class TanamUangPage ke dalam variable
                                                                  // tanamUang
-        tanamUang.start(); // Menjalankan method start pada objek tanamUang
+        tanamUang.start(KategoriModel.userKategoriPemasukan()); // Menjalankan method start pada objek tanamUang
     }
 
 }
