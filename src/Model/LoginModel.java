@@ -2,6 +2,7 @@ package Model;
 
 import Utils.AlertHelper;
 import Utils.DBConnection;
+import Utils.hashingregister;
 import javafx.scene.control.TextField;
 
 import java.sql.*;
@@ -105,6 +106,11 @@ public class LoginModel {
             AlertHelper.alert("Kolom Password tidak boleh kosong!"); // Tampilkan error dari method alert pada class
                                                                      // AlertHelper
         } else { // Jika username dan password tidak kosong
+            // Deklarasi dan inisialisasi variabel salt dengan nilai dari method setkey()
+            String salt = new hashingregister().setkey();
+            // Deklarasi dan inisialisasi variabel hashedPassword dengan nilai dari method
+            // hash() dari class hashingregister
+            String hashedPassword = new hashingregister().hash(password, salt);
             try {
                 DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                 // dengan nilai dari method getDatabaseConnection().
@@ -113,8 +119,8 @@ public class LoginModel {
                                                              // getConnection() dari object dbc
 
                 String sql = String.format(
-                        "INSERT INTO users(username, password, last_edited) VALUES('%s', '%s', CURRENT_TIMESTAMP)",
-                        username, password); // Menambah data pada tabel users
+                        "INSERT INTO users(username, password, last_edited, hash) VALUES('%s', '%s', CURRENT_TIMESTAMP, %s)",
+                        username, hashedPassword, salt); // Menambah data pada tabel users
 
                 Statement statement = connection.createStatement(); // Membuat statement
                 int result = statement.executeUpdate(sql); // Execute query
