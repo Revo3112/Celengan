@@ -9,23 +9,25 @@ import java.sql.*;
 public class LoginModel {
 
     private String username, password; // Deklarasi property username dan password dengan itpe data String
-    private String key = "s3cr3t"; // Deklarasi dan instansiasi String variabel key dengan "s3cr3t"
-                                // variable ini nantinya akan digunakan sebagai salt 
 
     public int checkData() throws SQLException {
-        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
-                                                                // dengan nilai dari method getDatabaseConnection().
-                                                                // Berguna untuk mendapat koneksi ke database
-        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection() dari object dbc
-        int count = 0; // Deklarasi dan insisialisasi variabel count dengan nilai 0 
+        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
+                                                                 // dengan nilai dari method getDatabaseConnection().
+                                                                 // Berguna untuk mendapat koneksi ke database
+        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection()
+                                                     // dari object dbc
+        int count = 0; // Deklarasi dan insisialisasi variabel count dengan nilai 0
 
         try {
-            String sql = "SELECT COUNT(*) FROM users"; // Inisialisasi variable sql dengan query ke database yaitu "SELECT COUNT(*) FROM users"
-            Statement statement = connection.createStatement(); // Inisialiasi variable statement dengan nilai dari method createStatement()
+            String sql = "SELECT COUNT(*) FROM users"; // Inisialisasi variable sql dengan query ke database yaitu
+                                                       // "SELECT COUNT(*) FROM users"
+            Statement statement = connection.createStatement(); // Inisialiasi variable statement dengan nilai dari
+                                                                // method createStatement()
 
-            ResultSet result = statement.executeQuery(sql); // Execute query sql menggunakan method executeQuery dan dimasukkan ke dalam variabel result
+            ResultSet result = statement.executeQuery(sql); // Execute query sql menggunakan method executeQuery dan
+                                                            // dimasukkan ke dalam variabel result
 
-            if (result.next()) { // Memindahkan pointer ke baris kedua dari result set 
+            if (result.next()) { // Memindahkan pointer ke baris kedua dari result set
                 count = result.getInt(1); // Mengambil nilai dari kolom integer dan dimasukkan ke dalam variabel count
             }
 
@@ -40,35 +42,44 @@ public class LoginModel {
 
     public boolean isValidated(String username, String password, boolean rememberMe) {
 
-        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
-                                                                // dengan nilai dari method getDatabaseConnection().
-                                                                // Berguna untuk mendapat koneksi ke database
-        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection() dari object dbc
+        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
+                                                                 // dengan nilai dari method getDatabaseConnection().
+                                                                 // Berguna untuk mendapat koneksi ke database
+        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection()
+                                                     // dari object dbc
 
         try {
             String sql = String.format("SELECT * FROM users WHERE username='%s' AND password='%s'", username,
-                    password); // Inisialisasi variable sql dengan query ke database yaitu mengambil data dari tabel users berdasarkan nilai dari variabel username dan password
+                    password); // Inisialisasi variable sql dengan query ke database yaitu mengambil data dari
+                               // tabel users berdasarkan nilai dari variabel username dan password
 
             Statement statement = connection.createStatement(); // Membuat statement dari method createStatement()
-            ResultSet result = statement.executeQuery(sql); // Execute query sql menggunakan method executeQuery dan dimasukkan ke dalam variabel result
+            ResultSet result = statement.executeQuery(sql); // Execute query sql menggunakan method executeQuery dan
+                                                            // dimasukkan ke dalam variabel result
 
-            result.next(); // Memindahkan pointer ke baris kedua dari result set 
-            this.username = result.getString("username"); // Inisialisasi property username dengan nilai dari kolom username
-            this.password = result.getString("password"); // Inisialisasi property password dengan nilai dari kolom password
+            result.next(); // Memindahkan pointer ke baris kedua dari result set
+            this.username = result.getString("username"); // Inisialisasi property username dengan nilai dari kolom
+                                                          // username
+            this.password = result.getString("password"); // Inisialisasi property password dengan nilai dari kolom
+                                                          // password
 
-            if (this.username.equals(username) && this.password.equals(password)) { // Jika nilai dari property username dan password sama dengan input yang dimasukkan oleh user, maka:
+            if (this.username.equals(username) && this.password.equals(password)) { // Jika nilai dari property username
+                                                                                    // dan password sama dengan input
+                                                                                    // yang dimasukkan oleh user, maka:
 
                 if (rememberMe) { // Jika user menekan remember me, maka:
                     String updateSql = String.format(
                             "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
-                            username, password); // Update kolom remember_me di database berdasarkan username dan password user
-                    Statement updateStatement = connection.createStatement(); // Membuat statement 
+                            username, password); // Update kolom remember_me di database berdasarkan username dan
+                                                 // password user
+                    Statement updateStatement = connection.createStatement(); // Membuat statement
                     updateStatement.executeUpdate(updateSql); // Execute query sql
                     updateStatement.close(); // Menutup statement
                 } else { // Jika user tidak menekan remember me, maka:
                     String updateSql = String.format(
                             "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
-                            username, password); // Update kolom remember_me di database berdasarkan username dan password user
+                            username, password); // Update kolom remember_me di database berdasarkan username dan
+                                                 // password user
                     Statement updateStatement = connection.createStatement(); // Membuat statement
                     updateStatement.executeUpdate(updateSql); // Execute query sql
                     updateStatement.close(); // Menutup statement
@@ -85,17 +96,21 @@ public class LoginModel {
     public boolean registerAccount(String username, String password) { // Membuat method untuk registrasi
 
         if (username.equals("") && password.equals("")) { // Jika kolom username dan password kosong, maka:
-            AlertHelper.alert("Kolom Username dan Password tidak boleh kosong!"); // Tampilkan error dari method alert pada class AlertHelper
+            AlertHelper.alert("Kolom Username dan Password tidak boleh kosong!"); // Tampilkan error dari method alert
+                                                                                  // pada class AlertHelper
         } else if (username.equals("")) { // Jika kolom usernama kosong, maka:
-            AlertHelper.alert("Kolom Username tidak boleh kosong!"); // Tampilkan error dari method alert pada class AlertHelper
+            AlertHelper.alert("Kolom Username tidak boleh kosong!"); // Tampilkan error dari method alert pada class
+                                                                     // AlertHelper
         } else if (password.equals("")) { // Jika kolom password kosong, maka:
-            AlertHelper.alert("Kolom Password tidak boleh kosong!"); // Tampilkan error dari method alert pada class AlertHelper
+            AlertHelper.alert("Kolom Password tidak boleh kosong!"); // Tampilkan error dari method alert pada class
+                                                                     // AlertHelper
         } else { // Jika username dan password tidak kosong
             try {
-               DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
-                                                                // dengan nilai dari method getDatabaseConnection().
-                                                                // Berguna untuk mendapat koneksi ke database
-                Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection() dari object dbc
+                DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
+                // dengan nilai dari method getDatabaseConnection().
+                // Berguna untuk mendapat koneksi ke database
+                Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method
+                                                             // getConnection() dari object dbc
 
                 String sql = String.format(
                         "INSERT INTO users(username, password, last_edited) VALUES('%s', '%s', CURRENT_TIMESTAMP)",

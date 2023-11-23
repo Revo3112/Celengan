@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 12, 2023 at 07:26 PM
+-- Generation Time: Nov 23, 2023 at 05:12 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -24,13 +24,13 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `panen`
+-- Table structure for table `saldo`
 --
 
-CREATE TABLE `panen` (
+CREATE TABLE `saldo` (
+  `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `harga` decimal(15,2) NOT NULL,
-  `name` varchar(255) NOT NULL
+  `balance` decimal(15,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -101,28 +101,29 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `last_edited` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `remember_me` enum('True','False') NOT NULL
+  `remember_me` tinyint(1) DEFAULT NULL,
+  `hash` varchar(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`) VALUES
-(1, 'Revo Rahmat', '1234', '2023-10-30 16:33:25', 'True'),
-(2, 'Kafka', '4321', '2023-11-11 13:19:19', 'False');
+INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`, `hash`) VALUES
+(1, 'Revo Rahmat', '1234', '2023-10-30 16:33:25', 1, NULL),
+(2, 'Kafka', '4321', '2023-11-11 13:19:19', 0, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wallet`
+-- Table structure for table `user_kategori`
 --
 
-CREATE TABLE `wallet` (
+CREATE TABLE `user_kategori` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `saldo` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `batas_kritis` decimal(15,2) NOT NULL DEFAULT '0.00'
+  `name` varchar(100) NOT NULL,
+  `tipe` enum('pemasukan','pengeluaran') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -130,10 +131,11 @@ CREATE TABLE `wallet` (
 --
 
 --
--- Indexes for table `panen`
+-- Indexes for table `saldo`
 --
-ALTER TABLE `panen`
-  ADD KEY `fk_panen_user_id` (`user_id`);
+ALTER TABLE `saldo`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_unique` (`user_id`);
 
 --
 -- Indexes for table `transac`
@@ -155,15 +157,21 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `wallet`
+-- Indexes for table `user_kategori`
 --
-ALTER TABLE `wallet`
+ALTER TABLE `user_kategori`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_unique` (`user_id`);
+  ADD KEY `fk_user_kategori` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `saldo`
+--
+ALTER TABLE `saldo`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transac`
@@ -181,12 +189,12 @@ ALTER TABLE `transac_kategori`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `wallet`
+-- AUTO_INCREMENT for table `user_kategori`
 --
-ALTER TABLE `wallet`
+ALTER TABLE `user_kategori`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -194,10 +202,10 @@ ALTER TABLE `wallet`
 --
 
 --
--- Constraints for table `panen`
+-- Constraints for table `saldo`
 --
-ALTER TABLE `panen`
-  ADD CONSTRAINT `fk_panen_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `saldo`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `transac`
@@ -206,10 +214,10 @@ ALTER TABLE `transac`
   ADD CONSTRAINT `FK_transac` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `wallet`
+-- Constraints for table `user_kategori`
 --
-ALTER TABLE `wallet`
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `user_kategori`
+  ADD CONSTRAINT `fk_user_kategori` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
