@@ -27,7 +27,8 @@ public class RegistrationPage {
     public RegistrationPage(Stage stage) {
         this.stage = stage; // Inisialisasi field stage dengan parameter stage
         // Tambahkan icon ke sebelah kiri
-        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg"); // Menambah icon pada program
+        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg"); // Menambah icon
+                                                                                                        // pada program
         stage.getIcons().add(icon); // Memasukkan icon ke dalam stage
     }
 
@@ -48,9 +49,9 @@ public class RegistrationPage {
         fieldPassword.setTranslateX(90); // Mengatur koordinat x dari kolom password
         fieldPassword.setTranslateY(40); // Mengatur koordinat y dari kolom password
 
-        PasswordField fieldvalidatepassword = new PasswordField(); // Instansiasi objek fieldvalidatepassword
+        fieldvalidatepassword = new PasswordField(); // Instansiasi objek fieldvalidatepassword
         fieldvalidatepassword.setMaxWidth(200); // Mengatur lebar maksimal dari kolom konfirmasi password
-        fieldvalidatepassword.setTranslateX(90); // Mengatur koordinat x pada kolom konfirmasi password 
+        fieldvalidatepassword.setTranslateX(90); // Mengatur koordinat x pada kolom konfirmasi password
         fieldvalidatepassword.setTranslateY(80); // Mengatur koordinat y pada kolom konfirmasi password
 
         Label labelUsername = new Label("Username:"); // Instansiasi objek labelUsername
@@ -67,7 +68,7 @@ public class RegistrationPage {
         loginlink.setTranslateY(106); // Mengatur koordinat y dari loginlink
         loginlink.setStyle( // Mengatur style dari loginlink
                 "-fx-underline: true;" +
-                        "-fx-font-family: Verdana"); 
+                        "-fx-font-family: Verdana");
         loginlink.setOnAction(e -> { // Mengatur event dari hyperlink loginlink
             SceneController sceneController = new SceneController(this.stage); // Instansiasi objek sceneController
             sceneController.switchToLogin(); // Menjalankan method switchToLogin()
@@ -98,11 +99,12 @@ public class RegistrationPage {
     }
 
     private void handleregister(String username, String password, String validatepassword) {
-        SceneController sceneController = new SceneController(this.stage); // Instansiasi objek sceneController 
+        SceneController sceneController = new SceneController(this.stage); // Instansiasi objek sceneController
         LoginModel login = new LoginModel(); // Instansiasi objek login
-        String validate = validatepassword; // Inisialisasi variabel validate dengan nilai dari variabel validatepassword
+        String validate = validatepassword; // Inisialisasi variabel validate dengan nilai dari variabel
+                                            // validatepassword
 
-        if (username.isEmpty() && password.isEmpty()) { // Jika kolom username dan kolom password kosong, maka: 
+        if (username.isEmpty() && password.isEmpty()) { // Jika kolom username dan kolom password kosong, maka:
             applyErrorStyle(fieldUsername, fieldPassword); // Memanggil method applyErrorStyle
         } else if (username.isEmpty()) { // Jika kolom username kosong, maka:
             fieldPassword.setStyle(""); // Set style dari kolom password menjadi default
@@ -130,7 +132,8 @@ public class RegistrationPage {
 
     private void applyErrorStyle(TextField... fields2) {
         for (TextField field : fields2) { // Melakukan foreach pada setiap element di fields2
-            field.setStyle("-fx-border-color: red; -fx-border-width: 2px;"); // Ubah style border dari field menjadi berwarna merah
+            field.setStyle("-fx-border-color: red; -fx-border-width: 2px;"); // Ubah style border dari field menjadi
+                                                                             // berwarna merah
         }
     }
 }
