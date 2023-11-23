@@ -42,6 +42,7 @@ public class LoginModel {
     }
 
     public boolean isValidated(String username, String password, boolean rememberMe) {
+        String salt = ""; // Deklarasi dan inisialisasi variabel salt dengan nilai kosong
 
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                                                                  // dengan nilai dari method getDatabaseConnection().
@@ -50,9 +51,11 @@ public class LoginModel {
                                                      // dari object dbc
 
         try {
-            String sql = String.format("SELECT * FROM users WHERE username='%s' AND password='%s'", username,
-                    password); // Inisialisasi variable sql dengan query ke database yaitu mengambil data dari
-                               // tabel users berdasarkan nilai dari variabel username dan password
+            String sql = String.format("SELECT * FROM users WHERE username='%s'", username); // Inisialisasi variable
+                                                                                             // sql dengan query ke
+                                                                                             // database yaitu mengambil
+                                                                                             // data dari
+            // tabel users berdasarkan nilai dari variabel username dan password
 
             Statement statement = connection.createStatement(); // Membuat statement dari method createStatement()
             ResultSet result = statement.executeQuery(sql); // Execute query sql menggunakan method executeQuery dan
@@ -60,14 +63,23 @@ public class LoginModel {
 
             result.next(); // Memindahkan pointer ke baris kedua dari result set
             this.username = result.getString("username"); // Inisialisasi property username dengan nilai dari kolom
-                                                          // username
+                                                          // ussername
             this.password = result.getString("password"); // Inisialisasi property password dengan nilai dari kolom
                                                           // password
-
-            if (this.username.equals(username) && this.password.equals(password)) { // Jika nilai dari property username
-                                                                                    // dan password sama dengan input
-                                                                                    // yang dimasukkan oleh user, maka:
-
+            salt = result.getString("hash"); // Inisialisasi variabel salt dengan nilai dari kolom hash
+            System.out.println(salt);
+            System.out.println(this.password);
+            System.out.println(this.username);
+            hashingregister hashing = new hashingregister(); // Deklarasi dan inisialisasi variabel hashing dengan
+                                                             // nilai dari class hashingregister
+            String hashedPassword = hashing.hash(password, salt); // Inisialisasi variabel hashedPassword dengan nilai
+                                                                  // dari method hash() dari class hashingregister
+            System.out.println(hashedPassword);
+            if (this.username.equals(username) && hashedPassword.equals(password)) { // Jika nilai dari property
+                // username
+                // dan password sama dengan input
+                // yang dimasukkan oleh user, maka:
+                System.out.println("Dajjal");
                 if (rememberMe) { // Jika user menekan remember me, maka:
                     String updateSql = String.format(
                             "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
@@ -119,7 +131,7 @@ public class LoginModel {
                                                              // getConnection() dari object dbc
 
                 String sql = String.format(
-                        "INSERT INTO users(username, password, last_edited, hash) VALUES('%s', '%s', CURRENT_TIMESTAMP, %s)",
+                        "INSERT INTO users(username, password, last_edited, hash) VALUES('%s', '%s', CURRENT_TIMESTAMP, '%s')",
                         username, hashedPassword, salt); // Menambah data pada tabel users
 
                 Statement statement = connection.createStatement(); // Membuat statement
