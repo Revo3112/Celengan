@@ -11,8 +11,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -25,6 +23,7 @@ import javafx.geometry.Pos;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 
 public class SplashScreen {
     private Stage stage; // deklarasi attribute stage
@@ -32,12 +31,10 @@ public class SplashScreen {
                                                              // page
     private String imgPath = assetPath + "images"; // deklarasi path location utk images
     private List<Image> contents; // deklarasi content images (priority image)
-    private List<Image> chats; // deklarasi chats images (fill up image)
+    private List<Image> listChatsLeft; // deklarasi chats images (fill up image)
+    private List<Image> listChatsRight; // deklarasi chats images (fill up image)
 
-    public static final double CARO_IMAGE_WIDTH = 100; // tetapan konstan untuk lebar image carousel
-    public static final double CARO_IMAGE_HEIGHT = 100; // tetapan konstan untuk tinggi image carousel
     // constructor
-
     public SplashScreen(Window owner) {
         this.stage = new Stage(); // inisialisasi stage
         this.stage.initOwner(owner); // inisialisasi owner stage
@@ -61,10 +58,11 @@ public class SplashScreen {
 
         // membuat buttonMasuk menggunakan fungsi createImage
         Rectangle buttonMasuk = createRectangle(125, 46, 50, 50, Color.valueOf("#263940"));
-        buttonMasuk.setTranslateX(100);
+        buttonMasuk.setTranslateX(350);
         buttonMasuk.setTranslateY(-209);
         // membuat text buttonMasuk menggunakan fungsi createText
-        Text textButtonMasuk = createText("Masuk", "-fx-font: 24 Poppins;", "#141F23", 100, -209);
+        Text textButtonMasuk = createText("Masuk", "-fx-font: 24 Poppins;", "#141F23", buttonMasuk.getTranslateX(),
+                -209);
 
         /* BAGIAN CAROUSEL */
         contents = new ArrayList<>(); // mendeklarasikan ArrayList untuk menyimpan contents images
@@ -75,21 +73,26 @@ public class SplashScreen {
         contents.add(new Image(imgPath + "/carousel/caro_5.png")); // menambahkan image carousel 5
 
         // menambahkan carousel chat image (tidak diperlukan sementara)
-        // chats = new ArrayList<>();
-        // chats.add(new Image(imgPath + "/carousel/chatCaro1_1.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro1_2.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro2_1.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro2_2.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro3_1.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro3_2.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro4_1.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro4_2.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro5_1.png"));
-        // chats.add(new Image(imgPath + "/carousel/chatCaro5_2.png"));
+        listChatsLeft = new ArrayList<>(); // deklarasi list untuk chat kiri (1)
+        listChatsRight = new ArrayList<>(); // deklarasi list untuk chat kanan (2)
+
+        // menambahkan chat kiri (1)
+        listChatsLeft.add(new Image(imgPath + "/carousel/chatCaro1_1.png"));
+        listChatsLeft.add(new Image(imgPath + "/carousel/chatCaro1_2.png"));
+        listChatsLeft.add(new Image(imgPath + "/carousel/chatCaro1_3.png"));
+        listChatsLeft.add(new Image(imgPath + "/carousel/chatCaro1_4.png"));
+        listChatsLeft.add(new Image(imgPath + "/carousel/chatCaro1_5.png"));
+
+        // menambahkan chat kanan (2)
+        listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_1.png"));
+        listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_2.png"));
+        listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_3.png"));
+        listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_4.png"));
+        listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_5.png"));
 
         // deklarasi object carousel untuk membuat carousel berdasarkan contents dari
         // class Carousel
-        Carousel carousel = new Carousel(contents);
+        Carousel carousel = new Carousel(contents, listChatsLeft, listChatsRight);
         // deklarasi object carouselPane sebagai instansiasi pane dari StackPane
         StackPane carouselPane = carousel.getCarouselPane(); // pane yang digunakan untuk carousel saja
         // deklarasi object outPan sebagai instansiasi pane dari StackPane
@@ -109,8 +112,11 @@ public class SplashScreen {
         // menggunakan fungsi setOnMouseEntered untuk melakukan aksi saat user menghover
         // mouse
         buttonMasuk.setOnMouseEntered(event -> {
-            ImageView alertButton = createImage(imgPath + "/alert/alert.png", 120, 50, buttonMasuk.getTranslateX(),
-                    buttonMasuk.getTranslateY() + 50);
+            ImageView alertButton = createImage(imgPath + "/alert/alert.png", 113, 20, buttonMasuk.getTranslateX() + 30,
+                    buttonMasuk.getTranslateY() + 30);
+            textButtonMasuk.setOnMouseEntered(eventText -> {
+                mainContent.getChildren().add(alertButton);
+            });
             // menambahkan alertButton
             mainContent.getChildren().add(alertButton);
         });
@@ -122,7 +128,7 @@ public class SplashScreen {
                     && ((ImageView) node).getImage().getUrl().contains("/alert/alert.png"));
         });
         // fungsi untuk mengetahui koordinat x dan y suatu Node
-        // setOnMouseClicked(root, buttonMasuk);
+        // setOnMouseClicked(root, listChatsLeft.get(0));
 
         // deklarasi scene
         Scene scene = new Scene(root, Color.TRANSPARENT);
@@ -212,13 +218,23 @@ public class SplashScreen {
 // class Carousel (berisi metode pengembangan carousel)
 class Carousel {
     private List<Image> contents; // penetapan konten utama
+    private List<Image> chatsLeft; // penetapan konten chats kiri (1)
+    private List<Image> chatsRight; // penetapan konten chats kanan (2)
     private StackPane carouselPane; // penetapan bagian panel carousel
     private int currentIndex = 0; // penetapan index sekarang
+    private int chatIdx_1 = 0; // penetapan index chat kiri (1)
+    private int chatIdx_2 = 0; // penetapan index chat kanan (2)
+    private int[] chatPosIdxX_1 = { -188, -170, -130, -200, -160 }; // koordinat x chat kiri (1)
+    private int[] chatPosIdxY_1 = { -60, 100, 110, -90, 100 }; // koordinat y chat kiri (1)
+    private int[] chatPosIdxX_2 = { 150 }; // koordinat x chat kanan (2)
+    private int[] chatPosIdxY_2 = { 110 }; // koordinat y chat kanan (2)
     private double dragStartX; // penetapan mulainya posisi koordinat x
     private boolean isDragging = false; // penetapan kondisi apakah user mendrag atau tidak
 
     public static final double CARO_IMAGE_WIDTH = 400; // konstanta panjang gambar carousel
     public static final double CARO_IMAGE_HEIGHT = 400; // konstanta tinggi gambar carousel
+    public static final double CHAT_IMAGE_WIDTH = 176; // tetapan konstan untuk lebar chat carousel
+    public static final double CHAT_IMAGE_HEIGHT = 72; // tetapan konstan untuk tinggi chat carousel
 
     private static final double DRAG_THRESHOLD = 20.0; // konstantan threshold dari drag user
 
@@ -227,8 +243,10 @@ class Carousel {
     final Color passiveDots = Color.valueOf("#263940"); // kontantan warna dot yang pasif (tidak aktif)
 
     // constructor
-    public Carousel(List<Image> contents) {
+    public Carousel(List<Image> contents, List<Image> chatsLeft, List<Image> chatsRight) {
         this.contents = contents; // inisialisasi konten utama
+        this.chatsLeft = chatsLeft; // inisialisasi konten chats kiri (1)
+        this.chatsRight = chatsRight; // inisialiasi konten chats kanan (2)
         initializeCarousel(); // memanggil fungsi untuk menginisialisasi Carousel
     }
 
@@ -263,8 +281,47 @@ class Carousel {
         // menginisiasi gambar konten utama
         ImageView initialImage = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
                 CARO_IMAGE_HEIGHT);
+        // menginisiasi gambar konten chats kiri (1)
+        ImageView initialChatsLeft = createResizedImageView(chatsLeft.get(chatIdx_1), CHAT_IMAGE_WIDTH,
+                CHAT_IMAGE_HEIGHT);
+        // menginisiasi gambar konten chats kanan (2)
+        ImageView initialChatsRight = createResizedImageView(chatsRight.get(chatIdx_2), CHAT_IMAGE_WIDTH,
+                CHAT_IMAGE_HEIGHT);
+        // ImageView initialChatsRight =
+        // createResizedImageView(chatsRight.get(currentIndex), CARO_IMAGE_WIDTH,
+        // CARO_IMAGE_HEIGHT);
+        /*
+         * TABEL INDEX & TX,TY
+         * idx -> (tx, ty)
+         * 0 -> (-188, -60)
+         */
+        // left
+        initialChatsLeft.setTranslateX(chatPosIdxX_1[chatIdx_1]);
+        initialChatsLeft.setTranslateY(chatPosIdxY_1[chatIdx_1]);
+        // right
+        initialChatsRight.setTranslateX(chatPosIdxX_2[chatIdx_2]);
+        initialChatsRight.setTranslateY(chatPosIdxY_2[chatIdx_2]);
+
+        // transisi scale untuk chat kiri (1)
+        ScaleTransition chatsLeftTransition = new ScaleTransition(Duration.millis(750), initialChatsLeft);
+        chatsLeftTransition.setToX(1.1);
+        chatsLeftTransition.setToY(1.1);
+        chatsLeftTransition.setAutoReverse(true);
+        chatsLeftTransition.setCycleCount(ScaleTransition.INDEFINITE);
+        chatsLeftTransition.play();
+
+        // transisi scale untuk chat kanan (2)
+        ScaleTransition chatsRightTransition = new ScaleTransition(Duration.millis(750), initialChatsRight);
+        chatsRightTransition.setToX(1.1);
+        chatsRightTransition.setToY(1.1);
+        chatsRightTransition.setAutoReverse(true);
+        chatsRightTransition.setCycleCount(ScaleTransition.INDEFINITE);
+        chatsRightTransition.play();
+
+        // inisiasi stackpane ketiga elemen
+        StackPane initContent = new StackPane(initialImage, initialChatsLeft, initialChatsRight);
         // menambahkan gambar yang sudah diinisiasikan sebagai konten utama tiap halaman
-        carouselPane.getChildren().add(initialImage);
+        carouselPane.getChildren().add(initContent);
 
         // membuat dot indikator
         dotContainer = createDotIndicators(contents.size());
@@ -309,30 +366,67 @@ class Carousel {
             if (deltaX > 0) {
                 // mencatat bahwa user menggeser ke kanan
                 currentIndex = (currentIndex - 1 + contents.size()) % contents.size();
+                chatIdx_1 = (chatIdx_1 - 1 + chatsLeft.size()) % chatsLeft.size();
+                chatIdx_2 = (chatIdx_2 - 1 + chatsRight.size()) % chatsRight.size();
             } else {
                 // mencatat bahwa user menggeser ke kiri
                 currentIndex = (currentIndex + 1) % contents.size();
+                chatIdx_1 = (chatIdx_1 + 1) % chatsLeft.size();
+                chatIdx_2 = (chatIdx_2 + 1) % chatsRight.size();
             }
 
-            // membuat image baru dengan opacity 0.0
-            ImageView imageView = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
+            // membuat image untuk konten utama dengan opacity 0.0
+            ImageView mainContentImage = createResizedImageView(contents.get(currentIndex), CARO_IMAGE_WIDTH,
                     CARO_IMAGE_HEIGHT);
-            imageView.setOpacity(0.0);
+            mainContentImage.setOpacity(0.0);
+            // membuat image chat kiri (1) dengan opacity 0.0
+            ImageView chatLeftImage = createResizedImageView(chatsLeft.get(chatIdx_1), CHAT_IMAGE_WIDTH,
+                    CHAT_IMAGE_HEIGHT);
+            // membuat image chat kanan (2) dengan opacity 0.0
+            ImageView chatRightImage = createResizedImageView(chatsRight.get(chatIdx_2), CHAT_IMAGE_WIDTH,
+                    CHAT_IMAGE_HEIGHT);
 
+            // menetapkan posisi koordinat x dan y chatLeftImage (1)
+            chatLeftImage.setTranslateX(chatPosIdxX_1[chatIdx_1]);
+            chatLeftImage.setTranslateY(chatPosIdxY_1[chatIdx_1]);
+            // menetapkan posisi koordinat x dan y chatRightImage (2)
+            if (chatIdx_2 == 0) {
+                chatRightImage.setTranslateX(200);
+                chatRightImage.setTranslateY(170);
+            }
+
+            StackPane contentFull = new StackPane(mainContentImage, chatLeftImage, chatRightImage);
             // menambahkan transisi fade out sebagai animasi antar gambar carousel
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(80), carouselPane.getChildren().get(0));
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(80),
+                    carouselPane.getChildren().get(0));
             fadeOut.setFromValue(1.0); // nilai awal fade
             fadeOut.setToValue(0.0); // nilai akhir fade
             // keyframe yang terjadi saat sudah selesai fadeOut
             fadeOut.setOnFinished(e -> {
                 // Mengupdate fadeout dengan image tertentu
-                carouselPane.getChildren().set(0, imageView);
+                carouselPane.getChildren().set(0, contentFull);
 
                 // menambahkan animasi fadeIN (untuk image selanjutnya)
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(80), imageView);
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(80), mainContentImage);
                 fadeIn.setFromValue(0.0);
                 fadeIn.setToValue(1.0);
                 fadeIn.play();
+
+                // transisi chat kiri (1)
+                ScaleTransition leftChatTransition = new ScaleTransition(Duration.millis(750), chatLeftImage);
+                leftChatTransition.setToX(1.1);
+                leftChatTransition.setToY(1.1);
+                leftChatTransition.setAutoReverse(true);
+                leftChatTransition.setCycleCount(ScaleTransition.INDEFINITE);
+                leftChatTransition.play();
+
+                // transisi chat kanan (2)
+                ScaleTransition rightChatTransition = new ScaleTransition(Duration.millis(750), chatRightImage);
+                rightChatTransition.setToX(1.1);
+                rightChatTransition.setToY(1.1);
+                rightChatTransition.setAutoReverse(true);
+                rightChatTransition.setCycleCount(ScaleTransition.INDEFINITE);
+                rightChatTransition.play();
 
                 // mengupdate dot indikator
                 updateDotIndicators();
