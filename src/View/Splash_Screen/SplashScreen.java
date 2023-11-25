@@ -17,12 +17,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Duration;
-
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Controller.SceneController;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -41,6 +43,8 @@ public class SplashScreen {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    boolean finalBoolSV;
+
     // constructor
     public SplashScreen(Window owner) {
         this.stage = new Stage(); // inisialisasi stage
@@ -49,7 +53,7 @@ public class SplashScreen {
     }
 
     // driver's code
-    public void start() {
+    public void start(int fVal) {
         // pembuatan outBackground (outerPane) bagan paling luar sebagai base background
         Rectangle outBackground = createRectangle(900, 550, 60, 60, Color.rgb(20, 31, 35)); // menggunakan persegin
                                                                                             // panjang dikarenakan
@@ -110,7 +114,9 @@ public class SplashScreen {
         StackPane outPane = new StackPane(outBackground); // pane yang digunakan untuk menampung outBackground
         // deklarasi object mainContent sebagai instansiasi pane daro StackPane
         StackPane mainContent = new StackPane(loadingPane, carouselPane, buttonMasuk, textButtonMasuk, logo, logoText);
+
         loading.updateProgress(mainContent);
+        fVal = loading.getSplashValue();
 
         // deklarasi object root sebagai instansiasi bagian paling dasar dan utama dari
         // pane
@@ -118,15 +124,15 @@ public class SplashScreen {
         // mengambil atau menambahkan seluruh pane yang akan ditambahkan ke dalam root
         root.getChildren().addAll(outPane, mainContent);
 
-        root.setOnMousePressed(e -> {
-            xOffset = e.getSceneX();
-            yOffset = e.getSceneY();
-        });
+        // root.setOnMousePressed(e -> {
+        // xOffset = e.getSceneX();
+        // yOffset = e.getSceneY();
+        // });
 
-        root.setOnMouseDragged(e -> {
-            stage.setX(e.getScreenX() - xOffset);
-            stage.setY(e.getScreenY() - yOffset);
-        });
+        // root.setOnMouseDragged(e -> {
+        // stage.setX(e.getScreenX() - xOffset);
+        // stage.setY(e.getScreenY() - yOffset);
+        // });
         // menggunakan fungsi setOnMouseEntered untuk melakukan aksi saat user menghover
         // mouse
         buttonMasuk.setOnMouseEntered(event -> {
@@ -246,6 +252,8 @@ class Loading {
     private StackPane loadingPane;
     private Text statusText;
     private StackPane loadBar;
+    private int splashValue = 0;
+    private boolean trigger = false;
 
     public Loading(Stage stage) {
         this.stage = stage;
@@ -278,30 +286,31 @@ class Loading {
                 new KeyFrame(animationDuration.add(pBarLightDelay),
                         new KeyValue(pBarLight.widthProperty(), 0)));
 
+        // merubah button
+        Rectangle buttonBG = new Rectangle(125, 46);
+        buttonBG.setFill(Color.valueOf("#93D334"));
+        buttonBG.setArcWidth(50);
+        buttonBG.setArcHeight(50);
+        buttonBG.setTranslateX(350);
+        buttonBG.setTranslateY(-209);
+
+        Rectangle buttonLBG = new Rectangle(buttonBG.getWidth(), buttonBG.getHeight() - 6);
+        buttonLBG.setFill(Color.valueOf("#AEFD3A"));
+        buttonLBG.setArcWidth(45);
+        buttonLBG.setArcHeight(45);
+        buttonLBG.setTranslateX(350);
+        buttonLBG.setTranslateY(-211);
+
+        Text enterText = new Text("Masuk");
+        enterText.setStyle("-fx-font: 24 Poppins;");
+        enterText.setFill(Color.valueOf("#141F23"));
+        enterText.setTranslateX(buttonBG.getTranslateX());
+        enterText.setTranslateY(-209);
+
         timeline.setOnFinished(event -> {
+            System.out.println("inside set on finished");
             statusText.setText("Selesai!");
             statusText.setFill(Color.valueOf("#93D334"));
-
-            // merubah button
-            Rectangle buttonBG = new Rectangle(125, 46);
-            buttonBG.setFill(Color.valueOf("#93D334"));
-            buttonBG.setArcWidth(50);
-            buttonBG.setArcHeight(50);
-            buttonBG.setTranslateX(350);
-            buttonBG.setTranslateY(-209);
-
-            Rectangle buttonLBG = new Rectangle(buttonBG.getWidth(), buttonBG.getHeight() - 6);
-            buttonLBG.setFill(Color.valueOf("#AEFD3A"));
-            buttonLBG.setArcWidth(45);
-            buttonLBG.setArcHeight(45);
-            buttonLBG.setTranslateX(350);
-            buttonLBG.setTranslateY(-211);
-
-            Text enterText = new Text("Masuk");
-            enterText.setStyle("-fx-font: 24 Poppins;");
-            enterText.setFill(Color.valueOf("#141F23"));
-            enterText.setTranslateX(buttonBG.getTranslateX());
-            enterText.setTranslateY(-209);
 
             // Remove the alert button
             mainContent.getChildren().removeIf(node -> node instanceof ImageView
@@ -310,12 +319,34 @@ class Loading {
             // Add the new button image
             mainContent.getChildren().addAll(buttonBG, buttonLBG, enterText);
 
-            // buttonMasukNew.setOnMouseClicked(event -> {
-            // navigateNextPage();
-            // });
-
         });
+        System.out.println("above timeline");
         timeline.play();
+        System.out.println("under timeline");
+        buttonLBG.setOnMouseClicked(mouseEvent -> {
+            System.out.println("button lbg pressed");
+            setBoolSV(true);
+            setSplashValue(1);
+        });
+        System.out.println("Pass set on mouse click");
+    }
+
+    private void setSplashValue(int value) {
+        splashValue = value;
+    }
+
+    private void setBoolSV(boolean value) {
+        trigger = value;
+    }
+
+    public int getSplashValue() {
+        System.out.println("value =" + splashValue);
+        return splashValue;
+    }
+
+    public boolean getBoolSV() {
+        System.out.println("trigger =" + trigger);
+        return trigger;
     }
 
     private StackPane createLoadingPane() {

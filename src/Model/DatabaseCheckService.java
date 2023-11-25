@@ -13,8 +13,6 @@ public class DatabaseCheckService extends Service<Integer> {
             @Override // Override method call()
             protected Integer call() throws Exception { // Membuat method call() yang mengembalikan nilai Integer
                 // Menunggu selama 10 detik untuk menampilkan splash screen
-                Thread.sleep(10000);
-
                 // Melakukan pengecekan database
                 LoginModel loginModel = new LoginModel();
                 // Mengembalikan nilai dari method checkData()
