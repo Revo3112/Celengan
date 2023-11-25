@@ -3,6 +3,7 @@
 <div align="center">
   <h1 align="center">Celengan</h1>
   <h3>Aplikasi Desktop Pengelola Finansial Dalam Berbagai Situasi</h3>
+  <img src="github/images/Celengan_OJK_Badge.png" alt="Dibuat oleh tim OJK (Orang Jago Kandang)" style="width:200px;height:93px">
 </div>
 
 # Aplikasi Celengan - README
