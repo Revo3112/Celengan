@@ -1,3 +1,8 @@
+<div align="center">
+  <h1 align="center">Celengan</h1>
+  <h3>Aplikasi Desktop Pengelola Finansial Dalam Berbagai Situasi</h3>
+</div>
+
 # Aplikasi Celengan - README
 
 ## Deskripsi Aplikasi
