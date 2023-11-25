@@ -1,3 +1,5 @@
+![Celengan App Logo](github/images/Github_Celengan_Banner.png)
+
 <div align="center">
   <h1 align="center">Celengan</h1>
   <h3>Aplikasi Desktop Pengelola Finansial Dalam Berbagai Situasi</h3>
