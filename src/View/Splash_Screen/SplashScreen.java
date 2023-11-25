@@ -3,6 +3,7 @@ package View.Splash_Screen;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +24,10 @@ import javafx.geometry.Pos;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 
 public class SplashScreen {
     private Stage stage; // deklarasi attribute stage
@@ -33,6 +37,9 @@ public class SplashScreen {
     private List<Image> contents; // deklarasi content images (priority image)
     private List<Image> listChatsLeft; // deklarasi chats images (fill up image)
     private List<Image> listChatsRight; // deklarasi chats images (fill up image)
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     // constructor
     public SplashScreen(Window owner) {
@@ -93,32 +100,48 @@ public class SplashScreen {
         // deklarasi object carousel untuk membuat carousel berdasarkan contents dari
         // class Carousel
         Carousel carousel = new Carousel(contents, listChatsLeft, listChatsRight);
+        // deklarasi object loading sebagai instansiasi class Loading
+        Loading loading = new Loading(stage);
+        // deklarasi object loadingPane sebagai instansiasi pane dari StackPane
+        StackPane loadingPane = loading.getLoadingPane();
         // deklarasi object carouselPane sebagai instansiasi pane dari StackPane
         StackPane carouselPane = carousel.getCarouselPane(); // pane yang digunakan untuk carousel saja
         // deklarasi object outPan sebagai instansiasi pane dari StackPane
         StackPane outPane = new StackPane(outBackground); // pane yang digunakan untuk menampung outBackground
         // deklarasi object mainContent sebagai instansiasi pane daro StackPane
-        StackPane mainContent = new StackPane(carouselPane, buttonMasuk, textButtonMasuk, logo, logoText); // pane ini
-                                                                                                           // digunakan
-                                                                                                           // untuk
-                                                                                          // menampung konten - konten
-                                                                                          // utama
+        StackPane mainContent = new StackPane(loadingPane, carouselPane, buttonMasuk, textButtonMasuk, logo, logoText);
+        loading.updateProgress(mainContent);
 
         // deklarasi object root sebagai instansiasi bagian paling dasar dan utama dari
         // pane
         StackPane root = new StackPane();
         // mengambil atau menambahkan seluruh pane yang akan ditambahkan ke dalam root
         root.getChildren().addAll(outPane, mainContent);
+
+        root.setOnMousePressed(e -> {
+            xOffset = e.getSceneX();
+            yOffset = e.getSceneY();
+        });
+
+        root.setOnMouseDragged(e -> {
+            stage.setX(e.getScreenX() - xOffset);
+            stage.setY(e.getScreenY() - yOffset);
+        });
         // menggunakan fungsi setOnMouseEntered untuk melakukan aksi saat user menghover
         // mouse
         buttonMasuk.setOnMouseEntered(event -> {
             ImageView alertButton = createImage(imgPath + "/alert/alert.png", 113, 20, buttonMasuk.getTranslateX() + 30,
                     buttonMasuk.getTranslateY() + 30);
             textButtonMasuk.setOnMouseEntered(eventText -> {
-                mainContent.getChildren().add(alertButton);
+                if (!mainContent.getChildren().contains(alertButton)) {
+                    mainContent.getChildren().add(alertButton);
+                }
             });
-            // menambahkan alertButton
-            mainContent.getChildren().add(alertButton);
+
+            // Check if alertButton is not already added before adding it
+            if (!mainContent.getChildren().contains(alertButton)) {
+                mainContent.getChildren().add(alertButton);
+            }
         });
 
         // menggunakan fungsi setOnMouseExited untuk mengetahui user tidak hover atau
@@ -215,6 +238,120 @@ public class SplashScreen {
     }
 }
 
+// class Loading/progress bar (berisi tingkatan download yang sedang terjadi)
+class Loading {
+    private Stage stage;
+    private Rectangle progressBar;
+    private Rectangle pBarLight;
+    private StackPane loadingPane;
+    private Text statusText;
+    private StackPane loadBar;
+
+    public Loading(Stage stage) {
+        this.stage = stage;
+        progressBar = new Rectangle(0, 20); // 700 20
+        pBarLight = new Rectangle(0, 6);
+        loadingPane = createLoadingPane();
+    }
+
+    public StackPane getLoadingPane() {
+        return loadingPane;
+    }
+
+    public void updateProgress(StackPane mainContent) {
+        double targetWidth = 820;
+        Duration initialDelay = Duration.seconds(6);
+        Duration animationDuration = Duration.seconds(6);
+        Duration pBarLightDelay = Duration.millis(300);
+
+        // Update progressBar width and pBarLight width in a single timeline
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO,
+                        new KeyValue(progressBar.widthProperty(), 0),
+                        new KeyValue(pBarLight.widthProperty(), 0)),
+                new KeyFrame(initialDelay, // Initial delay before animation starts
+                        new KeyValue(progressBar.widthProperty(), 0),
+                        new KeyValue(pBarLight.widthProperty(), 0)),
+                new KeyFrame(initialDelay.add(animationDuration),
+                        new KeyValue(progressBar.widthProperty(), targetWidth),
+                        new KeyValue(pBarLight.widthProperty(), targetWidth - 26)),
+                new KeyFrame(animationDuration.add(pBarLightDelay),
+                        new KeyValue(pBarLight.widthProperty(), 0)));
+
+        timeline.setOnFinished(event -> {
+            statusText.setText("Selesai!");
+            statusText.setFill(Color.valueOf("#93D334"));
+
+            // merubah button
+            Rectangle buttonBG = new Rectangle(125, 46);
+            buttonBG.setFill(Color.valueOf("#93D334"));
+            buttonBG.setArcWidth(50);
+            buttonBG.setArcHeight(50);
+            buttonBG.setTranslateX(350);
+            buttonBG.setTranslateY(-209);
+
+            Rectangle buttonLBG = new Rectangle(buttonBG.getWidth(), buttonBG.getHeight() - 6);
+            buttonLBG.setFill(Color.valueOf("#AEFD3A"));
+            buttonLBG.setArcWidth(45);
+            buttonLBG.setArcHeight(45);
+            buttonLBG.setTranslateX(350);
+            buttonLBG.setTranslateY(-211);
+
+            Text enterText = new Text("Masuk");
+            enterText.setStyle("-fx-font: 24 Poppins;");
+            enterText.setFill(Color.valueOf("#141F23"));
+            enterText.setTranslateX(buttonBG.getTranslateX());
+            enterText.setTranslateY(-209);
+
+            // Remove the alert button
+            mainContent.getChildren().removeIf(node -> node instanceof ImageView
+                    && ((ImageView) node).getImage().getUrl().contains("/alert/alert.png"));
+
+            // Add the new button image
+            mainContent.getChildren().addAll(buttonBG, buttonLBG, enterText);
+
+            // buttonMasukNew.setOnMouseClicked(event -> {
+            // navigateNextPage();
+            // });
+
+        });
+        timeline.play();
+    }
+
+    private StackPane createLoadingPane() {
+
+        Rectangle loadingRect = new Rectangle(820, 20);
+        loadingRect.setArcWidth(25);
+        loadingRect.setArcHeight(25);
+        loadingRect.setFill(Color.valueOf("#263940"));
+
+        progressBar.setArcWidth(25);
+        progressBar.setArcHeight(25);
+        progressBar.setFill(Color.valueOf("#93D334"));
+        progressBar.setTranslateX(-400);
+
+        pBarLight.setArcWidth(15);
+        pBarLight.setArcHeight(15);
+        pBarLight.setFill(Color.valueOf("#A9DB5D"));
+        pBarLight.setTranslateX(progressBar.getTranslateX() + 10);
+        pBarLight.setTranslateY(progressBar.getTranslateY() - 3);
+
+        statusText = new Text("Memuat...");
+        statusText.setStyle("-fx-font: 22 Poppins;");
+        statusText.setFill(Color.valueOf("#263940"));
+        statusText.setTranslateX(350);
+        statusText.setTranslateY(progressBar.getTranslateY() - 30);
+
+        loadBar = new StackPane(progressBar, pBarLight);
+        loadBar.setAlignment(Pos.CENTER_LEFT);
+        loadBar.setTranslateX(440);
+
+        StackPane loadingPane = new StackPane(loadingRect, loadBar, statusText);
+        loadingPane.setTranslateY(250);
+        return loadingPane;
+    }
+}
+
 // class Carousel (berisi metode pengembangan carousel)
 class Carousel {
     private List<Image> contents; // penetapan konten utama
@@ -226,8 +363,8 @@ class Carousel {
     private int chatIdx_2 = 0; // penetapan index chat kanan (2)
     private int[] chatPosIdxX_1 = { -188, -170, -130, -200, -160 }; // koordinat x chat kiri (1)
     private int[] chatPosIdxY_1 = { -60, 100, 110, -90, 100 }; // koordinat y chat kiri (1)
-    private int[] chatPosIdxX_2 = { 150 }; // koordinat x chat kanan (2)
-    private int[] chatPosIdxY_2 = { 110 }; // koordinat y chat kanan (2)
+    private int[] chatPosIdxX_2 = { 150, 180, 100, 110, 210 }; // koordinat x chat kanan (2)
+    private int[] chatPosIdxY_2 = { 110, -80, -110, -80, -110 }; // koordinat y chat kanan (2)
     private double dragStartX; // penetapan mulainya posisi koordinat x
     private boolean isDragging = false; // penetapan kondisi apakah user mendrag atau tidak
 
@@ -390,10 +527,8 @@ class Carousel {
             chatLeftImage.setTranslateX(chatPosIdxX_1[chatIdx_1]);
             chatLeftImage.setTranslateY(chatPosIdxY_1[chatIdx_1]);
             // menetapkan posisi koordinat x dan y chatRightImage (2)
-            if (chatIdx_2 == 0) {
-                chatRightImage.setTranslateX(200);
-                chatRightImage.setTranslateY(170);
-            }
+            chatRightImage.setTranslateX(chatPosIdxX_2[chatIdx_2]);
+            chatRightImage.setTranslateY(chatPosIdxY_2[chatIdx_2]);
 
             StackPane contentFull = new StackPane(mainContentImage, chatLeftImage, chatRightImage);
             // menambahkan transisi fade out sebagai animasi antar gambar carousel
