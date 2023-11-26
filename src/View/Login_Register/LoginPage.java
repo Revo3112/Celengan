@@ -34,6 +34,18 @@ public class LoginPage {
         this.stage.getIcons().add(icon); // Menambahkan icon ke dalam stage
     }
 
+    public void penentuApakahStartAtauLangsungDashboard() {
+        Boolean penentuAkhir = false;
+        LoginModel login = new LoginModel(); // Membuat objek login
+        penentuAkhir = login.penentuBagianLastUser();
+        if (penentuAkhir) {
+            SceneController sceneController = new SceneController(this.stage); // Membuat objek sceneController
+            sceneController.switchToDashboard(); // Merubah scene menuju dashboard
+        } else {
+            this.start(); // Menjalankan method start()
+        }
+    }
+
     // Menampilkan halaman login
     public void start() {
         this.fieldUsername = new TextField(); // Kode ini akan membuat TextField baru

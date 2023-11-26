@@ -31,7 +31,8 @@ public class SceneController {
     // Login
     public void switchToLogin() {
         LoginPage loginPage = new LoginPage(this.stage); // Instansiasi class LoginPage
-        loginPage.start(); // Menjalankan method start() pada object loginPage
+        // menentukan apakah akan langsung ke dashboard atau ke login
+        loginPage.penentuApakahStartAtauLangsungDashboard();
     }
 
     // Dashboard

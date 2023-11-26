@@ -9,7 +9,9 @@ import java.sql.*;
 
 public class LoginModel {
 
-    private String username, password; // Deklarasi property username dan password dengan itpe data String
+    private String username, password, lastActiveUsers; // Deklarasi property username dan password dengan itpe data
+                                                        // String
+    private boolean rememberMe;
 
     public int checkData() throws SQLException {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
@@ -32,8 +34,10 @@ public class LoginModel {
                 count = result.getInt(1); // Mengambil nilai dari kolom integer dan dimasukkan ke dalam variabel count
             }
 
-            System.out.println("Connection closed." + result); // Menampilkan hasil dari variabel result
-
+            if (count != 0) {
+                System.out.println("Connection closed." + result); // Menampilkan hasil dari
+                // variabel result
+            }
         } catch (SQLException e) { // Menangkap error dari SQLException
             System.out.println("Query failed: " + e.getMessage()); // Menampilkan error pada variabel e
         }
@@ -41,9 +45,76 @@ public class LoginModel {
         return count; // Mengembalikan nilai count
     }
 
+    public boolean penentuBagianLastUser() {
+        boolean masuk = false;
+        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
+                                                                 // dengan nilai dari method getDatabaseConnection().
+                                                                 // Berguna untuk mendapat koneksi ke database
+        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection()
+                                                     // dari object dbc
+        System.out.println("Masuk ke dalam check last active user");
+        // Mendapatkan username yang paling terakhir active
+        String lastActiveUser = getLastActiveUser(connection);
+        String lastPassword = getPasswordFromLastUser(connection, lastActiveUser);
+        this.rememberMe = getRememberMeFromUsername(connection, lastActiveUser);
+        if (this.rememberMe == true) {
+            masuk = isValidated(lastActiveUser, lastPassword, this.rememberMe);
+            System.out.println(masuk);
+        }
+        return masuk;
+    }
+
+    private String getLastActiveUser(Connection connection) {
+        this.lastActiveUsers = "";
+        try {
+            String sql = "SELECT username FROM users WHERE last_edited = (SELECT MAX(last_edited) FROM users)";
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            if (result.next()) {
+                this.lastActiveUsers = result.getString("username");
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+        }
+        return this.lastActiveUsers;
+    }
+
+    private boolean getRememberMeFromUsername(Connection connection, String lastUser) {
+        this.rememberMe = false;
+        try {
+            String sql = String.format("SELECT remember_me FROM users WHERE username='%s'", lastUser);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            if (result.next()) {
+                this.rememberMe = result.getBoolean("remember_me");
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+        }
+        return this.rememberMe;
+    }
+
+    private String getPasswordFromLastUser(Connection connection, String LastUser) {
+        String password = "";
+        try {
+            String sql = String.format("SELECT password FROM users WHERE username='%s'", LastUser);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            if (result.next()) {
+                password = result.getString("password");
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+        }
+        return password;
+    }
+
     public boolean isValidated(String username, String password, boolean rememberMe) {
         String salt = ""; // Deklarasi dan inisialisasi variabel salt dengan nilai kosong
-
+        String hashedPassword = ""; // Deklarasi dan inisialisasi variabel hashedPassword dengan nilai kosong
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                                                                  // dengan nilai dari method getDatabaseConnection().
                                                                  // Berguna untuk mendapat koneksi ke database
@@ -62,17 +133,24 @@ public class LoginModel {
                                                             // dimasukkan ke dalam variabel result
 
             result.next(); // Memindahkan pointer ke baris kedua dari result set
-            this.username = result.getString("username"); // Inisialisasi property username dengan nilai dari kolom
-                                                          // ussername
-            this.password = result.getString("password"); // Inisialisasi property password dengan nilai dari kolom
-                                                          // password
-            salt = result.getString("hash"); // Inisialisasi variabel salt dengan nilai dari kolom hash
-            hashingregister hashing = new hashingregister(); // Deklarasi dan inisialisasi variabel hashing dengan
-                                                             // nilai dari class hashingregister
-            String hashedPassword = hashing.hash(password, salt); // Inisialisasi variabel hashedPassword dengan nilai
-                                                                  // dari method hash() dari class hashingregister
+            // Inisialisasi property username dengan nilai dari kolom username
+            this.username = result.getString("username");
+            // Inisialisasi property password dengan nilai dari kolom password
+            this.password = result.getString("password");
+            // Inisialisasi variabel salt dengan nilai dari kolom hash
+            salt = result.getString("hash");
+            // Deklarasi dan inisialisasi variabel hashing dengan nilai dari class
+            // hashingregister
+            hashingregister hashing = new hashingregister();
+            // Inisialisasi variabel hashedPassword dengan nilai
+            // dari method hash() dari class hashingregister
+            if (this.rememberMe == true) {
+                hashedPassword = password;
+            } else {
+                hashedPassword = hashing.hash(password, salt);
+            }
             if (this.username.equals(username) && hashedPassword.equals(this.password)) {
-                String updateSql = "UPDATE users SET remember_me=? WHERE username=? AND password=?";
+                String updateSql = "UPDATE users SET remember_me=?, last_edited=NOW() WHERE username=? AND password=?";
 
                 try (PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
                     updateStatement.setBoolean(1, rememberMe);
