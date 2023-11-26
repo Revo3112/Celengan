@@ -239,7 +239,7 @@ public class SplashScreen {
     // fungsi untuk menyembunyikan splash screen
     public void hideSplashScreen() {
         Platform.runLater(() -> {
-            stage.hide();
+            this.stage.hide();
         });
         // NB: digunakan untuk pergantian page
     }
@@ -326,11 +326,12 @@ class Loading {
         System.out.println("under timeline");
         buttonLBG.setOnMouseClicked(mouseEvent -> {
             DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
-            SplashScreen splashScreen = new SplashScreen(stage);
+            SplashScreen splashScreen = new SplashScreen(this.stage);
+            Stage splashStage = new Stage();
             System.out.println("Database is not empty");
             databaseCheckService.setOnSucceeded(e -> {
                 // Instansiasi class SceneController ke dalam variabel mainScene
-                SceneController mainScene = new SceneController(stage);
+                SceneController mainScene = new SceneController(splashStage);
                 int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
                 // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
                 if (count == 0) {
@@ -340,6 +341,7 @@ class Loading {
                 }
                 // Menutup splash screen setelah operasi selesai
                 splashScreen.hideSplashScreen();
+                hideSplashScreen2();
             });
 
             databaseCheckService.start(); // Menjalankan operasi pengecekan database
@@ -397,6 +399,13 @@ class Loading {
         StackPane loadingPane = new StackPane(loadingRect, loadBar, statusText);
         loadingPane.setTranslateY(250);
         return loadingPane;
+    }
+
+    public void hideSplashScreen2() {
+        Platform.runLater(() -> {
+            this.stage.hide();
+        });
+        // NB: digunakan untuk pergantian page
     }
 }
 
