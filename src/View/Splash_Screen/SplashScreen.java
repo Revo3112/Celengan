@@ -102,6 +102,8 @@ public class SplashScreen {
         listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_4.png"));
         listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_5.png"));
 
+        // new sp
+        StackPane activeButton;
         // deklarasi object carousel untuk membuat carousel berdasarkan contents dari
         // class Carousel
         Carousel carousel = new Carousel(contents, listChatsLeft, listChatsRight);
@@ -114,7 +116,8 @@ public class SplashScreen {
         // deklarasi object outPan sebagai instansiasi pane dari StackPane
         StackPane outPane = new StackPane(outBackground); // pane yang digunakan untuk menampung outBackground
         // deklarasi object mainContent sebagai instansiasi pane daro StackPane
-        StackPane mainContent = new StackPane(loadingPane, carouselPane, buttonMasuk, textButtonMasuk, logo, logoText);
+        StackPane mainContent = new StackPane(loadingPane, carouselPane, buttonMasuk, textButtonMasuk,
+                logo, logoText);
 
         loading.updateProgress(mainContent);
         fVal = loading.getSplashValue();
@@ -308,6 +311,9 @@ class Loading {
         enterText.setTranslateX(buttonBG.getTranslateX());
         enterText.setTranslateY(-209);
 
+        DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
+        SplashScreen splashScreen = new SplashScreen(this.stage);
+        Stage splashStage = new Stage();
         timeline.setOnFinished(event -> {
             System.out.println("inside set on finished");
             statusText.setText("Selesai!");
@@ -323,31 +329,27 @@ class Loading {
         });
         System.out.println("above timeline");
         timeline.play();
-        System.out.println("under timeline");
-        buttonLBG.setOnMouseClicked(mouseEvent -> {
-            DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
-            SplashScreen splashScreen = new SplashScreen(this.stage);
-            Stage splashStage = new Stage();
-            System.out.println("Database is not empty");
-            databaseCheckService.setOnSucceeded(e -> {
-                // Instansiasi class SceneController ke dalam variabel mainScene
-                SceneController mainScene = new SceneController(splashStage);
-                int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
-                // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
-                if (count == 0) {
-                    mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
-                } else {
-                    mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
-                }
-                // Menutup splash screen setelah operasi selesai
-                splashScreen.hideSplashScreen();
-                hideSplashScreen2();
+        buttonLBG.setOnMouseClicked(mouseEvent2 -> {
+            enterText.setOnMouseClicked(mouseEvent3 -> {
+                System.out.println("Database is not empty");
+                databaseCheckService.setOnSucceeded(e -> {
+                    // Instansiasi class SceneController ke dalam variabel mainScene
+                    SceneController mainScene = new SceneController(splashStage);
+                    int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
+                    // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+                    if (count == 0) {
+                        mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman
+                                                          // registrasi
+                    } else {
+                        mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
+                    }
+                    // Menutup splash screen setelah operasi selesai
+                    splashScreen.hideSplashScreen();
+                    hideSplashScreen2();
+                });
+                databaseCheckService.start(); // Menjalankan operasi pengecekan database
             });
-
-            databaseCheckService.start(); // Menjalankan operasi pengecekan database
-
-        });
-        System.out.println("Pass set on mouse click");
+        }); // format dah coba
     }
 
     private void setSplashValue(int value) {
