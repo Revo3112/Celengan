@@ -62,7 +62,7 @@ class Splash {
 
     /* SPLASH SCREEN */
     public void switchToSplashScreen() {
-        DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
+
         // DatabaseCheckService ke dalam
         // variabel databaseCheckService
         SplashScreen splashScreen = new SplashScreen(stage); // Instansiasi class SplashScreen ke dalam variabel
@@ -74,23 +74,6 @@ class Splash {
         System.out.println("Condition = " + condition);
         // Loading load = new Loading();
         // Menjalankan operasi pengecekan database di backgroun
-        if (finalValue == 1) {
-            System.out.println("Database is not empty");
-            databaseCheckService.setOnSucceeded(e -> {
-                // Instansiasi class SceneController ke dalam variabel mainScene
-                SceneController mainScene = new SceneController(stage);
-                int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
-                // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
-                if (count == 0) {
-                    mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
-                } else {
-                    mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
-                }
-                // Menutup splash screen setelah operasi selesai
-                splashScreen.hideSplashScreen();
-            });
-        }
-        databaseCheckService.start(); // Menjalankan operasi pengecekan database
-        System.out.println("Condition2 = " + condition);
+
     }
 }

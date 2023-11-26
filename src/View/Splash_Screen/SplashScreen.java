@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Controller.SceneController;
+import Model.DatabaseCheckService;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -324,9 +325,25 @@ class Loading {
         timeline.play();
         System.out.println("under timeline");
         buttonLBG.setOnMouseClicked(mouseEvent -> {
-            System.out.println("button lbg pressed");
-            setBoolSV(true);
-            setSplashValue(1);
+            DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
+            SplashScreen splashScreen = new SplashScreen(stage);
+            System.out.println("Database is not empty");
+            databaseCheckService.setOnSucceeded(e -> {
+                // Instansiasi class SceneController ke dalam variabel mainScene
+                SceneController mainScene = new SceneController(stage);
+                int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
+                // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+                if (count == 0) {
+                    mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
+                } else {
+                    mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
+                }
+                // Menutup splash screen setelah operasi selesai
+                splashScreen.hideSplashScreen();
+            });
+
+            databaseCheckService.start(); // Menjalankan operasi pengecekan database
+
         });
         System.out.println("Pass set on mouse click");
     }
