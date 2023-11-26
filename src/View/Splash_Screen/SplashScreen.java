@@ -3,7 +3,6 @@ package View.Splash_Screen;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -17,7 +16,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 
@@ -102,8 +100,6 @@ public class SplashScreen {
         listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_4.png"));
         listChatsRight.add(new Image(imgPath + "/carousel/chatCaro2_5.png"));
 
-        // new sp
-        StackPane activeButton;
         // deklarasi object carousel untuk membuat carousel berdasarkan contents dari
         // class Carousel
         Carousel carousel = new Carousel(contents, listChatsLeft, listChatsRight);
@@ -311,9 +307,11 @@ class Loading {
         enterText.setTranslateX(buttonBG.getTranslateX());
         enterText.setTranslateY(-209);
 
+        StackPane button = new StackPane(buttonBG, buttonLBG, enterText);
         DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
         SplashScreen splashScreen = new SplashScreen(this.stage);
         Stage splashStage = new Stage();
+
         timeline.setOnFinished(event -> {
             System.out.println("inside set on finished");
             statusText.setText("Selesai!");
@@ -329,35 +327,25 @@ class Loading {
         });
         System.out.println("above timeline");
         timeline.play();
-        buttonLBG.setOnMouseClicked(mouseEvent2 -> {
-            enterText.setOnMouseClicked(mouseEvent3 -> {
-                System.out.println("Database is not empty");
-                databaseCheckService.setOnSucceeded(e -> {
-                    // Instansiasi class SceneController ke dalam variabel mainScene
-                    SceneController mainScene = new SceneController(splashStage);
-                    int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
-                    // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
-                    if (count == 0) {
-                        mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman
-                                                          // registrasi
-                    } else {
-                        mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
-                    }
-                    // Menutup splash screen setelah operasi selesai
-                    splashScreen.hideSplashScreen();
-                    hideSplashScreen2();
-                });
-                databaseCheckService.start(); // Menjalankan operasi pengecekan database
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent -> {
+            System.out.println("Database is not empty");
+            databaseCheckService.setOnSucceeded(e -> {
+                // Instansiasi class SceneController ke dalam variabel mainScene
+                SceneController mainScene = new SceneController(splashStage);
+                int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
+                // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+                if (count == 0) {
+                    mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman
+                                                      // registrasi
+                } else {
+                    mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
+                }
+                // Menutup splash screen setelah operasi selesai
+                splashScreen.hideSplashScreen();
+                hideSplashScreen2();
             });
+            databaseCheckService.start(); // Menjalankan operasi pengecekan database
         }); // format dah coba
-    }
-
-    private void setSplashValue(int value) {
-        splashValue = value;
-    }
-
-    private void setBoolSV(boolean value) {
-        trigger = value;
     }
 
     public int getSplashValue() {

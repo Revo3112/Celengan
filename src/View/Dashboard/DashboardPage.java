@@ -1,6 +1,8 @@
 package View.Dashboard;
 
+import Controller.SceneController;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -24,7 +26,15 @@ public class DashboardPage {
         title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
         title.setFill(Color.BLACK); // Mengatur warna dari text
 
-        StackPane root = new StackPane(title); // Membuat objek StackPane dengan parameter title
+        Button btnTanamUang = new Button("Tanam Uang");
+        btnTanamUang.setTranslateY(50);
+
+        btnTanamUang.setOnMouseClicked(e -> {
+            SceneController sceneController = new SceneController(this.stage);
+            sceneController.switchToTanamUang();
+        });
+
+        StackPane root = new StackPane(title, btnTanamUang); // Membuat objek StackPane dengan parameter title
         Scene scene = new Scene(root, 600, 600); // Membuat objek Scene dengan parameter root dan ukuran 600x600
 
         this.stage.setTitle("Register"); // Mengatur title dari stage
