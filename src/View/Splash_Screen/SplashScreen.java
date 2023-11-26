@@ -16,12 +16,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-
+import javafx.scene.Cursor;
 import java.util.ArrayList;
 import java.util.List;
-
 import Controller.SceneController;
 import Model.DatabaseCheckService;
 import javafx.animation.FadeTransition;
@@ -41,8 +39,11 @@ public class SplashScreen {
 
     private double xOffset = 0;
     private double yOffset = 0;
+    private boolean isMousePressed = false;
 
-    boolean finalBoolSV;
+    private Cursor defaultCursor = Cursor.cursor("DEFAULT");
+    private Cursor closedHand = Cursor.cursor("CLOSED_HAND");
+    private Cursor waitCursor = Cursor.cursor("WAIT");
 
     // constructor
     public SplashScreen(Window owner) {
@@ -124,21 +125,36 @@ public class SplashScreen {
         // mengambil atau menambahkan seluruh pane yang akan ditambahkan ke dalam root
         root.getChildren().addAll(outPane, mainContent);
 
-        // root.setOnMousePressed(e -> {
-        // xOffset = e.getSceneX();
-        // yOffset = e.getSceneY();
-        // });
+        root.setOnMousePressed(e -> {
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                root.getScene().setCursor(closedHand);
+                isMousePressed = true;
+                xOffset = e.getSceneX();
+                yOffset = e.getSceneY();
+            }
+        });
 
-        // root.setOnMouseDragged(e -> {
-        // stage.setX(e.getScreenX() - xOffset);
-        // stage.setY(e.getScreenY() - yOffset);
-        // });
+        root.setOnMouseReleased(e -> {
+            root.getScene().setCursor(defaultCursor);
+            isMousePressed = false;
+        });
+
+        root.setOnMouseDragged(e -> {
+            if (isMousePressed) {
+                root.getScene().setCursor(closedHand);
+                stage.setX(e.getScreenX() - xOffset);
+                stage.setY(e.getScreenY() - yOffset);
+            }
+        });
+
         // menggunakan fungsi setOnMouseEntered untuk melakukan aksi saat user menghover
         // mouse
         buttonMasuk.setOnMouseEntered(event -> {
+            buttonMasuk.getScene().setCursor(waitCursor);
             ImageView alertButton = createImage(imgPath + "/alert/alert.png", 113, 20, buttonMasuk.getTranslateX() + 30,
                     buttonMasuk.getTranslateY() + 30);
             textButtonMasuk.setOnMouseEntered(eventText -> {
+                textButtonMasuk.getScene().setCursor(waitCursor);
                 if (!mainContent.getChildren().contains(alertButton)) {
                     mainContent.getChildren().add(alertButton);
                 }
@@ -146,6 +162,7 @@ public class SplashScreen {
 
             // Check if alertButton is not already added before adding it
             if (!mainContent.getChildren().contains(alertButton)) {
+                mainContent.getScene().setCursor(defaultCursor);
                 mainContent.getChildren().add(alertButton);
             }
         });
@@ -177,26 +194,28 @@ public class SplashScreen {
 
     // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
     // sebuah mouse yang diklik
-    private void setOnMouseClicked(StackPane root, Node item) {
-        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent me) {
-                double x = me.getSceneX();
-                double y = me.getSceneY();
+    // private void setOnMouseClicked(StackPane root, Node item) {
+    // root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    // @Override
+    // public void handle(MouseEvent me) {
+    // double x = me.getSceneX();
+    // double y = me.getSceneY();
 
-                // mengkalkulasi posisi translasi x dan y untuk mendapatkan posisi yang ideal
-                double itemX = x - (root.getWidth() / 2); // untuk menetapkan pada tengah node root
-                double itemY = y - (root.getHeight() / 2); // untuk menetapkan pada tengah node root
+    // // mengkalkulasi posisi translasi x dan y untuk mendapatkan posisi yang ideal
+    // double itemX = x - (root.getWidth() / 2); // untuk menetapkan pada tengah
+    // node root
+    // double itemY = y - (root.getHeight() / 2); // untuk menetapkan pada tengah
+    // node root
 
-                // menetapkan posisi baru untuk item
-                item.setTranslateX(itemX); // posisi baru untuk koordinat x
-                item.setTranslateY(itemY); // posisi baru untuk kooordinat y
+    // // menetapkan posisi baru untuk item
+    // item.setTranslateX(itemX); // posisi baru untuk koordinat x
+    // item.setTranslateY(itemY); // posisi baru untuk kooordinat y
 
-                System.out.println("Item placed at X -> " + itemX);
-                System.out.println("Item placed at Y -> " + itemY);
-            }
-        });
-    }
+    // System.out.println("Item placed at X -> " + itemX);
+    // System.out.println("Item placed at Y -> " + itemY);
+    // }
+    // });
+    // }
 
     // fungsi untuk membuat persegi panjang dengan return Node persegi
     private Rectangle createRectangle(double width, double height, double arcWidth, double arcHeight, Color color) {
@@ -306,8 +325,6 @@ class Loading {
         enterText.setFill(Color.valueOf("#141F23"));
         enterText.setTranslateX(buttonBG.getTranslateX());
         enterText.setTranslateY(-209);
-
-
 
         timeline.setOnFinished(event -> {
             System.out.println("inside set on finished");
@@ -420,8 +437,6 @@ class Carousel {
     private int[] chatPosIdxX_2 = { 150, 180, 100, 110, 210 }; // koordinat x chat kanan (2)
     private int[] chatPosIdxY_2 = { 110, -80, -110, -80, -110 }; // koordinat y chat kanan (2)
     private double dragStartX; // penetapan mulainya posisi koordinat x
-    private boolean isDragging = false; // penetapan kondisi apakah user mendrag atau tidak
-
     public static final double CARO_IMAGE_WIDTH = 400; // konstanta panjang gambar carousel
     public static final double CARO_IMAGE_HEIGHT = 400; // konstanta tinggi gambar carousel
     public static final double CHAT_IMAGE_WIDTH = 176; // tetapan konstan untuk lebar chat carousel
@@ -451,14 +466,12 @@ class Carousel {
         // Menambahkan handler drag event
         carouselPane.setOnMousePressed(event -> {
             dragStartX = event.getSceneX();
-            isDragging = true;
         });
 
         carouselPane.setOnMouseDragged(event -> {
             carouselPane.setOnMouseReleased(event2 -> {
                 double deltaX = event.getSceneX() - dragStartX;
                 showImageByDrag(event, deltaX);
-                isDragging = false; // mereset kondisi isDragging jika kondisi false
                 dragStartX = 0; // me reset value dragStartX jika mouse sudah lepas klik
             });
         });
