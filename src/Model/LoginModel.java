@@ -67,38 +67,23 @@ public class LoginModel {
             this.password = result.getString("password"); // Inisialisasi property password dengan nilai dari kolom
                                                           // password
             salt = result.getString("hash"); // Inisialisasi variabel salt dengan nilai dari kolom hash
-            System.out.println(salt);
-            System.out.println(this.password);
-            System.out.println(this.username);
             hashingregister hashing = new hashingregister(); // Deklarasi dan inisialisasi variabel hashing dengan
                                                              // nilai dari class hashingregister
             String hashedPassword = hashing.hash(password, salt); // Inisialisasi variabel hashedPassword dengan nilai
                                                                   // dari method hash() dari class hashingregister
-            System.out.println(hashedPassword);
-            if (this.username.equals(username) && hashedPassword.equals(password)) { // Jika nilai dari property
-                // username
-                // dan password sama dengan input
-                // yang dimasukkan oleh user, maka:
-                System.out.println("Dajjal");
-                if (rememberMe) { // Jika user menekan remember me, maka:
-                    String updateSql = String.format(
-                            "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
-                            username, password); // Update kolom remember_me di database berdasarkan username dan
-                                                 // password user
-                    Statement updateStatement = connection.createStatement(); // Membuat statement
-                    updateStatement.executeUpdate(updateSql); // Execute query sql
-                    updateStatement.close(); // Menutup statement
-                } else { // Jika user tidak menekan remember me, maka:
-                    String updateSql = String.format(
-                            "UPDATE users SET remember_me=%b WHERE username='%s' AND password='%s'", rememberMe,
-                            username, password); // Update kolom remember_me di database berdasarkan username dan
-                                                 // password user
-                    Statement updateStatement = connection.createStatement(); // Membuat statement
-                    updateStatement.executeUpdate(updateSql); // Execute query sql
-                    updateStatement.close(); // Menutup statement
+            if (this.username.equals(username) && hashedPassword.equals(this.password)) {
+                String updateSql = "UPDATE users SET remember_me=? WHERE username=? AND password=?";
+
+                try (PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
+                    updateStatement.setBoolean(1, rememberMe);
+                    updateStatement.setString(2, username);
+                    updateStatement.setString(3, this.password);
+                    updateStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
 
-                return true; // Mengembalikan nilai true
+                return true;
             }
         } catch (SQLException e) { // Menangkap error yang dihasilkan oleh SQLException
             System.out.println("Query Failed: " + e.getMessage()); // Menampilkan error SQLException
