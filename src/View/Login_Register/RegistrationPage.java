@@ -98,34 +98,60 @@ public class RegistrationPage {
                 fieldvalidatepassword.getText()));
     }
 
+    private boolean isPasswordSecure(String password) {
+        // Atur aturan keamanan sesuai kebutuhan
+        // Contoh: Minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan
+        // karakter khusus
+        return password.length() >= 8 &&
+                password.matches(".*[A-Z].*") &&
+                password.matches(".*[a-z].*") &&
+                password.matches(".*\\d.*") &&
+                password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>/?].*");
+    }
+
     private void handleregister(String username, String password, String validatepassword) {
-        SceneController sceneController = new SceneController(this.stage); // Instansiasi objek sceneController
-        LoginModel login = new LoginModel(); // Instansiasi objek login
-        String validate = validatepassword; // Inisialisasi variabel validate dengan nilai dari variabel
-                                            // validatepassword
+        SceneController sceneController = new SceneController(this.stage);
+        LoginModel login = new LoginModel();
+        String validate = validatepassword;
 
-        if (username.isEmpty() && password.isEmpty()) { // Jika kolom username dan kolom password kosong, maka:
-            applyErrorStyle(fieldUsername, fieldPassword); // Memanggil method applyErrorStyle
-        } else if (username.isEmpty()) { // Jika kolom username kosong, maka:
-            fieldPassword.setStyle(""); // Set style dari kolom password menjadi default
-            applyErrorStyle(fieldUsername); // Memanggil method applyErrorStyle
-        } else if (password.isEmpty()) { // Jika kolom password menjadi kosong
-            fieldUsername.setStyle(""); // Set style dari kolom username menjadi default
-            applyErrorStyle(fieldPassword); // Memanggil method applyErrorStyle
-        } else { // Jika terisi semua, maka:
-            fieldUsername.setStyle(""); // Set style fieldUsername menjadi default
-            fieldPassword.setStyle(""); // Set style fieldPasswrod menjadi default
-            if (password.equals(validate)) { // Jika password sama dengan validate, maka:
-                System.out.println("Password Match"); // Tampilkan pesan password sesuai
+        if (username.isEmpty() && password.isEmpty()) {
+            applyErrorStyle(fieldUsername, fieldPassword);
+            AlertHelper.alert("Username dan password tidak boleh kosong.");
+        } else if (username.isEmpty()) {
+            fieldPassword.setStyle("");
+            applyErrorStyle(fieldUsername);
+            AlertHelper.alert("Username tidak boleh kosong.");
+        } else if (password.isEmpty()) {
+            fieldUsername.setStyle("");
+            applyErrorStyle(fieldPassword);
+            AlertHelper.alert("Password tidak boleh kosong.");
+        } else {
+            fieldUsername.setStyle("");
+            fieldPassword.setStyle("");
 
-                if (login.registerAccount(username, password)) { // Jika proses register berhasil, maka:
-                    sceneController.switchToLogin(); // Pindah ke login
-                } else { // Jika proses register tidak berhasil, maka:
-                    AlertHelper.alert(password); // Tampilkan pesan kesalahan
+            if (password.equals(validate)) {
+                if (isPasswordSecure(password)) {
+                    System.out.println("Password Match");
+
+                    if (login.registerAccount(username, password)) {
+                        sceneController.switchToLogin();
+                    } else {
+                        AlertHelper.alert("Gagal mendaftarkan akun.");
+                    }
+                } else {
+                    String massage = "Password tidak memenuhi kriteria keamanan.\n" +
+                            "Kriteria:\n" +
+                            "- Minimal 8 karakter\n" +
+                            "- Mengandung setidaknya satu huruf besar (A-Z)\n" +
+                            "- Mengandung setidaknya satu huruf kecil (a-z)\n" +
+                            "- Mengandung setidaknya satu angka (0-9)\n" +
+                            "- Mengandung setidaknya satu karakter khusus (!@#$%^&*()_+\\-=\\[\\]{};':\",.<>/?])";
+                    applyErrorStyle(fieldPassword);
+                    AlertHelper.alert(massage);
                 }
-            } else { // Jika password tidak sama dengan validate, maka:
-                applyErrorStyle(fieldPassword, fieldvalidatepassword); // Ubah kolom menjadi warna merah
-                AlertHelper.alert("Password doesn't match"); // Tampilkan error
+            } else {
+                applyErrorStyle(fieldPassword, fieldvalidatepassword);
+                AlertHelper.alert("Password tidak sesuai.");
             }
         }
     }
