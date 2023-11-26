@@ -307,10 +307,7 @@ class Loading {
         enterText.setTranslateX(buttonBG.getTranslateX());
         enterText.setTranslateY(-209);
 
-        StackPane button = new StackPane(buttonBG, buttonLBG, enterText);
-        DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
-        SplashScreen splashScreen = new SplashScreen(this.stage);
-        Stage splashStage = new Stage();
+
 
         timeline.setOnFinished(event -> {
             System.out.println("inside set on finished");
@@ -327,27 +324,37 @@ class Loading {
         });
         System.out.println("above timeline");
         timeline.play();
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent -> {
-            System.out.println("Database is not empty");
-            databaseCheckService.setOnSucceeded(e -> {
-                // Instansiasi class SceneController ke dalam variabel mainScene
-                SceneController mainScene = new SceneController(splashStage);
-                int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
-                // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
-                if (count == 0) {
-                    mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman
-                                                      // registrasi
-                } else {
-                    mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
-                }
-                // Menutup splash screen setelah operasi selesai
-                splashScreen.hideSplashScreen();
-                hideSplashScreen2();
-            });
-            databaseCheckService.start(); // Menjalankan operasi pengecekan database
+
+        buttonLBG.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent1 -> {
+            handleDatabaseCheck();
+        });
+
+        enterText.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent -> {
+            handleDatabaseCheck();
         }); // format dah coba
     }
 
+    private void handleDatabaseCheck() {
+        DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
+        SplashScreen splashScreen = new SplashScreen(this.stage);
+        Stage splashStage = new Stage();
+        System.out.println("Database is not empty");
+        databaseCheckService.setOnSucceeded(e -> {
+            // Instansiasi class SceneController ke dalam variabel mainScene
+            SceneController mainScene = new SceneController(splashStage);
+            int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
+            // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+            if (count == 0) {
+                mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
+            } else {
+                mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
+            }
+            // Menutup splash screen setelah operasi selesai
+            splashScreen.hideSplashScreen();
+            hideSplashScreen2();
+        });
+        databaseCheckService.start(); // Menjalankan operasi pengecekan database
+    }
     public int getSplashValue() {
         System.out.println("value =" + splashValue);
         return splashValue;
