@@ -12,6 +12,7 @@ public class LoginModel {
     private String username, password, lastActiveUsers; // Deklarasi property username dan password dengan itpe data
                                                         // String
     private boolean rememberMe;
+    private int userId;
 
     public int checkData() throws SQLException {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
@@ -78,6 +79,28 @@ public class LoginModel {
             System.out.println("Query failed: " + e.getMessage());
         }
         return this.lastActiveUsers;
+    }
+
+    private int _userId(Connection connection) {
+        try {
+            String sql = "SELECT id FROM users WHERE last_edited = (SELECT MAX(last_edited) FROM users)";
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            if (result.next()) {
+                this.userId = result.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+        }
+        return this.userId;
+    }
+
+    public int getUserId() {
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+
+        return _userId(connection);
     }
 
     private boolean getRememberMeFromUsername(Connection connection, String lastUser) {

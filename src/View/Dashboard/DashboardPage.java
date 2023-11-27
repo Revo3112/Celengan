@@ -26,12 +26,12 @@ public class DashboardPage {
         title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
         title.setFill(Color.BLACK); // Mengatur warna dari text
 
-        Button btnTanamUang = new Button("Tanam Uang");
+        Button btnTanamUang = new Button("Tanam Uang Pengeluaran");
         btnTanamUang.setTranslateY(50);
 
         btnTanamUang.setOnMouseClicked(e -> {
             SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToTanamUang();
+            sceneController.switchToTanamUangPengeluaran();
         });
 
         StackPane root = new StackPane(title, btnTanamUang); // Membuat objek StackPane dengan parameter title

@@ -1,5 +1,7 @@
 package Model;
 
+import java.time.LocalDate;
+
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,10 +10,30 @@ import java.util.List;
 import java.util.ArrayList;
 
 import Utils.DBConnection;
+import javafx.scene.control.DatePicker;
 
-public class KategoriModel {
-    
-    public static String[] userKategoriPemasukan() {
+public class TanamUangModel {
+
+    public static boolean simpanPengeluaran(String tanggal, String kategori, int kategoriId, int jumlah, String tipePembayaran, String keterangan) {
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+
+        try {
+            LoginModel user = new LoginModel();
+            int userId = user.getUserId();
+
+            String sql = String.format("INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %d, '%s', %d, '%s', '%s', 'pengeluaran')", userId, jumlah, keterangan, kategoriId, tipePembayaran, tanggal);
+
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static String[] getKategoriPemasukan() {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
                                                                 // dengan nilai dari method getDatabaseConnection().
                                                                 // Berguna untuk mendapat koneksi ke database
@@ -48,9 +70,9 @@ public class KategoriModel {
         } 
 
         return new String[0]; // Mengembalikan string kosong jika terjadi kesalahan
-    } 
+    }
 
-    public static String[] userKategoriPengeluaran() {
+    public static String[] getKategoriPengeluaran() {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
                                                                 // dengan nilai dari method getDatabaseConnection().
                                                                 // Berguna untuk mendapat koneksi ke database
@@ -83,6 +105,7 @@ public class KategoriModel {
             return kategori; // Mengembalikan array kategori
             
         } catch (SQLException e) { // Menangkap error SQLException
+            System.out.println("TANAM UANG MODEL WOI");
             System.out.println("Query failed: " + e.getMessage()); // Menampilkan error SQLException
         } 
 
