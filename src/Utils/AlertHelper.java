@@ -12,4 +12,11 @@ public class AlertHelper {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    public static void info(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("oops!");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
