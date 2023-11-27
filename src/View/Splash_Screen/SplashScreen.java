@@ -3,6 +3,7 @@ package View.Splash_Screen;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart.Data;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -273,6 +274,7 @@ class Loading {
     private StackPane loadBar;
     private int splashValue = 0;
     private boolean trigger = false;
+    int count = 0;
 
     public Loading(Stage stage) {
         this.stage = stage;
@@ -341,37 +343,41 @@ class Loading {
         });
         System.out.println("above timeline");
         timeline.play();
+        DatabaseCheckService databaseCheckService = new DatabaseCheckService();
 
+        databaseCheckService.setOnSucceeded(e -> {
+            System.out.println("inside set on succeeded");
+            this.count = databaseCheckService.getValue();
+        });
         buttonLBG.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent1 -> {
-            handleDatabaseCheck();
+            handleDatabaseCheck(databaseCheckService, this.count);
         });
 
         enterText.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent -> {
-            handleDatabaseCheck();
+            handleDatabaseCheck(databaseCheckService, this.count);
         }); // format dah coba
+        databaseCheckService.start(); // Menjalankan operasi pengecekan database
     }
 
-    private void handleDatabaseCheck() {
-        DatabaseCheckService databaseCheckService = new DatabaseCheckService(); // Instansiasi class
+    private void handleDatabaseCheck(DatabaseCheckService databaseCheckService, int count) {
         SplashScreen splashScreen = new SplashScreen(this.stage);
         Stage splashStage = new Stage();
         System.out.println("Database is not empty");
-        databaseCheckService.setOnSucceeded(e -> {
-            // Instansiasi class SceneController ke dalam variabel mainScene
-            SceneController mainScene = new SceneController(splashStage);
-            int count = databaseCheckService.getValue(); // Mengambil hasil pengecekan database
-            // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
-            if (count == 0) {
-                mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
-            } else {
-                mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
-            }
-            // Menutup splash screen setelah operasi selesai
-            splashScreen.hideSplashScreen();
-            hideSplashScreen2();
-        });
-        databaseCheckService.start(); // Menjalankan operasi pengecekan database
+
+        // Instansiasi class SceneController ke dalam variabel mainScene
+        SceneController mainScene = new SceneController(splashStage);
+        // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
+        if (count == 0) {
+            mainScene.switchToRegistration(); // Jika database kosong, maka tampilkan halaman registrasi
+        } else {
+            mainScene.switchToLogin(); // Jika database tidak kosong, maka tampilkan halaman login
+        }
+        // Menutup splash screen setelah operasi selesai
+        splashScreen.hideSplashScreen();
+        hideSplashScreen2();
+
     }
+
     public int getSplashValue() {
         System.out.println("value =" + splashValue);
         return splashValue;
