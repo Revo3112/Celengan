@@ -63,18 +63,9 @@ class Splash {
 
     /* SPLASH SCREEN */
     public void switchToSplashScreen() {
-
-        // DatabaseCheckService ke dalam
-        // variabel databaseCheckService
-        SplashScreen splashScreen = new SplashScreen(stage); // Instansiasi class SplashScreen ke dalam variabel
+        // Instansiasi class SplashScreen ke dalam variabel splashScreen
+        SplashScreen splashScreen = new SplashScreen(stage);
         // splashScreen
-        System.out.println("Splash Screen Above");
         splashScreen.start(finalValue); // Menjalankan method start() pada class SplashScreen
-
-        System.out.println("FInal Value = " + finalValue);
-        System.out.println("Condition = " + condition);
-        // Loading load = new Loading();
-        // Menjalankan operasi pengecekan database di backgroun
-
     }
 }
