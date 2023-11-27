@@ -230,7 +230,6 @@ public class SplashScreen {
 
     // fungsi untuk membuat image dengan return ImageView
     private ImageView createImage(String imgPath, double width, double height, double transX, double transY) {
-        System.out.println("IMGPATH: " + imgPath);
 
         ImageView imageView = new ImageView();
         Image imageImg = new Image(imgPath);
@@ -329,7 +328,6 @@ class Loading {
         enterText.setTranslateY(-209);
 
         timeline.setOnFinished(event -> {
-            System.out.println("inside set on finished");
             statusText.setText("Selesai!");
             statusText.setFill(Color.valueOf("#93D334"));
 
@@ -341,12 +339,10 @@ class Loading {
             mainContent.getChildren().addAll(buttonBG, buttonLBG, enterText);
 
         });
-        System.out.println("above timeline");
         timeline.play();
         DatabaseCheckService databaseCheckService = new DatabaseCheckService();
 
         databaseCheckService.setOnSucceeded(e -> {
-            System.out.println("inside set on succeeded");
             this.count = databaseCheckService.getValue();
         });
         buttonLBG.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseEvent1 -> {
@@ -362,8 +358,6 @@ class Loading {
     private void handleDatabaseCheck(DatabaseCheckService databaseCheckService, int count) {
         SplashScreen splashScreen = new SplashScreen(this.stage);
         Stage splashStage = new Stage();
-        System.out.println("Database is not empty");
-
         // Instansiasi class SceneController ke dalam variabel mainScene
         SceneController mainScene = new SceneController(splashStage);
         // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
@@ -379,12 +373,12 @@ class Loading {
     }
 
     public int getSplashValue() {
-        System.out.println("value =" + splashValue);
+        // System.out.println("value =" + splashValue);
         return splashValue;
     }
 
     public boolean getBoolSV() {
-        System.out.println("trigger =" + trigger);
+        // System.out.println("trigger =" + trigger);
         return trigger;
     }
 
