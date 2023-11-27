@@ -1,15 +1,16 @@
 package Controller;
 
 import Model.DatabaseCheckService;
+import Model.RequestNewPassword;
 import View.Dashboard.DashboardPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.RegistrationPage;
+import View.Login_Register.RequestNewPass;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 import Model.TanamUangModel;
 import View.Dashboard.TanamUangPemasukanPage;
 import View.Dashboard.TanamUangPengeluaranPage;
-
 
 // class SceneController digunakan untuk mengatur perpindahan scene
 public class SceneController {
@@ -44,20 +45,30 @@ public class SceneController {
         dashboard.start(); // Menjalankan method start pada objek dashboard
     }
 
-   // Tanam Uang Pengeluaran
+    // Tanam Uang Pengeluaran
     public void switchToTanamUangPengeluaran() {
-        TanamUangPengeluaranPage tanamUang = new TanamUangPengeluaranPage(this.stage); // Instansiasi class TanamUangPage ke dalam variable
-                                                                 // tanamUang
+        TanamUangPengeluaranPage tanamUang = new TanamUangPengeluaranPage(this.stage); // Instansiasi class
+                                                                                       // TanamUangPage ke dalam
+                                                                                       // variable
+        // tanamUang
         tanamUang.start(TanamUangModel.getKategoriPengeluaran()); // Menjalankan method start pada objek tanamUang
     }
 
     // Tanam Uang Pemasukan
     public void switchToTanamUangPemasukan() {
-        TanamUangPemasukanPage tanamUang = new TanamUangPemasukanPage(this.stage); // Instansiasi class TanamUangPage ke dalam variable
-                                                                 // tanamUang
+        TanamUangPemasukanPage tanamUang = new TanamUangPemasukanPage(this.stage); // Instansiasi class TanamUangPage ke
+                                                                                   // dalam variable
+        // tanamUang
         tanamUang.start(TanamUangModel.getKategoriPemasukan()); // Menjalankan method start pada objek tanamUang
     }
 
+    // Request New Password
+    public void switchToRequestNewPassword() {
+        RequestNewPass requestNewPassword = new RequestNewPass(this.stage); // Instansiasi class
+                                                                            // RequestNewPassword ke dalam
+                                                                            // variabel requestNewPassword
+        requestNewPassword.start(); // Menjalankan method start() pada class RequestNewPassword
+    }
 }
 
 class Splash {

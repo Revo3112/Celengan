@@ -219,7 +219,7 @@ public class LoginModel {
                                                              // getConnection() dari object dbc
 
                 String sql = String.format(
-                        "INSERT INTO users(username, password, last_edited, hash, pincode) VALUES('%s', '%s', CURRENT_TIMESTAMP, '%s', '%s')",
+                        "INSERT INTO users(username, password, last_edited, hash, pincode) VALUES('%s', '%s',       CURRENT_TIMESTAMP, '%s', '%s')",
                         username, hashedPassword, salt, hashedpin); // Menambah data pada tabel users
 
                 Statement statement = connection.createStatement(); // Membuat statement

@@ -91,6 +91,17 @@ public class LoginPage {
             sceneController.switchToRegistration(); // Merubah stage menggunakan scene controller menuju registrasi
         });
 
+        Hyperlink forgotPasswordLink = new Hyperlink("Forgot Password?");
+        forgotPasswordLink.setTranslateX(280);
+        forgotPasswordLink.setTranslateY(120);
+        forgotPasswordLink.setStyle(
+                "-fx-underline: true;" +
+                        "-fx-font-family: Verdana");
+        forgotPasswordLink.setOnAction(e -> {
+            SceneController sceneController = new SceneController(this.stage);
+            sceneController.switchToRequestNewPassword();
+        });
+
         // Membuat CheckBox "Remember Me"
         CheckBox checkbox = new CheckBox("Remember Me");
         checkbox.setTranslateX(-30); // mengatur posisi x pada checkbox
@@ -112,6 +123,7 @@ public class LoginPage {
         StackPane.setMargin(root, new Insets(20, 0, 0, 0)); // Mengatur margin dari StackPane
         // Menambahkan semua item kedalam Stackpane
         root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, passwordField, registerLink,
+                forgotPasswordLink,
                 checkbox,
                 btnLogin);
 
