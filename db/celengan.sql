@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 25, 2023 at 05:10 PM
+-- Generation Time: Nov 27, 2023 at 07:37 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -24,13 +24,13 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `panen`
+-- Table structure for table `saldo`
 --
 
-CREATE TABLE `panen` (
+CREATE TABLE `saldo` (
+  `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `harga` decimal(15,2) NOT NULL,
-  `name` varchar(255) NOT NULL
+  `balance` decimal(15,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -49,13 +49,6 @@ CREATE TABLE `transac` (
   `date` date NOT NULL,
   `tipe_transaksi` enum('pemasukan','pengeluaran') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `transac`
---
-
-INSERT INTO `transac` (`id`, `user_id`, `nominal`, `keterangan`, `kategori_id`, `tipe_pembayaran`, `date`, `tipe_transaksi`) VALUES
-(5, 4, '20000.00', 'Beli beras', 1, 'Cash', '2023-11-18', 'pengeluaran');
 
 -- --------------------------------------------------------
 
@@ -98,15 +91,17 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `password` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `last_edited` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `remember_me` enum('True','False') NOT NULL
+  `remember_me` tinyint(1) DEFAULT NULL,
+  `hash` varchar(5) DEFAULT NULL,
+  `pincode` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`) VALUES
-(4, 'Revo Rahmat', '1234', '2023-11-13 04:59:12', 'False');
+INSERT INTO `users` (`id`, `username`, `password`, `last_edited`, `remember_me`, `hash`, `pincode`) VALUES
+(10, 'Revo', 'eeec21d21eb67124cfb1e2e72866a5754ad463ae84fe2202d59ae8abffca9399', '2023-11-27 07:35:36', NULL, '0c0B2', '3e40e800ab0298e3d6f769292da5b466b94a12ae35ac2d9bf3cc56b225b572ad');
 
 -- --------------------------------------------------------
 
@@ -121,28 +116,16 @@ CREATE TABLE `user_kategori` (
   `tipe` enum('pemasukan','pengeluaran') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `wallet`
---
-
-CREATE TABLE `wallet` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `saldo` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `batas_kritis` decimal(15,2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `panen`
+-- Indexes for table `saldo`
 --
-ALTER TABLE `panen`
-  ADD KEY `fk_panen_user_id` (`user_id`);
+ALTER TABLE `saldo`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_unique` (`user_id`);
 
 --
 -- Indexes for table `transac`
@@ -171,21 +154,20 @@ ALTER TABLE `user_kategori`
   ADD KEY `fk_user_kategori` (`user_id`);
 
 --
--- Indexes for table `wallet`
---
-ALTER TABLE `wallet`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_unique` (`user_id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `saldo`
+--
+ALTER TABLE `saldo`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transac`
 --
 ALTER TABLE `transac`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `transac_kategori`
@@ -197,7 +179,7 @@ ALTER TABLE `transac_kategori`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `user_kategori`
@@ -206,20 +188,14 @@ ALTER TABLE `user_kategori`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `wallet`
---
-ALTER TABLE `wallet`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `panen`
+-- Constraints for table `saldo`
 --
-ALTER TABLE `panen`
-  ADD CONSTRAINT `fk_panen_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+ALTER TABLE `saldo`
+  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `transac`
@@ -232,12 +208,6 @@ ALTER TABLE `transac`
 --
 ALTER TABLE `user_kategori`
   ADD CONSTRAINT `fk_user_kategori` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
---
--- Constraints for table `wallet`
---
-ALTER TABLE `wallet`
-  ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

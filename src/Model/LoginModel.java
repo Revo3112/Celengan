@@ -192,7 +192,8 @@ public class LoginModel {
         return false; // Mengembalikan nilai false
     }
 
-    public boolean registerAccount(String username, String password) { // Membuat method untuk registrasi
+    public boolean registerAccount(String username, String password, String pinCode) { // Membuat method untuk
+                                                                                       // registrasi
 
         if (username.equals("") && password.equals("")) { // Jika kolom username dan password kosong, maka:
             AlertHelper.alert("Kolom Username dan Password tidak boleh kosong!"); // Tampilkan error dari method alert
@@ -209,6 +210,7 @@ public class LoginModel {
             // Deklarasi dan inisialisasi variabel hashedPassword dengan nilai dari method
             // hash() dari class hashingregister
             String hashedPassword = new hashingregister().hash(password, salt);
+            String hashedpin = new hashingregister().hash(pinCode, salt);
             try {
                 DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                 // dengan nilai dari method getDatabaseConnection().
@@ -217,8 +219,8 @@ public class LoginModel {
                                                              // getConnection() dari object dbc
 
                 String sql = String.format(
-                        "INSERT INTO users(username, password, last_edited, hash) VALUES('%s', '%s', CURRENT_TIMESTAMP, '%s')",
-                        username, hashedPassword, salt); // Menambah data pada tabel users
+                        "INSERT INTO users(username, password, last_edited, hash, pincode) VALUES('%s', '%s', CURRENT_TIMESTAMP, '%s', '%s')",
+                        username, hashedPassword, salt, hashedpin); // Menambah data pada tabel users
 
                 Statement statement = connection.createStatement(); // Membuat statement
                 int result = statement.executeUpdate(sql); // Execute query
