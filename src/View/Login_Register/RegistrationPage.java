@@ -23,6 +23,7 @@ public class RegistrationPage {
     private TextField fieldUsername; // Deklarasi field untuk username
     private PasswordField fieldPassword; // Deklarasi field untuk password
     private PasswordField fieldvalidatepassword; // Deklarasi field untuk konfirmasi password
+    private TextField fieldpincode; // Deklarasi field untuk pincode
 
     public RegistrationPage(Stage stage) {
         this.stage = stage; // Inisialisasi field stage dengan parameter stage
@@ -54,6 +55,11 @@ public class RegistrationPage {
         fieldvalidatepassword.setTranslateX(90); // Mengatur koordinat x pada kolom konfirmasi password
         fieldvalidatepassword.setTranslateY(80); // Mengatur koordinat y pada kolom konfirmasi password
 
+        fieldpincode = new TextField(); // Instansiasi objek fieldpincode
+        fieldpincode.setMaxWidth(200); // Mengatur lebar maksimal dari kolom pincode
+        fieldpincode.setTranslateX(90); // Mengatur koordinat x dari kolom pincode
+        fieldpincode.setTranslateY(120); // Mengatur koordinat y dari kolom pincode
+
         Label labelUsername = new Label("Username:"); // Instansiasi objek labelUsername
         labelUsername.setTranslateX(-50); // Mengatur koordinat x dari labelUsername
         Label labelPassword = new Label("Password:"); // Instansiasi objek labelPassword
@@ -62,10 +68,13 @@ public class RegistrationPage {
         Label labelValidatePassword = new Label("Validate Password:"); // Instansiasi objek labelValidatePassword
         labelValidatePassword.setTranslateX(-76); // Mengatur koordinat x labelValidatePassword
         labelValidatePassword.setTranslateY(80); // Mengatur koordinat y dari labelValidatePassword
+        Label labelpincode = new Label("Pin Code:"); // Instansiasi objek labelpincode
+        labelpincode.setTranslateX(-50); // Mengatur koordinat x dari labelpincode
+        labelpincode.setTranslateY(120); // Mengatur koordinat y dari labelpincode
 
         Hyperlink loginlink = new Hyperlink("Login"); // Instansiasi objek loginlink
-        loginlink.setTranslateX(175d); // Mengatur koordinat x dari loginlink
-        loginlink.setTranslateY(106); // Mengatur koordinat y dari loginlink
+        loginlink.setTranslateX(175); // Mengatur koordinat x dari loginlink
+        loginlink.setTranslateY(148); // Mengatur koordinat y dari loginlink
         loginlink.setStyle( // Mengatur style dari loginlink
                 "-fx-underline: true;" +
                         "-fx-font-family: Verdana");
@@ -75,14 +84,14 @@ public class RegistrationPage {
         });
 
         Button btnregister = new Button("Register"); // Instansiasi objek btnregister
-        btnregister.setTranslateY(140); // Mengatur koordinat y dari btnregister
+        btnregister.setTranslateY(170); // Mengatur koordinat y dari btnregister
 
         // Scene
         StackPane root = new StackPane(); // Instansiasi objek root
         StackPane.setMargin(root, new Insets(20, 0, 0, 0)); // Mengatur margin dari StackPane
         root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, fieldPassword,
                 labelValidatePassword,
-                fieldvalidatepassword, loginlink,
+                fieldvalidatepassword, fieldpincode, labelpincode, loginlink,
                 btnregister); // Menambah elemen pada root node
 
         Scene scene = new Scene(root, Color.gray(0.2)); // Instansiasi objek scene
@@ -95,7 +104,8 @@ public class RegistrationPage {
         btnregister.setOnAction(e -> handleregister(
                 fieldUsername.getText(),
                 fieldPassword.getText(),
-                fieldvalidatepassword.getText()));
+                fieldvalidatepassword.getText(),
+                fieldpincode.getText()));
     }
 
     private boolean isPasswordSecure(String password) {
@@ -109,31 +119,48 @@ public class RegistrationPage {
                 password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>/?].*");
     }
 
-    private void handleregister(String username, String password, String validatepassword) {
+    private void handleregister(String username, String password, String validatepassword, String pincode) {
         SceneController sceneController = new SceneController(this.stage);
         LoginModel login = new LoginModel();
         String validate = validatepassword;
 
-        if (username.isEmpty() && password.isEmpty()) {
-            applyErrorStyle(fieldUsername, fieldPassword);
+        if (username.isEmpty() && password.isEmpty() && validate.isEmpty() && pincode.isEmpty()) {
+            applyErrorStyle(fieldUsername, fieldPassword, fieldvalidatepassword, fieldpincode);
             AlertHelper.alert("Username dan password tidak boleh kosong.");
         } else if (username.isEmpty()) {
             fieldPassword.setStyle("");
+            fieldvalidatepassword.setStyle("");
+            fieldpincode.setStyle("");
             applyErrorStyle(fieldUsername);
             AlertHelper.alert("Username tidak boleh kosong.");
         } else if (password.isEmpty()) {
             fieldUsername.setStyle("");
+            fieldvalidatepassword.setStyle("");
+            fieldpincode.setStyle("");
             applyErrorStyle(fieldPassword);
             AlertHelper.alert("Password tidak boleh kosong.");
+        } else if (pincode.isEmpty()) {
+            fieldUsername.setStyle("");
+            fieldPassword.setStyle("");
+            fieldvalidatepassword.setStyle("");
+            applyErrorStyle(fieldpincode);
+            AlertHelper.alert("Pin Code tidak boleh kosong.");
+        } else if (validate.isEmpty()) {
+            fieldUsername.setStyle("");
+            fieldPassword.setStyle("");
+            fieldpincode.setStyle("");
+            applyErrorStyle(fieldvalidatepassword);
+            AlertHelper.alert("Konfirmasi password tidak boleh kosong.");
         } else {
             fieldUsername.setStyle("");
             fieldPassword.setStyle("");
-
+            fieldvalidatepassword.setStyle("");
+            fieldpincode.setStyle("");
             if (password.equals(validate)) {
                 if (isPasswordSecure(password)) {
                     System.out.println("Password Match");
 
-                    if (login.registerAccount(username, password)) {
+                    if (login.registerAccount(username, password, pincode)) {
                         sceneController.switchToLogin();
                     } else {
                         AlertHelper.alert("Gagal mendaftarkan akun.");
