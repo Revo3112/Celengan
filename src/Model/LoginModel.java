@@ -59,7 +59,7 @@ public class LoginModel {
         this.rememberMe = getRememberMeFromUsername(connection, lastActiveUser);
         if (this.rememberMe == true) {
             masuk = isValidated(lastActiveUser, lastPassword, this.rememberMe);
-            System.out.println(masuk);
+
         }
         return masuk;
     }
