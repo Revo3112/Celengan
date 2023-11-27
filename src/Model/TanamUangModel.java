@@ -33,6 +33,43 @@ public class TanamUangModel {
         return false;
     }
 
+    public static boolean simpanPemasukan(String tanggal, String kategori, int kategoriId, int jumlah, String tipePembayaran, String keterangan) {
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+
+        try {
+            LoginModel user = new LoginModel();
+            int userId = user.getUserId();
+
+            String sql = String.format("INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %d, '%s', %d, '%s', '%s', 'pemasukan')", userId, jumlah, keterangan, kategoriId, tipePembayaran, tanggal);
+
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
+        public int getJumlahKategoriPemasukan() {
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+
+        try {
+            String sql = String.format("SELECT COUNT(*) FROM transac_kategori WHERE tipe='pemasukan'");
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+            result.next();
+
+            return result.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return 0;
+    }
+    
     public static String[] getKategoriPemasukan() {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
                                                                 // dengan nilai dari method getDatabaseConnection().

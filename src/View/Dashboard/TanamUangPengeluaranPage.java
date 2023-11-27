@@ -120,14 +120,13 @@ public class TanamUangPengeluaranPage {
             }
             
             if (TanamUangModel.simpanPengeluaran(tanggal, kategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
-
                 datePickerTanggal.setValue(null);
                 combobox.getSelectionModel().clearSelection();
                 fieldJumlah.setText("");
                 fieldKeterangan.setText("");
                 radioBtnCash.setSelected(false);
                 radioBtnTransfer.setSelected(false);
-                AlertHelper.alert("Pengeluaran telah tercatat");
+                AlertHelper.info("Pengeluaran telah tercatat");
             }
         });
 
