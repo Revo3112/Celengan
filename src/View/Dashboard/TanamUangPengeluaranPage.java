@@ -89,30 +89,46 @@ public class TanamUangPengeluaranPage {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 System.out.println("Text changed: " + newValue);
                 // Hapus listener sementara
+
                 fieldJumlah.textProperty().removeListener(this);
+                // if (newValue.length() >= 13) {
+                //     System.out.println("sudah lebih dari 13");
+                    
+                //     // newValue = newValue.substring(0, 13);
+                //     newValue.consume();
+                // }
 
                 // Lakukan pembaruan teks
                 switch (newValue.length()) {
                     case 4:
-                        formatAndSet(newValue, "#,##0");
+                        formatAndSet(newValue, "#.##0");
                         break;
                     case 5:
-                        formatAndSet(newValue, "##,##0");
+                        formatAndSet(newValue, "##.##0");
                         break;
                     case 6:
-                        formatAndSet(newValue, "###,##0");
+                        formatAndSet(newValue, "###.##0");
                         break;
                     case 7:
-                        formatAndSet(newValue, "#,###,##0");
+                        formatAndSet(newValue, "#.###.##0");
                         break;
                     case 8:
-                        formatAndSet(newValue, "##,###,##0");
+                        formatAndSet(newValue, "##.###.##0");
                         break;
                     case 9:
-                        formatAndSet(newValue, "###,###,##0");
+                        formatAndSet(newValue, "###.###.##0");
                         break;
                     case 10:
-                        formatAndSet(newValue, "#,###,###,##0");
+                        formatAndSet(newValue, "#.###.###.##0");
+                        break;
+                    case 11:
+                        formatAndSet(newValue, "##.###.###.##0");
+                        break;
+                    case 12:
+                        formatAndSet(newValue, "###.###.###.##0");
+                        break;
+                    case 13:
+                        formatAndSet(newValue, "#.###.###.###.##0");
                         break;
                     default:
                         break;
@@ -126,6 +142,7 @@ public class TanamUangPengeluaranPage {
                 DecimalFormat decimalFormat = new DecimalFormat(format);
                 fieldJumlah.setText(decimalFormat.format(Double.valueOf(text.replace(",", ""))));
             }
+
         });
 
         // Form tipe pembayaran
