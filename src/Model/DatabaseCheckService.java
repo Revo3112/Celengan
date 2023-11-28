@@ -21,3 +21,9 @@ public class DatabaseCheckService extends Service<Integer> {
         };
     }
 };
+
+class Testing {
+    public static void coba() {
+        System.out.println("Hello World");
+    }
+}

@@ -226,8 +226,10 @@ public class LoginModel {
                 int result = statement.executeUpdate(sql); // Execute query
 
                 if (result == 1) { // Jika proses query berhasil
-
-                    return true; // Mengembalikan nilai true
+                    if (pembuatanSaldo(getUserId())) {
+                        System.out.println("Saldo berhasil dibuat");
+                        return true; // Mengembalikan nilai true
+                    }
                 }
 
             } catch (SQLException e) { // Menangkap error SQLException
@@ -235,6 +237,25 @@ public class LoginModel {
             }
         }
         return false; // Mengembalikan nilai false
+    }
 
+    public boolean pembuatanSaldo(int userId) {
+        try {
+            DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
+            // dengan nilai dari method getDatabaseConnection().
+            // Berguna untuk mendapat koneksi ke database
+            Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method
+                                                         // getConnection() dari object dbc
+            // Menambah datapada tabel users
+            String sql = String.format("INSERT INTO saldo(user_id) VALUES('%s')", userId);
+            Statement statement = connection.createStatement(); // Membuat statement
+            int result = statement.executeUpdate(sql); // Execute query
+            if (result > 0) {
+                return true;
+            }
+        } catch (SQLException e) { // Menangkap error SQLException
+            System.out.println("Query Failed: " + e.getMessage()); // Menampikan error SQLException
+        }
+        return false;
     }
 }
