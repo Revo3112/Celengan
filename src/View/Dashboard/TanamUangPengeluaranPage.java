@@ -1,11 +1,16 @@
 package View.Dashboard;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.function.UnaryOperator;
 
 import Controller.SceneController;
 import Model.TanamUangModel;
 import Utils.AlertHelper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,6 +30,16 @@ import javafx.stage.Stage;
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class TanamUangPengeluaranPage {
     private Stage stage; // Deklarasi property stage
+
+    public DecimalFormat formatRibuan;
+    // public DecimalFormat formatPuluhanRibu;
+    public DecimalFormat formatRatusanRibu;
+    public DecimalFormat formatJutaan;
+    public DecimalFormat formatPuluhanJuta;
+    public DecimalFormat formatRatusanJuta;
+    public DecimalFormat formatMiliaran;
+
+    public DecimalFormat formatRupiah;
 
     // Melakukan inisiasi class Tanamuang dengan parameter stage
     public TanamUangPengeluaranPage(Stage stage) {
@@ -69,6 +84,50 @@ public class TanamUangPengeluaranPage {
         fieldJumlah.setTranslateX(100);
         fieldJumlah.setTranslateY(80);
 
+        fieldJumlah.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                System.out.println("Text changed: " + newValue);
+                // Hapus listener sementara
+                fieldJumlah.textProperty().removeListener(this);
+
+                // Lakukan pembaruan teks
+                switch (newValue.length()) {
+                    case 4:
+                        formatAndSet(newValue, "#,##0");
+                        break;
+                    case 5:
+                        formatAndSet(newValue, "##,##0");
+                        break;
+                    case 6:
+                        formatAndSet(newValue, "###,##0");
+                        break;
+                    case 7:
+                        formatAndSet(newValue, "#,###,##0");
+                        break;
+                    case 8:
+                        formatAndSet(newValue, "##,###,##0");
+                        break;
+                    case 9:
+                        formatAndSet(newValue, "###,###,##0");
+                        break;
+                    case 10:
+                        formatAndSet(newValue, "#,###,###,##0");
+                        break;
+                    default:
+                        break;
+                }
+
+                // Tambahkan kembali listener setelah pembaruan teks
+                fieldJumlah.textProperty().addListener(this);
+            }
+
+            private void formatAndSet(String text, String format) {
+                DecimalFormat decimalFormat = new DecimalFormat(format);
+                fieldJumlah.setText(decimalFormat.format(Double.valueOf(text.replace(",", ""))));
+            }
+        });
+
         // Form tipe pembayaran
         Label labelTipePembayaran = new Label("Tipe Pembayaran:");
         labelTipePembayaran.setTranslateX(-50);
@@ -103,7 +162,7 @@ public class TanamUangPengeluaranPage {
             String tanggal = selectedTanggal.format(formatTanggal).toString();
             String kategori = combobox.getValue().toString();
             int kategoriId = 0;
-            int jumlah = Integer.parseInt(fieldJumlah.getText());
+            int jumlah = Integer.parseInt(fieldJumlah.getText().replace(",", ""));
             String keterangan = fieldKeterangan.getText();
             String tipePembayaran = "";
 
