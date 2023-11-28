@@ -152,7 +152,11 @@ public class LoginPage {
         // Mengatur kondisi login antara username dan password baik itu menuju database
         // atau mengecek kondisi field
         if (login.isValidated(username, password, statusCheckbox)) {
-            sceneController.switchToDashboard(); // Merubah scene menuju dashboard
+            if (login.penentuApakahSudahAdaSaldo()) {
+                sceneController.switchToDashboard(); // Merubah scene menuju dashboard
+            } else {
+                sceneController.switchToBuatSaldoDanModeKritis(); // Merubah scene menuju BuatSaldoDanModeKritis
+            }
         } else if (username.isEmpty() && password.isEmpty()) {
             // Memanggil metode untuk mengimplementasikan error style
             applyErrorStyle(fieldUsername, passwordField);
