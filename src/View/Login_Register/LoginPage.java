@@ -120,7 +120,7 @@ public class LoginPage {
 
         // Membuat root container menggunakan StackPane
         StackPane root = new StackPane();
-        StackPane.setMargin(root, new Insets(20, 0, 0, 0)); // Mengatur margin dari StackPane
+        // Mengatur margin dari StackPane
         // Menambahkan semua item kedalam Stackpane
         root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, passwordField, registerLink,
                 forgotPasswordLink,
