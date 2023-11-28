@@ -270,7 +270,7 @@ public class LoginModel {
             Statement statement = connection.createStatement(); // Membuat statement
             ResultSet result = statement.executeQuery(sql); // Execute query
             if (result.next()) {
-                int status = result.getInt("balance");
+                int status = result.getInt("kritis");
                 if (status == 0) {
                     System.out.println("Tidak ada saldo");
                     return false;
