@@ -54,11 +54,11 @@ public class LoginModel {
                                                      // dari object dbc
         System.out.println("Masuk ke dalam check last active user");
         // Mendapatkan username yang paling terakhir active
-        String lastActiveUser = getLastActiveUser(connection);
-        String lastPassword = getPasswordFromLastUser(connection, lastActiveUser);
-        this.rememberMe = getRememberMeFromUsername(connection, lastActiveUser);
+        this.lastActiveUsers = getLastActiveUser(connection);
+        String lastPassword = getPasswordFromLastUser(connection, lastActiveUsers);
+        this.rememberMe = getRememberMeFromUsername(connection, lastActiveUsers);
         if (this.rememberMe == true) {
-            masuk = isValidated(lastActiveUser, lastPassword, this.rememberMe);
+            masuk = isValidated(lastActiveUsers, lastPassword, this.rememberMe);
 
         }
         return masuk;
