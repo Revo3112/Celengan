@@ -71,7 +71,7 @@ public class DashboardPage {
             title.setTranslateY(-stageHeight / 8);
 
             // Menyesuaikan posisi tombol
-            btnTanamUang.setTranslateY(-stageWidth / 8);
+            btnTanamUang.setTranslateY(-stageHeight / 8);
             btnTanamUang.setFont(Font.font("Verdana", stageWidth / 50));
 
         };
