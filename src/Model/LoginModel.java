@@ -64,6 +64,10 @@ public class LoginModel {
         return masuk;
     }
 
+    public String getLastActiveUsers() {
+        return this.lastActiveUsers;
+    }
+
     private String getLastActiveUser(Connection connection) {
         this.lastActiveUsers = "";
         try {

@@ -1,23 +1,18 @@
 package View.Dashboard;
 
-import java.beans.EventHandler;
-
+import View.Dashboard.Section.MainSect;
 import Controller.SceneController;
+import Model.LoginModel;
 import javafx.beans.value.ChangeListener;
-import javafx.event.Event;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
@@ -29,64 +24,52 @@ public class DashboardPage {
     // Melakukan inisiasi class DashboardPage dengan parameter stage
     public DashboardPage(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
+        this.username = getUsername();
     }
 
     // Menampilkan halaman dashboard
     public void start() {
-        Text title = new Text("Selamat Datang,\n " + username + "!");
-        title.setFont(Font.font("Verdana", 20));
-        title.setFill(Color.WHITE);
+        // deklarasi welcome section
+        // Text welcomeText = new Text("Selamat Datang,\n " + username + "!");
+        // welcomeText.setStyle("-fx-font: 30 Poppins-Regular; -fx-font-weight:
+        // regular;");
+        // welcomeText.setTranslateY(-143);
+        // welcomeText.setTranslateX(-250);
+        // welcomeText.setFill(Color.WHITE);
 
-        Button btnTanamUang = new Button("Tanam Uang Pengeluaran");
-        btnTanamUang.setTranslateY(50);
+        // Button btnTanamUang = new Button("Tanam Uang Pengeluaran");
+        // btnTanamUang.setTranslateY(100);
 
-        btnTanamUang.setOnMouseClicked(e -> {
-            SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToTanamUangPengeluaran();
-        });
+        // btnTanamUang.setOnMouseClicked(e -> {
+        // SceneController sceneController = new SceneController(this.stage);
+        // sceneController.switchToTanamUangPengeluaran();
+        // });
 
-        StackPane stackpanenew = new StackPane();
-        stackpanenew.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
-        stackpanenew.setPadding(new Insets(10, 10, 10, 10));
-        stackpanenew.setMaxSize(stage.getWidth() - 100, stage.getHeight() - 100);
-        stackpanenew.getChildren().addAll(title, btnTanamUang);
+        // StackPane mainPane = new StackPane();
+        // mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius:
+        // 20;");
+        // mainPane.setPadding(new Insets(10, 10, 10, 10));
+        // mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() -
+        // 100);
+        // mainPane.getChildren().addAll(welcomeText, btnTanamUang);
 
-        StackPane root = new StackPane(stackpanenew);
+        StackPane mainPane;
+        mainPane = MainSect(stage);
+
+        StackPane root = new StackPane(mainPane);
         root.setStyle("-fx-background-color: #0D1416;");
 
         Scene scene = new Scene(root, Color.TRANSPARENT);
-        this.stage.setTitle("Register");
-        this.stage.setScene(scene);
-
-        // Menanggapi perubahan ukuran layar
-        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-            double stageWidth = this.stage.getWidth();
-            double stageHeight = this.stage.getHeight();
-
-            // Menyesuaikan ukuran dan posisi StackPane widht, height
-            stackpanenew.setMaxSize(stage.getWidth() - 100, stage.getHeight() - 100);
-
-            // Menyesuaikan font dan posisi teks
-            title.setFont(Font.font("Verdana", stageWidth / 50));
-            title.setTranslateY(-stageHeight / 8);
-
-            // Menyesuaikan posisi tombol
-            btnTanamUang.setTranslateY(-stageHeight / 8);
-            btnTanamUang.setFont(Font.font("Verdana", stageWidth / 50));
-
-        };
-
-        // Menambahkan listener ke lebar dan tinggi stage
-        this.stage.widthProperty().addListener(stageSizeListener);
-        this.stage.heightProperty().addListener(stageSizeListener);
 
         // Menampilkan stage
         this.stage.show();
 
         // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
         // sebuah mouse yang diklik
-        setOnMouseClicked(root, title);
+        setOnMouseClicked(root);
     }
+
+    // fungsi membuat text
 
     // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
     // sebuah mouse yang diklik
@@ -110,5 +93,11 @@ public class DashboardPage {
             }
         });
 
+    }
+
+    private String getUsername() {
+        LoginModel loginModel = new LoginModel();
+        System.out.println(loginModel.getLastActiveUsers());
+        return this.username = loginModel.getLastActiveUsers();
     }
 }

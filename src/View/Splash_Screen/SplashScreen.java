@@ -288,9 +288,9 @@ class Loading {
 
     public void updateProgress(StackPane mainContent) {
         double targetWidth = 820;
-        Duration initialDelay = Duration.seconds(6);
-        Duration animationDuration = Duration.seconds(6);
-        Duration pBarLightDelay = Duration.millis(300);
+        Duration initialDelay = Duration.seconds(1);
+        Duration animationDuration = Duration.seconds(1);
+        Duration pBarLightDelay = Duration.millis(100);
 
         // Update progressBar width and pBarLight width in a single timeline
         Timeline timeline = new Timeline(
