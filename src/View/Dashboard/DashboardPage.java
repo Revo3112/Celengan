@@ -18,8 +18,8 @@ import javafx.stage.Stage;
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
 
-    private Stage stage; // Deklarasi property stage
-    private String username;
+    private final Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
+    private final String username;
 
     // Melakukan inisiasi class DashboardPage dengan parameter stage
     public DashboardPage(Stage stage) {
@@ -29,44 +29,55 @@ public class DashboardPage {
 
     // Menampilkan halaman dashboard
     public void start() {
-        // deklarasi welcome section
-        // Text welcomeText = new Text("Selamat Datang,\n " + username + "!");
-        // welcomeText.setStyle("-fx-font: 30 Poppins-Regular; -fx-font-weight:
-        // regular;");
-        // welcomeText.setTranslateY(-143);
-        // welcomeText.setTranslateX(-250);
-        // welcomeText.setFill(Color.WHITE);
+        // membuat text
+        Text welcome = createText("Selamat Datang,", "-fx-font: 30 'Poppins-Regular';", "#FFFFFF", -143, -250);
+        // membuat main pane
+        StackPane mainPane = new StackPane(welcome);
+        mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
+        mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
+        mainPane.setPadding(new Insets(10, 10, 10, 10));
+        StackPane welcomePage = new StackPane(mainPane);
+        Scene scene = new Scene(welcomePage, 750, 500);
+        scene.getStylesheets().addAll(
+                "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
 
-        // Button btnTanamUang = new Button("Tanam Uang Pengeluaran");
-        // btnTanamUang.setTranslateY(100);
+        // Menanggapi perubahan ukuran layar
 
-        // btnTanamUang.setOnMouseClicked(e -> {
-        // SceneController sceneController = new SceneController(this.stage);
-        // sceneController.switchToTanamUangPengeluaran();
-        // });
+        // membuat pane sesi welcome
+        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
+            double stageWidth = this.stage.getWidth();
+            double stageHeight = this.stage.getHeight();
 
-        // StackPane mainPane = new StackPane();
-        // mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius:
-        // 20;");
-        // mainPane.setPadding(new Insets(10, 10, 10, 10));
-        // mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() -
-        // 100);
-        // mainPane.getChildren().addAll(welcomeText, btnTanamUang);
+            // Menyesuaikan ukuran dan posisi StackPane
+            mainPane.setMaxSize(stageWidth - 200, stageHeight - 100);
 
-        StackPane mainPane;
-        mainPane = MainSect(stage);
+            welcome.setTranslateY(-stageHeight / 2 + 107); // Menggunakan proporsi dengan tinggi awal 600
+            welcome.setTranslateX(-stageWidth / 2 + 250); // Menggunakan proporsi dengan lebar awal 750
+        };
 
-        StackPane root = new StackPane(mainPane);
-        root.setStyle("-fx-background-color: #0D1416;");
+        // Menambahkan listener ke lebar dan tinggi stage
+        this.stage.widthProperty().addListener(stageSizeListener);
+        this.stage.heightProperty().addListener(stageSizeListener);
 
-        Scene scene = new Scene(root, Color.TRANSPARENT);
+        this.stage.setScene(scene);
+        this.stage.setMinHeight(500);
+        this.stage.setMinWidth(750);
+    }
 
-        // Menampilkan stage
-        this.stage.show();
+    // fungsi untuk membuat text dengan return Text
+    public Text createText(String text, String style, String color, double transX, double transY) {
+        Text newText = new Text(text);
+        newText.setStyle(style); // menetapkan style text
+        newText.setFill(Color.valueOf(color)); // menetapkan warna text
+        newText.setTranslateX(transX); // menetapkan posisi x pada text
+        newText.setTranslateY(transY); // menetapkan posisi y pada text
+        return newText;
+    }
 
-        // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
-        // sebuah mouse yang diklik
-        setOnMouseClicked(root);
+    // Fungsi untuk mendapatkan username
+    private String getUsername() {
+        LoginModel loginModel = new LoginModel();
+        return loginModel.getLastActiveUsers();
     }
 
     // fungsi membuat text
@@ -93,11 +104,5 @@ public class DashboardPage {
             }
         });
 
-    }
-
-    private String getUsername() {
-        LoginModel loginModel = new LoginModel();
-        System.out.println(loginModel.getLastActiveUsers());
-        return this.username = loginModel.getLastActiveUsers();
     }
 }

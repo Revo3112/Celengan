@@ -2,6 +2,7 @@ package View.Dashboard.Section;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -27,7 +28,7 @@ public class MainSect {
         mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
         mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
         mainPane.setPadding(new Insets(10, 10, 10, 10));
-
+        Scene scene = new Scene(mainPane, 750, 500);
         scene.getStylesheets().addAll(
                 "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
 
