@@ -98,7 +98,7 @@ public class RegistrationPage {
         // stage.setFullScreen(true);
         this.stage.setTitle("Register"); // Mengatur isi dari title
         this.stage.setScene(scene); // Memasukkan scene ke dalam stage
-        this.stage.show(); // Menampilkan stage
+        // this.stage.show(); // Menampilkan stage
 
         // Handle button click
         btnregister.setOnAction(e -> handleregister(

@@ -103,7 +103,7 @@ public class RequestNewPass {
         Scene scene = new Scene(root, 500, 500, Color.gray(0.2));
         this.stage.setScene(scene); // Menambahkan scene ke dalam stage
         this.stage.setTitle("Request New Password");
-        this.stage.show(); // Menampilkan stage
+        // this.stage.show(); // Menampilkan stage
 
     }
 

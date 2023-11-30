@@ -22,6 +22,7 @@ public class SceneController {
         stage.setFullScreen(false); // Set fullscreen menjadi false sehingga tidak fullscreen
         stage.setWidth(1000); // Mengatur lebar panggung menjadi 1000 pixel
         stage.setHeight(500); // Mengatur tinggi panggung menjadi 500 pixel
+        // stage.show(); // Menampilkan panggung
     }
 
     /* LOGIN_REGISTRATION */
@@ -43,6 +44,7 @@ public class SceneController {
     public void switchToDashboard() {
         DashboardPage dashboard = new DashboardPage(this.stage); // Instansiasi class DashboardPage ke dalam variable
                                                                  // dashboard
+        System.out.println("Dashboard");
         dashboard.start(); // Menjalankan method start pada objek dashboard
     }
 

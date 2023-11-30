@@ -92,10 +92,10 @@ public class TanamUangPengeluaranPage {
 
                 fieldJumlah.textProperty().removeListener(this);
                 // if (newValue.length() >= 13) {
-                //     System.out.println("sudah lebih dari 13");
-                    
-                //     // newValue = newValue.substring(0, 13);
-                //     newValue.consume();
+                // System.out.println("sudah lebih dari 13");
+
+                // // newValue = newValue.substring(0, 13);
+                // newValue.consume();
                 // }
 
                 // Lakukan pembaruan teks
@@ -171,7 +171,7 @@ public class TanamUangPengeluaranPage {
         // Button Simpan
         Button btnSimpan = new Button("Simpan");
         btnSimpan.setTranslateY(200);
-        
+
         btnSimpan.setOnMouseClicked(e -> {
             LocalDate selectedTanggal = datePickerTanggal.getValue();
             DateTimeFormatter formatTanggal = DateTimeFormatter.ofPattern("YYYY-MM-d");
@@ -186,7 +186,7 @@ public class TanamUangPengeluaranPage {
             for (int i = 0; i < listKategori.length; i++) {
                 if (listKategori[i] == kategori) {
                     kategoriId = i + 1;
-                } 
+                }
             }
 
             if (radioBtnCash.isSelected()) {
@@ -194,7 +194,7 @@ public class TanamUangPengeluaranPage {
             } else if (radioBtnTransfer.isSelected()) {
                 tipePembayaran = radioBtnTransfer.getText();
             }
-            
+
             if (TanamUangModel.simpanPengeluaran(tanggal, kategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
                 datePickerTanggal.setValue(null);
                 combobox.getSelectionModel().clearSelection();
@@ -206,10 +206,12 @@ public class TanamUangPengeluaranPage {
             }
         });
 
-        StackPane root = new StackPane(btnPemasukan, title, labelTanggal, datePickerTanggal, labelKategori, combobox, labelJumlah, fieldJumlah, labelKeterangan, fieldKeterangan, labelTipePembayaran, radioBtnCash, radioBtnTransfer, btnSimpan); // Memasukkan semua child node
-                                                                                          // combobox ke dalam root node
+        StackPane root = new StackPane(btnPemasukan, title, labelTanggal, datePickerTanggal, labelKategori, combobox,
+                labelJumlah, fieldJumlah, labelKeterangan, fieldKeterangan, labelTipePembayaran, radioBtnCash,
+                radioBtnTransfer, btnSimpan); // Memasukkan semua child node
+        // combobox ke dalam root node
         Scene scene = new Scene(root); // Memasukkan root node ke dalam scene
         this.stage.setScene(scene); // Memasukkan scene ke dalam stage
-        this.stage.show(); // Menampilkan stage
+        // this.stage.show(); // Menampilkan stage
     }
 }

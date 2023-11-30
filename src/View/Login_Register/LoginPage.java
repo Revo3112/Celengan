@@ -137,8 +137,8 @@ public class LoginPage {
         // Menetapkan scene pada stage
         this.stage.setScene(scene);
 
-        // Menampilkan stage
-        this.stage.show();
+        // // Menampilkan stage
+        // this.stage.show();
 
         // Menangani klik tombol "Login"
         btnLogin.setOnAction(e -> handleLogin(fieldUsername.getText(), passwordField.getText()));

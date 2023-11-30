@@ -47,25 +47,32 @@ public class LoginModel {
 
     public boolean penentuBagianLastUser() {
         boolean masuk = false;
-        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
-                                                                 // dengan nilai dari method getDatabaseConnection().
-                                                                 // Berguna untuk mendapat koneksi ke database
-        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection()
-                                                     // dari object dbc
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
         System.out.println("Masuk ke dalam check last active user");
         // Mendapatkan username yang paling terakhir active
-        this.lastActiveUsers = getLastActiveUser(connection);
-        String lastPassword = getPasswordFromLastUser(connection, lastActiveUsers);
-        this.rememberMe = getRememberMeFromUsername(connection, lastActiveUsers);
-        if (this.rememberMe == true) {
-            masuk = isValidated(lastActiveUsers, lastPassword, this.rememberMe);
+        String lastActiveUsers = getLastActiveUser(connection);
 
+        // Periksa apakah lastActiveUsers tidak kosong
+        if (!lastActiveUsers.isEmpty()) {
+            String lastPassword = getPasswordFromLastUser(connection, lastActiveUsers);
+            this.rememberMe = getRememberMeFromUsername(connection, lastActiveUsers);
+            if (this.rememberMe) {
+                masuk = isValidated(lastActiveUsers, lastPassword, this.rememberMe);
+                System.out.println("Masuk ke dalam remember me");
+                System.out.println("Username: " + lastActiveUsers);
+            }
+        } else {
+            System.out.println("Tidak ada last active user");
         }
+
         return masuk;
     }
 
     public String getLastActiveUsers() {
-        return this.lastActiveUsers;
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+        return getLastActiveUser(connection);
     }
 
     private String getLastActiveUser(Connection connection) {

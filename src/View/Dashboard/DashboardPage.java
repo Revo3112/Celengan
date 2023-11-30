@@ -18,8 +18,8 @@ import javafx.stage.Stage;
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
 
-    private final Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
-    private final String username;
+    private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
+    private String username;
 
     // Melakukan inisiasi class DashboardPage dengan parameter stage
     public DashboardPage(Stage stage) {
@@ -30,13 +30,22 @@ public class DashboardPage {
     // Menampilkan halaman dashboard
     public void start() {
         // membuat text
-        Text welcome = createText("Selamat Datang,", "-fx-font: 30 'Poppins-Regular';", "#FFFFFF", -143, -250);
+        Text welcome = createText("Selamat Datang,\n" + this.username, "-fx-font: 30 'Poppins-Regular';", "#FFFFFF",
+                -250, -143);
+        Button Tanamuang = new Button("Tanam Uang");
+        Tanamuang.setTranslateY(80);
+        Tanamuang.setOnMouseClicked(e -> {
+            SceneController sceneController = new SceneController(this.stage);
+            sceneController.switchToTanamUangPemasukan();
+        });
         // membuat main pane
-        StackPane mainPane = new StackPane(welcome);
+        StackPane mainPane = new StackPane();
+        mainPane.getChildren().addAll(welcome, Tanamuang);
         mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
         mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
         mainPane.setPadding(new Insets(10, 10, 10, 10));
         StackPane welcomePage = new StackPane(mainPane);
+        StackPane.setAlignment(mainPane, javafx.geometry.Pos.CENTER);
         Scene scene = new Scene(welcomePage, 750, 500);
         scene.getStylesheets().addAll(
                 "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
@@ -53,6 +62,13 @@ public class DashboardPage {
 
             welcome.setTranslateY(-stageHeight / 2 + 107); // Menggunakan proporsi dengan tinggi awal 600
             welcome.setTranslateX(-stageWidth / 2 + 250); // Menggunakan proporsi dengan lebar awal 750
+
+            Tanamuang.setTranslateX(-stageWidth / 2 + 500);
+            Tanamuang.setTranslateY(-stageHeight / 2 + 330);
+
+            System.out.println("Tanamuang position: " + Tanamuang.getTranslateX() + ", " + Tanamuang.getTranslateY());
+            System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
+            System.out.println("Stage size: " + stageWidth + ", " + stageHeight);
         };
 
         // Menambahkan listener ke lebar dan tinggi stage
@@ -62,6 +78,8 @@ public class DashboardPage {
         this.stage.setScene(scene);
         this.stage.setMinHeight(500);
         this.stage.setMinWidth(750);
+        this.stage.show();
+        setOnMouseClicked(welcomePage, welcome);
     }
 
     // fungsi untuk membuat text dengan return Text

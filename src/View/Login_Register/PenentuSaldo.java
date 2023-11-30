@@ -69,7 +69,7 @@ public class PenentuSaldo {
 
         Scene scene = new Scene(root, 500, 500);
         this.stage.setScene(scene);
-        this.stage.show();
+        // this.stage.show();
 
     }
 

@@ -60,7 +60,7 @@ public class TanamUangPemasukanPage {
         // ComboBox digunakan untuk menampilkan pilihan
         ComboBox combobox = new ComboBox(FXCollections.observableArrayList(listKategori));
         combobox.setTranslateX(60);
-        combobox.setTranslateY(40); 
+        combobox.setTranslateY(40);
 
         // Form jumlah
         Label labelJumlah = new Label("Jumlah:");
@@ -171,7 +171,7 @@ public class TanamUangPemasukanPage {
             for (int i = 0; i < listKategori.length; i++) {
                 if (listKategori[i] == kategori) {
                     kategoriId = i + model.getJumlahKategoriPemasukan() + 1;
-                } 
+                }
             }
 
             if (radioBtnCash.isSelected()) {
@@ -179,7 +179,7 @@ public class TanamUangPemasukanPage {
             } else if (radioBtnTransfer.isSelected()) {
                 tipePembayaran = radioBtnTransfer.getText();
             }
-            
+
             if (TanamUangModel.simpanPengeluaran(tanggal, kategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
                 datePickerTanggal.setValue(null);
                 combobox.getSelectionModel().clearSelection();
@@ -191,10 +191,12 @@ public class TanamUangPemasukanPage {
             }
         });
 
-        StackPane root = new StackPane(btnPengeluaran, title, labelTanggal, datePickerTanggal, labelKategori, combobox, labelJumlah, fieldJumlah, labelKeterangan, fieldKeterangan, labelTipePembayaran, radioBtnCash, radioBtnTransfer, btnSimpan); // Memasukkan semua child node
-                                                                                          // combobox ke dalam root node
+        StackPane root = new StackPane(btnPengeluaran, title, labelTanggal, datePickerTanggal, labelKategori, combobox,
+                labelJumlah, fieldJumlah, labelKeterangan, fieldKeterangan, labelTipePembayaran, radioBtnCash,
+                radioBtnTransfer, btnSimpan); // Memasukkan semua child node
+        // combobox ke dalam root node
         Scene scene = new Scene(root); // Memasukkan root node ke dalam scene
         this.stage.setScene(scene); // Memasukkan scene ke dalam stage
-        this.stage.show(); // Menampilkan stage
+        // this.stage.show(); // Menampilkan stage
     }
 }
