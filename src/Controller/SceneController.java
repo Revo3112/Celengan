@@ -10,8 +10,7 @@ import View.Login_Register.RequestNewPass;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 import Model.TanamUangModel;
-import View.Dashboard.TanamUangPemasukanPage;
-import View.Dashboard.TanamUangPengeluaranPage;
+import View.Dashboard.TanamUangPage;
 
 // class SceneController digunakan untuk mengatur perpindahan scene
 public class SceneController {
@@ -48,21 +47,13 @@ public class SceneController {
         dashboard.start(); // Menjalankan method start pada objek dashboard
     }
 
-    // Tanam Uang Pengeluaran
-    public void switchToTanamUangPengeluaran() {
-        TanamUangPengeluaranPage tanamUang = new TanamUangPengeluaranPage(this.stage); // Instansiasi class
+    // Tanam Uang
+    public void switchToTanamUang() {
+        TanamUangPage tanamUang = new TanamUangPage(this.stage); // Instansiasi class
                                                                                        // TanamUangPage ke dalam
                                                                                        // variable
         // tanamUang
-        tanamUang.start(TanamUangModel.getKategoriPengeluaran()); // Menjalankan method start pada objek tanamUang
-    }
-
-    // Tanam Uang Pemasukan
-    public void switchToTanamUangPemasukan() {
-        TanamUangPemasukanPage tanamUang = new TanamUangPemasukanPage(this.stage); // Instansiasi class TanamUangPage ke
-                                                                                   // dalam variable
-        // tanamUang
-        tanamUang.start(TanamUangModel.getKategoriPemasukan()); // Menjalankan method start pada objek tanamUang
+        tanamUang.start(TanamUangModel.getKategoriPemasukan(), TanamUangModel.getKategoriPengeluaran()); // Menjalankan method start pada objek tanamUang
     }
 
     // Request New Password

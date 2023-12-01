@@ -36,7 +36,7 @@ public class DashboardPage {
         Tanamuang.setTranslateY(80);
         Tanamuang.setOnMouseClicked(e -> {
             SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToTanamUangPemasukan();
+            sceneController.switchToTanamUang();
         });
         // membuat main pane
         StackPane mainPane = new StackPane();
@@ -121,6 +121,6 @@ public class DashboardPage {
                 System.out.println("Item placed at Y -> " + itemY);
             }
         });
-
     }
 }
+

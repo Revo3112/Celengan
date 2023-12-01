@@ -28,7 +28,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
-public class TanamUangPengeluaranPage {
+public class TanamUangPage {
     private Stage stage; // Deklarasi property stage
 
     public DecimalFormat formatRibuan;
@@ -41,39 +41,59 @@ public class TanamUangPengeluaranPage {
 
     public DecimalFormat formatRupiah;
 
+    private ComboBox<String> combobox = new ComboBox<String>();
+    private Text title = new Text("Pengeluaran");
+    private String tipeTanamUang = "";
+
     // Melakukan inisiasi class Tanamuang dengan parameter stage
-    public TanamUangPengeluaranPage(Stage stage) {
+    public TanamUangPage(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
     }
 
     // Menampilkan halaman Tanam Uang
-    public void start(String listKategori[]) {
-        Button btnPemasukan = new Button("Go to Pemasukan Page");
+    public void start(String listKategoriPemasukan[], String listKategoriPengeluaran[]) {
+
+        System.out.println(listKategoriPengeluaran);
+        this.combobox.setItems(FXCollections.observableArrayList(listKategoriPengeluaran));
+        this.combobox.setTranslateX(60);
+        this.combobox.setTranslateY(40);
+        // Form kategori
+        Label labelKategori = new Label("Kategori:");
+        labelKategori.setTranslateX(-50);
+        labelKategori.setTranslateY(40);
+        // ComboBox digunakan untuk menampilkan pilihan
+        // ComboBox combobox = new ComboBox(FXCollections.observableArrayList(listKategoriPemasukan));
+
+        Button btnPemasukan = new Button("Pemasukan");
+        btnPemasukan.setTranslateX(-50);
         btnPemasukan.setTranslateY(-80);
+
         btnPemasukan.setOnMouseClicked(e -> {
-            SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToTanamUangPemasukan();
+            this.combobox.setItems(FXCollections.observableArrayList(listKategoriPemasukan));
+            this.title.setText("Pemasukan");
+            this.tipeTanamUang = "Pemasukan";
         });
 
-        Text title = new Text("Pengeluaran"); // Membuat objek text dengan isi "This is Tanam Uang Page"
-        title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
-        title.setFill(Color.BLACK); // Mengatur warna dari text
-        title.setTranslateY(-40);
+        Button btnPengeluaran = new Button("Pengeluaran");
+
+        btnPengeluaran.setTranslateX(50);
+        btnPengeluaran.setTranslateY(-80);
+        btnPengeluaran.setOnMouseClicked(e -> {
+            this.combobox.setItems(FXCollections.observableArrayList(listKategoriPengeluaran));
+            this.title.setText("Pengeluaran");
+            this.tipeTanamUang = "Pengeluaran";
+        });
+
+        // this.title = new Text(); // Membuat objek text dengan isi "This is Tanam Uang Page"
+        this.title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
+        this.title.setFill(Color.BLACK); // Mengatur warna dari text
+        this.title.setTranslateY(-40);
 
         // Form Tanggal
         Label labelTanggal = new Label("Tanggal:");
         labelTanggal.setTranslateX(-50);
         DatePicker datePickerTanggal = new DatePicker();
         datePickerTanggal.setTranslateX(90);
-
-        // Form kategori
-        Label labelKategori = new Label("Kategori:");
-        labelKategori.setTranslateX(-50);
-        labelKategori.setTranslateY(40);
-        // ComboBox digunakan untuk menampilkan pilihan
-        ComboBox combobox = new ComboBox(FXCollections.observableArrayList(listKategori));
-        combobox.setTranslateX(60);
-        combobox.setTranslateY(40);
 
         // Form jumlah
         Label labelJumlah = new Label("Jumlah:");
@@ -142,7 +162,6 @@ public class TanamUangPengeluaranPage {
                 DecimalFormat decimalFormat = new DecimalFormat(format);
                 fieldJumlah.setText(decimalFormat.format(Double.valueOf(text.replace(",", ""))));
             }
-
         });
 
         // Form tipe pembayaran
@@ -183,8 +202,8 @@ public class TanamUangPengeluaranPage {
             String keterangan = fieldKeterangan.getText();
             String tipePembayaran = "";
 
-            for (int i = 0; i < listKategori.length; i++) {
-                if (listKategori[i] == kategori) {
+            for (int i = 0; i < listKategoriPemasukan.length; i++) {
+                if (listKategoriPemasukan[i] == kategori) {
                     kategoriId = i + 1;
                 }
             }
@@ -195,18 +214,33 @@ public class TanamUangPengeluaranPage {
                 tipePembayaran = radioBtnTransfer.getText();
             }
 
-            if (TanamUangModel.simpanPengeluaran(tanggal, kategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
-                datePickerTanggal.setValue(null);
-                combobox.getSelectionModel().clearSelection();
-                fieldJumlah.setText("");
-                fieldKeterangan.setText("");
-                radioBtnCash.setSelected(false);
-                radioBtnTransfer.setSelected(false);
-                AlertHelper.info("Pengeluaran telah tercatat");
+            if (tipeTanamUang.toLowerCase() == "pengeluaran") {
+                if (TanamUangModel.simpanPengeluaran(tanggal, kategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
+                    datePickerTanggal.setValue(null);
+                    combobox.getSelectionModel().clearSelection();
+                    fieldJumlah.setText("");
+                    fieldKeterangan.setText("");
+                    radioBtnCash.setSelected(false);
+                    radioBtnTransfer.setSelected(false);
+                    AlertHelper.info("Pengeluaran telah tercatat");
+                }
+            } else {
+                if (TanamUangModel.simpanPemasukan(tanggal, kategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
+                    datePickerTanggal.setValue(null);
+                    combobox.getSelectionModel().clearSelection();
+                    fieldJumlah.setText("");
+                    fieldKeterangan.setText("");
+                    radioBtnCash.setSelected(false);
+                    radioBtnTransfer.setSelected(false);
+                    AlertHelper.info("Pemasukan telah tercatat");
+                }
             }
         });
 
-        StackPane root = new StackPane(btnPemasukan, title, labelTanggal, datePickerTanggal, labelKategori, combobox,
+       // StackPane root = new StackPane(btnPemasukan, title, labelTanggal, datePickerTanggal, labelKategori, this.combobox,
+                //labelJumlah, fieldJumlah, labelKeterangan, fieldKeterangan, labelTipePembayaran, radioBtnCash,
+                //radioBtnTransfer, btnSimpan); // Memasukkan semua child node
+        StackPane root = new StackPane(btnPengeluaran, btnPemasukan, this.title, labelTanggal, datePickerTanggal, labelKategori, this.combobox,
                 labelJumlah, fieldJumlah, labelKeterangan, fieldKeterangan, labelTipePembayaran, radioBtnCash,
                 radioBtnTransfer, btnSimpan); // Memasukkan semua child node
         // combobox ke dalam root node
