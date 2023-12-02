@@ -96,7 +96,7 @@ public class LoginModel {
             String sql = "SELECT id FROM users WHERE last_edited = (SELECT MAX(last_edited) FROM users)";
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(sql);
-
+            System.out.println("Masuk ke dalam _userId" + result);
             if (result.next()) {
                 this.userId = result.getInt("id");
             }

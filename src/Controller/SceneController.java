@@ -7,6 +7,7 @@ import View.Login_Register.LoginPage;
 import View.Login_Register.PenentuSaldo;
 import View.Login_Register.RegistrationPage;
 import View.Login_Register.RequestNewPass;
+import View.PanenUang.PanenUang;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 import Model.TanamUangModel;
@@ -50,10 +51,13 @@ public class SceneController {
     // Tanam Uang
     public void switchToTanamUang() {
         TanamUangPage tanamUang = new TanamUangPage(this.stage); // Instansiasi class
-                                                                                       // TanamUangPage ke dalam
-                                                                                       // variable
+                                                                 // TanamUangPage ke dalam
+                                                                 // variable
         // tanamUang
-        tanamUang.start(TanamUangModel.getKategoriPemasukan(), TanamUangModel.getKategoriPengeluaran()); // Menjalankan method start pada objek tanamUang
+        tanamUang.start(TanamUangModel.getKategoriPemasukan(), TanamUangModel.getKategoriPengeluaran()); // Menjalankan
+                                                                                                         // method start
+                                                                                                         // pada objek
+                                                                                                         // tanamUang
     }
 
     // Request New Password
@@ -69,6 +73,13 @@ public class SceneController {
         PenentuSaldo penentuSaldo = new PenentuSaldo(this.stage); // Instansiasi class PenentuSaldo ke dalam variabel
                                                                   // penentuSaldo
         penentuSaldo.penentuSaldo(); // Menjalankan method penentuSaldo() pada class PenentuSaldo
+    }
+
+    // Menambahkan Target
+    public void switchToPanenUang() {
+        PanenUang tambahTarget = new PanenUang(this.stage); // Instansiasi class TambahTarget ke dalam variabel
+                                                            // tambahTarget
+        tambahTarget.start(); // Menjalankan method start() pada class TambahTarget
     }
 }
 

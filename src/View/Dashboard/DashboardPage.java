@@ -38,9 +38,17 @@ public class DashboardPage {
             SceneController sceneController = new SceneController(this.stage);
             sceneController.switchToTanamUang();
         });
+
+        Button PanenUang = new Button("Panen Uang");
+        PanenUang.setTranslateY(80);
+        PanenUang.setTranslateX(100);
+        PanenUang.setOnMouseClicked(e -> {
+            SceneController sceneController = new SceneController(this.stage);
+            sceneController.switchToPanenUang();
+        });
         // membuat main pane
         StackPane mainPane = new StackPane();
-        mainPane.getChildren().addAll(welcome, Tanamuang);
+        mainPane.getChildren().addAll(welcome, Tanamuang, PanenUang);
         mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
         mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
         mainPane.setPadding(new Insets(10, 10, 10, 10));
@@ -63,8 +71,10 @@ public class DashboardPage {
             welcome.setTranslateY(-stageHeight / 2 + 107); // Menggunakan proporsi dengan tinggi awal 600
             welcome.setTranslateX(-stageWidth / 2 + 250); // Menggunakan proporsi dengan lebar awal 750
 
-            Tanamuang.setTranslateX(-stageWidth / 2 + 500);
+            // Tanamuang.setTranslateX(-stageWidth / 2 + 500);
             Tanamuang.setTranslateY(-stageHeight / 2 + 330);
+
+            PanenUang.setTranslateY(-stageHeight / 2 + 330);
 
             System.out.println("Tanamuang position: " + Tanamuang.getTranslateX() + ", " + Tanamuang.getTranslateY());
             System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
@@ -98,8 +108,6 @@ public class DashboardPage {
         return loginModel.getLastActiveUsers();
     }
 
-    // fungsi membuat text
-
     // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
     // sebuah mouse yang diklik
     private void setOnMouseClicked(StackPane root, Node item) {
@@ -123,4 +131,3 @@ public class DashboardPage {
         });
     }
 }
-
