@@ -4,6 +4,7 @@ import Controller.SceneController;
 import Model.*;
 import Utils.AlertHelper;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -15,9 +16,12 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 // membuat class LoginPage
 public class LoginPage {
@@ -25,6 +29,11 @@ public class LoginPage {
     private boolean statusCheckbox; // Deklarasi property statusCheckbox
     private TextField fieldUsername; // Deklarasi property fieldUsername
     private PasswordField passwordField; // Deklarasi property passwordField
+    private boolean isDragged = false;
+    private double xOffset = 0;
+    private double yOffset = 0;
+    private boolean isMinimized = false;
+    private double mmcSectYPos = 0;
 
     // Melakukan inisiasi class LoginPage dengan parameter stage
     public LoginPage(Stage stage) {
@@ -49,99 +58,161 @@ public class LoginPage {
 
     // Menampilkan halaman login
     public void start() {
-        this.fieldUsername = new TextField(); // Kode ini akan membuat TextField baru
-        this.passwordField = new PasswordField(); // Konstruktor PasswordField untuk membuat PasswordField baru
+        /* UI/UX : NULLPTR */
+        // getting screen resolution
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
 
-        // Components
-        Text title = new Text(); // Membuat objek text
-        title.setText("Please Login"); // Mengatur isi dari text
-        title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
-        title.setFill(Color.BLACK); // Mengatur warna dari text
-        title.setTranslateY(-40); // Mengatur posisi dari text pada sumbu y
+        // Background for outer pane
+        Rectangle background = new Rectangle(bounds.getWidth(), bounds.getHeight());
+        background.setFill(Color.valueOf("#141F23"));
+        background.setArcHeight(30);
+        background.setArcWidth(30);
 
-        fieldUsername.setMaxWidth(200); // Mengatur lebar maximum dari field username
-        fieldUsername.setTranslateX(200); // Mengatur posisi x dari field username
+        // MMC Section
+        Rectangle mmcSect = new Rectangle(bounds.getWidth(), 30);
+        mmcSect.setTranslateY(mmcSectYPos);
+        mmcSect.setArcHeight(30);
+        mmcSect.setArcWidth(30);
+        mmcSect.setFill(Color.valueOf("#141F23"));
 
-        // Mengatur lebar maximum dari field password
-        passwordField.setMaxWidth(200);
+        // background declaration
+        StackPane outPane = new StackPane(background, mmcSect);
+        // Membuat root container menggunakan StackPane
+        StackPane root = new StackPane(outPane);
 
-        // Mengatur posisi x dari field password
-        passwordField.setTranslateX(200);
-
-        // Mengatur posisi y dari field password
-        passwordField.setTranslateY(40);
-
-        // Membuat label "Username:"
-        Label labelUsername = new Label("Username:");
-        labelUsername.setTranslateX(-50); // Mengatur posisi x dari label username
-
-        // Membuat label "Password:"
-        Label labelPassword = new Label("Password:");
-        labelPassword.setTranslateX(-50); // Mengatur posisi x dari label password
-        labelPassword.setTranslateY(40); // Mengatur posisi y dari label password
-
-        // Membuat Hyperlink "Register" untuk pindah ke halaman registrasi
-        Hyperlink registerLink = new Hyperlink("Register");
-        registerLink.setTranslateX(280); // Mengatur posisi x dari registerlink
-        registerLink.setTranslateY(80); // Mengatur posisi y dari registerlink
-        registerLink.setStyle( // Mengatur style pada tulisan register link
-                "-fx-underline: true;" +
-                        "-fx-font-family: Verdana");
-        registerLink.setOnAction(e -> { // Menginisiasi ketika registet link di tekan
-            SceneController sceneController = new SceneController(this.stage); // Membuat objek scenecontroller
-            sceneController.switchToRegistration(); // Merubah stage menggunakan scene controller menuju registrasi
+        // Root condition
+        // Draggable root window
+        mmcSect.setOnMouseDragged(e -> {
+            isDragged = true;
+            stage.setX(e.getScreenX() - xOffset);
+            stage.setY(e.getScreenY() - yOffset);
         });
-
-        Hyperlink forgotPasswordLink = new Hyperlink("Forgot Password?");
-        forgotPasswordLink.setTranslateX(280);
-        forgotPasswordLink.setTranslateY(120);
-        forgotPasswordLink.setStyle(
-                "-fx-underline: true;" +
-                        "-fx-font-family: Verdana");
-        forgotPasswordLink.setOnAction(e -> {
-            SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToRequestNewPassword();
-        });
-
-        // Membuat CheckBox "Remember Me"
-        CheckBox checkbox = new CheckBox("Remember Me");
-        checkbox.setTranslateX(-30); // mengatur posisi x pada checkbox
-        checkbox.setTranslateY(80); // mengatur posisi y pada checkbox
-        checkbox.setOnAction(e -> { // Menjalankan kondisi ketika checkbox ditekan
-            if (checkbox.isSelected()) {
-                this.statusCheckbox = true; // Merubah status checkbox menjadi true
-            } else {
-                this.statusCheckbox = false; // Merubah status checkbox menjadi false
+        // Minimize by double click
+        mmcSect.setOnMousePressed(e -> {
+            xOffset = e.getSceneX();
+            yOffset = e.getSceneY();
+            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
+                if (isMinimized) {
+                    // Maximize
+                    isMinimized = false;
+                    if (isDragged) {
+                        stage.setX(0);
+                        stage.setY(0);
+                    }
+                    background.setWidth(bounds.getWidth());
+                    background.setHeight(bounds.getHeight());
+                    // mmc pref
+                    mmcSect.setTranslateY(mmcSectYPos);
+                    mmcSect.setWidth(background.getWidth());
+                    mmcSect.setHeight(30);
+                } else {
+                    // Minimize
+                    isMinimized = true;
+                    background.setWidth(bounds.getWidth() - 400);
+                    background.setHeight(bounds.getHeight() - 200);
+                    // mmc pref
+                    mmcSect.setTranslateY(mmcSectYPos + 100);
+                    mmcSect.setWidth(background.getWidth());
+                    mmcSect.setHeight(30);
+                }
             }
         });
 
-        // Membuat Button "Login"
-        Button btnLogin = new Button("Login");
-        btnLogin.setTranslateY(120); // Mengatur posisi y dari tombol login
-
-        // Membuat root container menggunakan StackPane
-        StackPane root = new StackPane();
-        // Mengatur margin dari StackPane
-        // Menambahkan semua item kedalam Stackpane
-        root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword, passwordField, registerLink,
-                forgotPasswordLink,
-                checkbox,
-                btnLogin);
-
-        // Membuat Scene dengan latar belakang abu-abu
-        Scene scene = new Scene(root, Color.gray(0.2));
+        // Membuat Scene dengan latar belakang transparent
+        Scene scene = new Scene(root, Color.TRANSPARENT);
 
         // Memberikan judul pada stage
-        this.stage.setTitle("Register");
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setMaximized(true);
+        stage.setScene(scene); // menetapkan scene dari sebuah stage
+        stage.show(); // menampilkan stage
 
-        // Menetapkan scene pada stage
-        this.stage.setScene(scene);
+        /* END OF UI/UX */
 
-        // // Menampilkan stage
-        // this.stage.show();
+        // this.fieldUsername = new TextField(); // Kode ini akan membuat TextField baru
+        // this.passwordField = new PasswordField(); // Konstruktor PasswordField untuk
+        // membuat PasswordField baru
+
+        // // Components
+        // Text title = new Text(); // Membuat objek text
+        // title.setText("Please Login"); // Mengatur isi dari text
+        // title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
+        // title.setFill(Color.BLACK); // Mengatur warna dari text
+        // title.setTranslateY(-40); // Mengatur posisi dari text pada sumbu y
+
+        // fieldUsername.setMaxWidth(200); // Mengatur lebar maximum dari field username
+        // fieldUsername.setTranslateX(200); // Mengatur posisi x dari field username
+
+        // // Mengatur lebar maximum dari field password
+        // passwordField.setMaxWidth(200);
+
+        // // Mengatur posisi x dari field password
+        // passwordField.setTranslateX(200);
+
+        // // Mengatur posisi y dari field password
+        // passwordField.setTranslateY(40);
+
+        // // Membuat label "Username:"
+        // Label labelUsername = new Label("Username:");
+        // labelUsername.setTranslateX(-50); // Mengatur posisi x dari label username
+
+        // // Membuat label "Password:"
+        // Label labelPassword = new Label("Password:");
+        // labelPassword.setTranslateX(-50); // Mengatur posisi x dari label password
+        // labelPassword.setTranslateY(40); // Mengatur posisi y dari label password
+
+        // // Membuat Hyperlink "Register" untuk pindah ke halaman registrasi
+        // Hyperlink registerLink = new Hyperlink("Register");
+        // registerLink.setTranslateX(280); // Mengatur posisi x dari registerlink
+        // registerLink.setTranslateY(80); // Mengatur posisi y dari registerlink
+        // registerLink.setStyle( // Mengatur style pada tulisan register link
+        // "-fx-underline: true;" +
+        // "-fx-font-family: Verdana");
+        // registerLink.setOnAction(e -> { // Menginisiasi ketika registet link di tekan
+        // SceneController sceneController = new SceneController(this.stage); // Membuat
+        // objek scenecontroller
+        // sceneController.switchToRegistration(); // Merubah stage menggunakan scene
+        // controller menuju registrasi
+        // });
+
+        // Hyperlink forgotPasswordLink = new Hyperlink("Forgot Password?");
+        // forgotPasswordLink.setTranslateX(280);
+        // forgotPasswordLink.setTranslateY(120);
+        // forgotPasswordLink.setStyle(
+        // "-fx-underline: true;" +
+        // "-fx-font-family: Verdana");
+        // forgotPasswordLink.setOnAction(e -> {
+        // SceneController sceneController = new SceneController(this.stage);
+        // sceneController.switchToRequestNewPassword();
+        // });
+
+        // // Membuat CheckBox "Remember Me"
+        // CheckBox checkbox = new CheckBox("Remember Me");
+        // checkbox.setTranslateX(-30); // mengatur posisi x pada checkbox
+        // checkbox.setTranslateY(80); // mengatur posisi y pada checkbox
+        // checkbox.setOnAction(e -> { // Menjalankan kondisi ketika checkbox ditekan
+        // if (checkbox.isSelected()) {
+        // this.statusCheckbox = true; // Merubah status checkbox menjadi true
+        // } else {
+        // this.statusCheckbox = false; // Merubah status checkbox menjadi false
+        // }
+        // });
+
+        // // Membuat Button "Login"
+        // Button btnLogin = new Button("Login");
+        // btnLogin.setTranslateY(120); // Mengatur posisi y dari tombol login
+        // Mengatur margin dari StackPane
+        // Menambahkan semua item kedalam Stackpane
+        // root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword,
+        // passwordField, registerLink,
+        // forgotPasswordLink,
+        // checkbox,
+        // btnLogin);
 
         // Menangani klik tombol "Login"
-        btnLogin.setOnAction(e -> handleLogin(fieldUsername.getText(), passwordField.getText()));
+        // btnLogin.setOnAction(e -> handleLogin(fieldUsername.getText(),
+        // passwordField.getText()));
 
     }
 

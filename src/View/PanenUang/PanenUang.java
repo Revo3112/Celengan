@@ -129,45 +129,92 @@ public class PanenUang {
             String keteranganBarang = keteranganBarangList.get(i);
 
             // Membuat tampilan untuk menampilkan data yang ada
-            VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
-            itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5;"); // Warna biru terang
-            itemBox.setMaxHeight(100);
-            itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
+            if (i == 0) {
+                VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
+                // Warna biru terang
+                itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5;");
+                itemBox.setMaxHeight(150);
+                itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
 
-            // Membuat tampilan untuk menampilkan data yang ada
-            String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + nominalTarget
-                    + "\nKeterangan Barang: " + keteranganBarang;
-            Label itemLabel = new Label(itemtext);
+                // Membuat tampilan untuk menampilkan data yang ada
+                String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + nominalTarget
+                        + "\nKeterangan Barang: " + keteranganBarang;
+                Label itemLabel = new Label(itemtext);
 
-            Button hapusTarget = new Button("Hapus Target");
-            hapusTarget.setOnAction(e -> {
-                HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
-                if (hapusTargetModel.start()) {
-                    AlertHelper.info("Target berhasil dihapus!");
-                } else {
-                    AlertHelper.alert("Target gagal dihapus!");
-                }
-                refreshView();
-            });
-            // Create an HBox to hold the label and button
-            HBox itemBoxContent = new HBox();
+                Button hapusTarget = new Button("Hapus Target");
+                hapusTarget.setOnAction(e -> {
+                    HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
+                    if (hapusTargetModel.start()) {
+                        AlertHelper.info("Target berhasil dihapus!");
+                    } else {
+                        AlertHelper.alert("Target gagal dihapus!");
+                    }
+                    refreshView();
+                });
 
-            // Create panes to hold label and button
-            StackPane labelPane = new StackPane(itemLabel);
-            StackPane buttonPane = new StackPane(hapusTarget);
+                // Create an HBox to hold the label and button
+                HBox itemBoxContent = new HBox();
 
-            // Add panes to HBox
-            itemBoxContent.getChildren().addAll(labelPane, buttonPane);
+                // Create panes to hold label and button
+                StackPane labelPane = new StackPane(itemLabel);
+                StackPane buttonPane = new StackPane(hapusTarget);
 
-            // Set alignment and constraints
-            HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
+                // Add panes to HBox
+                itemBoxContent.getChildren().addAll(labelPane, buttonPane);
 
-            // Set alignment within StackPanes
-            StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to the left
-            StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the bottom right corner
+                // Set alignment and constraints
+                HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
 
-            itemBox.getChildren().add(itemBoxContent); // Add HBox to VBox
-            scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
+                // Set alignment within StackPanes
+                StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to the left
+                StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the bottom right corner
+
+                itemBox.getChildren().add(itemBoxContent); // Add HBox to VBox
+                scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
+            } else {
+                VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
+                itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5;"); // Warna biru
+                                                                                                     // terang
+                itemBox.setMaxHeight(100);
+                itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
+
+                // Membuat tampilan untuk menampilkan data yang ada
+                String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + nominalTarget
+                        + "\nKeterangan Barang: " + keteranganBarang;
+                Label itemLabel = new Label(itemtext);
+
+                Button hapusTarget = new Button("Hapus Target");
+                hapusTarget.setOnAction(e -> {
+                    HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
+                    if (hapusTargetModel.start()) {
+                        AlertHelper.info("Target berhasil dihapus!");
+                    } else {
+                        AlertHelper.alert("Target gagal dihapus!");
+                    }
+                    refreshView();
+                });
+
+                // Create an HBox to hold the label and button
+                HBox itemBoxContent = new HBox();
+
+                // Create panes to hold label and button
+                StackPane labelPane = new StackPane(itemLabel);
+                StackPane buttonPane = new StackPane(hapusTarget);
+
+                // Add panes to HBox
+                itemBoxContent.getChildren().addAll(labelPane, buttonPane);
+
+                // Set alignment and constraints
+                HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
+
+                // Set alignment within StackPanes
+                StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to the left
+                StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the bottom right corner
+
+                itemBox.getChildren().add(itemBoxContent); // Add HBox to VBox
+                scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
+            }
+
         }
 
         StackPane mainPane = new StackPane();
@@ -238,7 +285,7 @@ public class PanenUang {
         this.stage.setScene(scene);
         this.stage.setMinHeight(500);
         this.stage.setMinWidth(750);
-        setOnMouseClicked(mainPane, welcome);
+        // setOnMouseClicked(mainPane, welcome);
     }
 
     // fungsi untuk membuat text dengan return Text
