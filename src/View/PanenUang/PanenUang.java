@@ -2,6 +2,7 @@ package View.PanenUang;
 
 import java.util.List;
 import Controller.SceneController;
+import Model.HapusTarget;
 import Model.LoginModel;
 import Model.TambahTarget;
 import Model.TampilkanSemuaTarget;
@@ -140,7 +141,13 @@ public class PanenUang {
 
             Button hapusTarget = new Button("Hapus Target");
             hapusTarget.setOnAction(e -> {
-
+                HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
+                if (hapusTargetModel.start()) {
+                    AlertHelper.info("Target berhasil dihapus!");
+                } else {
+                    AlertHelper.alert("Target gagal dihapus!");
+                }
+                refreshView();
             });
             // Create an HBox to hold the label and button
             HBox itemBoxContent = new HBox();
@@ -304,8 +311,35 @@ public class PanenUang {
                     + "\nKeterangan Barang: " + keteranganBarang;
             Label itemLabel = new Label(itemtext);
 
-            itemBox.getChildren().add(itemLabel); // Menambah label ke dalam VBox
-            scrollContetBox.getChildren().add(itemBox); // Menambah VBox ke dalam scrollContetBox
+            Button hapusTarget = new Button("Hapus Target");
+            hapusTarget.setOnAction(e -> {
+                HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
+                if (hapusTargetModel.start()) {
+                    AlertHelper.info("Target berhasil dihapus!");
+                } else {
+                    AlertHelper.alert("Target gagal dihapus!");
+                }
+                refreshView();
+            });
+            // Create an HBox to hold the label and button
+            HBox itemBoxContent = new HBox();
+
+            // Create panes to hold label and button
+            StackPane labelPane = new StackPane(itemLabel);
+            StackPane buttonPane = new StackPane(hapusTarget);
+
+            // Add panes to HBox
+            itemBoxContent.getChildren().addAll(labelPane, buttonPane);
+
+            // Set alignment and constraints
+            HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
+
+            // Set alignment within StackPanes
+            StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to the left
+            StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the bottom right corner
+
+            itemBox.getChildren().add(itemBoxContent); // Add HBox to VBox
+            scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
         }
     }
 
