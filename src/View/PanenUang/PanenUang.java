@@ -1,6 +1,7 @@
 package View.PanenUang;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import Controller.SceneController;
 import Model.HapusTarget;
@@ -9,6 +10,7 @@ import Model.TambahTarget;
 import Model.TampilkanSemuaTarget;
 import Utils.AlertHelper;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -99,11 +101,60 @@ public class PanenUang {
         menambahkanTarget.toFront();
         menambahkanTarget.setOnAction(e -> {
             LoginModel loginModel = new LoginModel();
-            setUserTarget(loginModel.getUserId(), namaTarget.getText(), Double.parseDouble(nominalTarget.getText()),
+            setUserTarget(loginModel.getUserId(), namaTarget.getText(),
+                    Double.parseDouble(nominalTarget.getText().replace(",", "")),
                     keteranganBarang.getText());
             namaTarget.clear();
             nominalTarget.clear();
             keteranganBarang.clear();
+        });
+
+        // Supaya ada efek koma ketika user memasukan input kedalam field nominal target
+        nominalTarget.textProperty().addListener(new ChangeListener<String>() {
+            private String codeFormat = ",##0";
+            private int codeLen = 4;
+
+            @Override
+            // ObservableValue = StringProperty (Represent an object that has changed its
+            // state)
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // Hapus listener sementara
+
+                nominalTarget.textProperty().removeListener(this);
+                if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
+                    if (newValue.length() > oldValue.length()) {
+                        if (newValue.length() > 13) {
+                            nominalTarget.setText(oldValue);
+                        } else {
+                            updateCodeFormat(newValue);
+                            formatAndSet(newValue, this.codeFormat);
+                        }
+                    }
+                } else {
+                    nominalTarget.setText(oldValue);
+                }
+
+                // Tambahkan kembali listener setelah pembaruan teks
+                nominalTarget.textProperty().addListener(this);
+            }
+
+            private void formatAndSet(String text, String format) {
+                DecimalFormat decimalFormat = new DecimalFormat(format);
+                double value = Double.parseDouble(text.replace(",", ""));
+                System.out.println(value);
+                nominalTarget.setText("");
+                nominalTarget.setText(decimalFormat.format(value));
+            }
+
+            private void updateCodeFormat(String text) {
+                int newLen = text.replace(",", "").length();
+                if (newLen == this.codeLen + 3) {
+                    this.codeFormat = "#," + this.codeFormat;
+                    codeLen += 3;
+                } else if (newLen >= 4) {
+                    this.codeFormat = "#" + this.codeFormat;
+                }
+            }
         });
 
         // Popup untuk kotak input
@@ -147,8 +198,9 @@ public class PanenUang {
             itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
 
             // Membuat tampilan untuk menampilkan data yang ada
-            String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + roundedValue
-                    + ".00\nKeterangan Barang: " + keteranganBarang;
+            String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + formatDuit(roundedValue)
+                    + "\nKeterangan Barang: " + keteranganBarang;
+
             Label itemLabel = new Label(itemtext);
 
             // Untuk membuat progres bar
@@ -157,7 +209,7 @@ public class PanenUang {
 
             // Menampilkan progress text
             Text progressText = new Text(
-                    "Rp. " + mendapatkanSaldoUntukMembeliBarang() + ".00 / Rp. " + roundedValue + ".00");
+                    formatDuit(mendapatkanSaldoUntukMembeliBarang()) + " / " + formatDuit(roundedValue));
             progressText.setStyle("-fx-font: 15 'Poppins-Regular';");
 
             // Membuat Vbox untuk menangani progress bar dan progress text
@@ -272,6 +324,12 @@ public class PanenUang {
         this.stage.setMinHeight(500);
         this.stage.setMinWidth(750);
         // setOnMouseClicked(mainPane, welcome);
+    }
+
+    // Fungsi untuk mengembalikan format duit
+    private String formatDuit(double nilai) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+        return "Rp. " + decimalFormat.format(nilai);
     }
 
     // fungsi untuk membuat text dengan return Text
