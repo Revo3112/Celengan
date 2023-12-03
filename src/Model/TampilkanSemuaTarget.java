@@ -135,10 +135,10 @@ public class TampilkanSemuaTarget {
         return progres;
     }
 
-    public double ambilSaldodanBatasKritis() {
-        double TotalDuitUntukProgress = 0;
-        double saldo = 0;
-        double kritis = 0;
+    public long ambilSaldodanBatasKritis() {
+        long TotalDuitUntukProgress = 0;
+        long saldo = 0;
+        long kritis = 0;
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
             Connection connection = dbc.getConnection();
@@ -149,8 +149,8 @@ public class TampilkanSemuaTarget {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
-                    saldo = resultSet.getDouble("balance");
-                    kritis = resultSet.getDouble("kritis");
+                    saldo = resultSet.getLong("balance");
+                    kritis = resultSet.getLong("kritis");
                     TotalDuitUntukProgress = saldo - 2 * kritis;
                 }
             }

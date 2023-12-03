@@ -1,5 +1,6 @@
 package View.PanenUang;
 
+import java.math.BigDecimal;
 import java.util.List;
 import Controller.SceneController;
 import Model.HapusTarget;
@@ -21,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -34,6 +36,7 @@ public class PanenUang {
     private TextField namaTarget;
     private TextField nominalTarget;
     private TextField keteranganBarang;
+    // Pokoknya dibawah sini itu untuk ngedapetin kupulan data dari database
     private static TampilkanSemuaTarget model = new TampilkanSemuaTarget();
     private static List<String> namaTargetList = model.getNamaTargetList();
     private static List<Double> nominalTargetList = model.getNominalTargetList();
@@ -80,6 +83,7 @@ public class PanenUang {
         ImageView iconSilangView = new ImageView(iconSilang);
         iconSilangView.toFront();
 
+        // Tombol untuk menutup kotak input
         Button menutupKotakInput = new Button();
         menutupKotakInput.setTranslateY(-104);
         menutupKotakInput.setTranslateX(208);
@@ -87,6 +91,7 @@ public class PanenUang {
         menutupKotakInput.setMinSize(20, 20);
         menutupKotakInput.toFront();
 
+        // Tombol untuk menambahkan target kedalam databases
         Button menambahkanTarget = new Button("Tambah Target");
         menambahkanTarget.setTranslateY(84);
         menambahkanTarget.setTranslateX(201);
@@ -101,8 +106,7 @@ public class PanenUang {
             keteranganBarang.clear();
         });
 
-        LoginModel loginModel = new LoginModel();
-
+        // Popup untuk kotak input
         StackPane kotakInput = new StackPane();
         kotakInput.getChildren().addAll(namaTarget, nominalTarget, keteranganBarang, labelTarget, labelnominal,
                 labelBarang, menutupKotakInput, menambahkanTarget);
@@ -111,10 +115,12 @@ public class PanenUang {
         kotakInput.setPadding(new Insets(10, 10, 10, 10));
         kotakInput.setAlignment(javafx.geometry.Pos.CENTER);
 
+        // Membuat VBox untuk menaruh item-item yang ada nantinya dapat di scroll
         scrollContetBox = new VBox();
         scrollContetBox.setSpacing(10);
         scrollContetBox.toFront();
 
+        // Untuk scroll pane agar vbox vbox tersebut dapat di scroll
         scrollPane = new ScrollPane(scrollContetBox);
         scrollPane.setFitToWidth(true);
         scrollPane.setMaxSize(stage.getWidth() - 350, stage.getHeight() - 250);
@@ -124,178 +130,77 @@ public class PanenUang {
         scrollContetBox.setMaxHeight(scrollPane.getMaxHeight());
         scrollContetBox.setMaxWidth(scrollPane.getMaxWidth() - 20);
 
+        // Logika untuk membuat vbox vbox yang nantinya dapa di scroll
         for (int i = 0; i < mengambilBanyakDataDiTarget(); i++) {
             String namaTarget = namaTargetList.get(i);
             double nominalTarget = nominalTargetList.get(i);
             String keteranganBarang = keteranganBarangList.get(i);
 
-            // // Membuat tampilan untuk menampilkan data yang ada
-            // if (i == 0) {
-            // VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
-            // // Warna biru terang
-            // itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10;
-            // -fx-spacing: 5;");
-            // itemBox.setMaxHeight(150);
-            // itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
+            // Membulatkan tampilan uang agar tidak muncul E
+            long roundedValue = Math.round(nominalTarget);
 
-            // // Membuat tampilan untuk menampilkan data yang ada
-            // String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " +
-            // nominalTarget
-            // + "\nKeterangan Barang: " + keteranganBarang;
-            // Label itemLabel = new Label(itemtext);
-
-            // Button hapusTarget = new Button("Hapus Target");
-            // hapusTarget.setOnAction(e -> {
-            // HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
-            // if (hapusTargetModel.start()) {
-            // AlertHelper.info("Target berhasil dihapus!");
-            // } else {
-            // AlertHelper.alert("Target gagal dihapus!");
-            // }
-            // refreshView();
-            // });
-
-            // // Create an HBox to hold the label and button
-            // HBox itemBoxContent = new HBox();
-
-            // // Create panes to hold label and button
-            // StackPane labelPane = new StackPane(itemLabel);
-            // StackPane buttonPane = new StackPane(hapusTarget);
-
-            // // Create a progress bar
-            // ProgressBar progressBar = new ProgressBar();
-            // progressBar.setProgress(kemajuanProgress(namaTarget));
-
-            // Text progressText = new Text("Rp. " + mendapatkanSaldoUntukMembeliBarang() +
-            // " / Rp. " + nominalTarget);
-            // progressText.setStyle("-fx-font: 15 'Poppins-Regular';");
-
-            // VBox progressBox = new VBox();
-            // progressBox.getChildren().addAll(progressBar, progressText);
-            // progressBox.setSpacing(5);
-            // progressBox.setAlignment(Pos.CENTER);
-
-            // // Add panes to HBox
-            // itemBoxContent.getChildren().addAll(labelPane, buttonPane);
-
-            // // Set alignment and constraints
-            // HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
-
-            // // Set alignment within StackPanes
-            // StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to
-            // the left
-            // StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the
-            // bottom right corner
-
-            // itemBox.getChildren().addAll(itemBoxContent, progressBox); // Add HBox to
-            // VBox
-            // scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
-
-            // } else {
-            // VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
-            // itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10;
-            // -fx-spacing: 5;"); // Warna biru
-            // // terang
-            // itemBox.setMaxHeight(100);
-            // itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
-
-            // // Membuat tampilan untuk menampilkan data yang ada
-            // String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " +
-            // nominalTarget
-            // + "\nKeterangan Barang: " + keteranganBarang;
-            // Label itemLabel = new Label(itemtext);
-
-            // Button hapusTarget = new Button("Hapus Target");
-            // hapusTarget.setOnAction(e -> {
-            // HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
-            // if (hapusTargetModel.start()) {
-            // AlertHelper.info("Target berhasil dihapus!");
-            // } else {
-            // AlertHelper.alert("Target gagal dihapus!");
-            // }
-            // refreshView();
-            // });
-
-            // // Create an HBox to hold the label and button
-            // HBox itemBoxContent = new HBox();
-
-            // // Create panes to hold label and button
-            // StackPane labelPane = new StackPane(itemLabel);
-            // StackPane buttonPane = new StackPane(hapusTarget);
-
-            // // Add panes to HBox
-            // itemBoxContent.getChildren().addAll(labelPane, buttonPane);
-
-            // // Set alignment and constraints
-            // HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
-
-            // // Set alignment within StackPanes
-            // StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to
-            // the left
-            // StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the
-            // bottom right corner
-
-            // itemBox.getChildren().add(itemBoxContent); // Add HBox to VBox
-            // scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
-            // }
+            // Membuat tampilan untuk menampilkan data yang ada
             VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
             // Warna biru terang
-            itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5;");
+            itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5; -fx-border-radius: 10;");
             itemBox.setMaxHeight(150);
             itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
 
             // Membuat tampilan untuk menampilkan data yang ada
-            String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + nominalTarget
-                    + "\nKeterangan Barang: " + keteranganBarang;
+            String itemtext = "Nama Target: " + namaTarget + "\nNominal Target: " + roundedValue
+                    + ".00\nKeterangan Barang: " + keteranganBarang;
             Label itemLabel = new Label(itemtext);
 
+            // Untuk membuat progres bar
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.setProgress(kemajuanProgress(namaTarget));
+
+            // Menampilkan progress text
+            Text progressText = new Text(
+                    "Rp. " + mendapatkanSaldoUntukMembeliBarang() + ".00 / Rp. " + roundedValue + ".00");
+            progressText.setStyle("-fx-font: 15 'Poppins-Regular';");
+
+            // Membuat Vbox untuk menangani progress bar dan progress text
+            VBox progressBox = new VBox();
+            progressBox.getChildren().addAll(progressBar, progressText);
+            progressBox.setSpacing(2);
+            progressBar.setMaxWidth(itemBox.getPrefWidth() - 20);
+            progressBox.setAlignment(Pos.CENTER);
+
+            // Ini digunakan untuk menghapus target yang ada di tampilan
             Button hapusTarget = new Button("Hapus Target");
             hapusTarget.setOnAction(e -> {
                 HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
                 if (hapusTargetModel.start()) {
                     AlertHelper.info("Target berhasil dihapus!");
+                    refreshView();
                 } else {
                     AlertHelper.alert("Target gagal dihapus!");
                 }
                 refreshView();
             });
 
-            // Create an HBox to hold the label and button
-            HBox itemBoxContent = new HBox();
+            // Digunakan untuk tempat menaruh item label
+            StackPane paneItemLabel = new StackPane();
+            paneItemLabel.getChildren().add(itemLabel);
+            paneItemLabel.setAlignment(Pos.CENTER_LEFT);
+            paneItemLabel.setPadding(new Insets(0, 0, 0, 10));
 
-            // Create panes to hold label and button
-            StackPane labelPane = new StackPane(itemLabel);
-            StackPane buttonPane = new StackPane(hapusTarget);
+            // Digunakan untuk tempat menaruh button hapus target
+            StackPane paneHapusTarget = new StackPane();
+            paneHapusTarget.getChildren().add(hapusTarget);
+            paneHapusTarget.setAlignment(Pos.BOTTOM_RIGHT);
 
-            // Create a progress bar
-            ProgressBar progressBar = new ProgressBar();
-            progressBar.setProgress(kemajuanProgress(namaTarget));
+            // Digunakan untuk menaruh item label dan button hapus target
+            VBox itemBoxContent = new VBox();
+            itemBoxContent.getChildren().addAll(paneItemLabel, paneHapusTarget);
+            itemBoxContent.setSpacing(10); // Sesuaikan dengan spasi yang diinginkan
 
-            Text progressText = new Text("Rp. " + mendapatkanSaldoUntukMembeliBarang() + " / Rp. " + nominalTarget);
-            progressText.setStyle("-fx-font: 15 'Poppins-Regular';");
-
-            VBox progressBox = new VBox();
-            progressBox.getChildren().addAll(progressBar, progressText);
-            progressBox.setSpacing(5);
-            progressBox.setAlignment(Pos.CENTER);
-
-            // Add panes to HBox
-            itemBoxContent.getChildren().addAll(labelPane, buttonPane);
-
-            // Set alignment and constraints
-            HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
-
-            // Set alignment within StackPanes
-            StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to the left
-            StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the bottom right corner
-
+            // Digunakan untuk menaruh dan menyatukan itemBoxContent dan progressBox
             itemBox.getChildren().addAll(itemBoxContent, progressBox); // Add HBox to VBox
 
-            // Set HBox.hgrow for the progress box
-            HBox.setHgrow(progressBox, Priority.ALWAYS);
-
+            // Digunakan untuk menaruh itemBox ke scrollContentBox
             scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
-
         }
 
         StackPane mainPane = new StackPane();
@@ -402,6 +307,7 @@ public class PanenUang {
         });
     }
 
+    // Digunakan untuk menambahkan target kedalam databases
     private boolean setUserTarget(int userId, String namaTarget, double nominalTarget, String keteranganBarang) {
         TambahTarget tambahTarget = new TambahTarget(userId, namaTarget, nominalTarget, keteranganBarang);
         if (tambahTarget.start()) {
@@ -411,22 +317,27 @@ public class PanenUang {
         return false;
     }
 
+    // Digunakan untuk mengambilbanyaknama target
     private int mengambilBanyakDataDiTarget() {
         TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
         return tampilkanSemuaTarget.mendapatkanBanyakDataDiTarget();
     }
 
+    // Digunakan untuk mengembalikan kemajuan progress bar
     private double kemajuanProgress(String namaTarget) {
         TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
         return tampilkanSemuaTarget.mendapatkanHargaTarget(namaTarget);
     }
 
-    private double mendapatkanSaldoUntukMembeliBarang() {
+    // Digunakan untuk mengembalikan saldo untuk membeli barang
+    private long mendapatkanSaldoUntukMembeliBarang() {
         TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
         return tampilkanSemuaTarget.ambilSaldodanBatasKritis();
 
     }
 
+    // Digunakan untuk mereset ulang tampilan baik itu ketika menambah barang maupun
+    // mengahapus barang (target)
     private void refreshView() {
         scrollContetBox.getChildren().clear(); // Menghapus semua item yang ada
         PanenUang.model = new TampilkanSemuaTarget();
@@ -441,8 +352,9 @@ public class PanenUang {
 
             // Membuat tampilan untuk menampilkan data yang ada
             VBox itemBox = new VBox(); // Membuat VBox baru untuk setiap item
-            itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5;"); // Warna biru terang
-            itemBox.setMaxHeight(100);
+            // Warna biru terang
+            itemBox.setStyle("-fx-background-color: #ADD8E6; -fx-padding: 10; -fx-spacing: 5;");
+            itemBox.setMaxHeight(150);
             itemBox.setPrefWidth(scrollPane.getMaxWidth() - 20);
 
             // Membuat tampilan untuk menampilkan data yang ada
@@ -450,36 +362,53 @@ public class PanenUang {
                     + "\nKeterangan Barang: " + keteranganBarang;
             Label itemLabel = new Label(itemtext);
 
+            // Create a progress bar
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.setProgress(kemajuanProgress(namaTarget));
+
+            long roundedValue = Math.round(nominalTarget);
+
+            Text progressText = new Text(
+                    "Rp. " + mendapatkanSaldoUntukMembeliBarang() + ".00 / Rp. " + roundedValue + ".00");
+            progressText.setStyle("-fx-font: 15 'Poppins-Regular';");
+
+            // Create a VBox to hold progress bar and text
+            VBox progressBox = new VBox();
+            progressBox.getChildren().addAll(progressBar, progressText);
+            progressBox.setSpacing(2);
+            progressBar.setMaxWidth(itemBox.getPrefWidth() - 20);
+            progressBox.setAlignment(Pos.CENTER);
+
             Button hapusTarget = new Button("Hapus Target");
             hapusTarget.setOnAction(e -> {
                 HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
                 if (hapusTargetModel.start()) {
                     AlertHelper.info("Target berhasil dihapus!");
+                    refreshView();
                 } else {
                     AlertHelper.alert("Target gagal dihapus!");
                 }
                 refreshView();
             });
-            // Create an HBox to hold the label and button
-            HBox itemBoxContent = new HBox();
+            StackPane paneItemLabel = new StackPane();
+            paneItemLabel.getChildren().add(itemLabel);
+            paneItemLabel.setAlignment(Pos.CENTER_LEFT);
+            paneItemLabel.setPadding(new Insets(0, 0, 0, 10));
 
-            // Create panes to hold label and button
-            StackPane labelPane = new StackPane(itemLabel);
-            StackPane buttonPane = new StackPane(hapusTarget);
+            StackPane paneHapusTarget = new StackPane();
+            paneHapusTarget.getChildren().add(hapusTarget);
+            paneHapusTarget.setAlignment(Pos.BOTTOM_RIGHT);
 
-            // Add panes to HBox
-            itemBoxContent.getChildren().addAll(labelPane, buttonPane);
+            // Create an HBox to hold label/progress box and delete button
+            VBox itemBoxContent = new VBox();
+            itemBoxContent.getChildren().addAll(paneItemLabel, paneHapusTarget);
+            itemBoxContent.setSpacing(10); // Sesuaikan dengan spasi yang diinginkan
 
-            // Set alignment and constraints
-            HBox.setHgrow(labelPane, Priority.ALWAYS); // Label takes up available space
+            itemBox.getChildren().addAll(itemBoxContent, progressBox); // Add HBox to VBox
 
-            // Set alignment within StackPanes
-            StackPane.setAlignment(itemLabel, Pos.CENTER_LEFT); // Label is aligned to the left
-            StackPane.setAlignment(hapusTarget, Pos.BOTTOM_RIGHT); // Button is in the bottom right corner
-
-            itemBox.getChildren().add(itemBoxContent); // Add HBox to VBox
             scrollContetBox.getChildren().add(itemBox); // Add VBox to scrollContetBox
         }
+
     }
 
 }
