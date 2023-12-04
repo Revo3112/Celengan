@@ -10,7 +10,7 @@ public class OpenAplication extends Application {
         this.secondaryStage = new Stage(); // Instansiasi class Stage ke dalam property secondaryStage
         // Menampilkan stage pertama
         Splash sceneController = new Splash(this.secondaryStage); // Instansiasi class Splash ke dalam variabel
-                                                             // sceneController
+        // sceneController
         sceneController.switchToSplashScreen(); // Menjalankan static method switchToSplashScreen()
     }
 

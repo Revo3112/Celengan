@@ -12,6 +12,7 @@ import View.Login_Register.RegistrationPage;
 import View.Login_Register.RequestNewPass;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import Model.TanamUangModel;
 
 // class SceneController digunakan untuk mengatur perpindahan scene
@@ -20,10 +21,10 @@ public class SceneController {
 
     public SceneController(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
-        stage.setFullScreen(false); // Set fullscreen menjadi false sehingga tidak fullscreen
         stage.setWidth(1000); // Mengatur lebar panggung menjadi 1000 pixel
         stage.setHeight(500); // Mengatur tinggi panggung menjadi 500 pixel
-        // stage.show(); // Menampilkan panggung
+        stage.setResizable(true);
+        stage.show(); // Menampilkan panggung
     }
 
     /* LOGIN_REGISTRATION */

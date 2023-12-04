@@ -8,12 +8,16 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
@@ -54,15 +58,39 @@ public class DashboardPage {
             SceneController sceneController = new SceneController(this.stage);
             sceneController.switchToPantauUang();
         });
-        
+
+        // Membuat ImageView untuk menampilkan gambar
+        ImageView Logo = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
+        Logo.setFitWidth(200); // Sesuaikan lebar gambar
+        Logo.setFitHeight(48); // Sesuaikan tinggi gambar
+        Logo.setTranslateX(-522);
+        Logo.setTranslateY(-361);
+
+        ImageView HomePage = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
+        HomePage.setFitWidth(200); // Sesuaikan lebar gambar
+        HomePage.setFitHeight(48); // Sesuaikan tinggi gambar
+
         // membuat main pane
-        StackPane mainPane = new StackPane();
-        mainPane.getChildren().addAll(welcome, Tanamuang, PanenUang, PantauUang);
-        mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
-        mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
+        StackPane isiScrollPane = new StackPane();
+        isiScrollPane.getChildren().addAll(welcome, Tanamuang, PanenUang, PantauUang);
+        isiScrollPane.setStyle("-fx-background-color: #141F23;");
+
+        ScrollPane scrollMainPane = new ScrollPane(isiScrollPane);
+        scrollMainPane.setFitToWidth(true);
+        scrollMainPane.setFitToHeight(true);
+        scrollMainPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollMainPane.setStyle("-fx-background-color: #141F23;");
+
+        StackPane mainPane = new StackPane(scrollMainPane);
+        mainPane.setMaxSize(this.stage.getWidth() - 400, this.stage.getHeight() - 30);
+        mainPane.setTranslateX(70);
+        mainPane.setTranslateY(0);
+        mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 30px;");
         mainPane.setPadding(new Insets(10, 10, 10, 10));
-        StackPane welcomePage = new StackPane(mainPane);
-        StackPane.setAlignment(mainPane, javafx.geometry.Pos.CENTER);
+
+        StackPane welcomePage = new StackPane(mainPane, Logo);
+        welcomePage.setStyle("-fx-background-color: #0D1416;");
+
         Scene scene = new Scene(welcomePage, 750, 500);
         scene.getStylesheets().addAll(
                 "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
@@ -75,15 +103,17 @@ public class DashboardPage {
             double stageHeight = this.stage.getHeight();
 
             // Menyesuaikan ukuran dan posisi StackPane
-            mainPane.setMaxSize(stageWidth - 200, stageHeight - 100);
+            mainPane.setMaxSize(this.stage.getWidth() - 400, this.stage.getHeight() - 30);
 
-            welcome.setTranslateY(-stageHeight / 2 + 107); // Menggunakan proporsi dengan tinggi awal 600
-            welcome.setTranslateX(-stageWidth / 2 + 250); // Menggunakan proporsi dengan lebar awal 750
+            // welcome.setTranslateY(-stageHeight / 2 + 107); // Menggunakan proporsi dengan
+            // tinggi awal 600
+            // welcome.setTranslateX(-stageWidth / 2 + 250); // Menggunakan proporsi dengan
+            // lebar awal 750
 
-            // Tanamuang.setTranslateX(-stageWidth / 2 + 500);
-            Tanamuang.setTranslateY(-stageHeight / 2 + 330);
+            // // Tanamuang.setTranslateX(-stageWidth / 2 + 500);
+            // Tanamuang.setTranslateY(-stageHeight / 2 + 330);
 
-            PanenUang.setTranslateY(-stageHeight / 2 + 330);
+            // PanenUang.setTranslateY(-stageHeight / 2 + 330);
 
             System.out.println("Tanamuang position: " + Tanamuang.getTranslateX() + ", " + Tanamuang.getTranslateY());
             System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
@@ -97,8 +127,9 @@ public class DashboardPage {
         this.stage.setScene(scene);
         this.stage.setMinHeight(500);
         this.stage.setMinWidth(750);
+        this.stage.setFullScreen(true);
         this.stage.show();
-        setOnMouseClicked(welcomePage, welcome);
+        setOnMouseClicked(welcomePage, Logo);
     }
 
     // fungsi untuk membuat text dengan return Text

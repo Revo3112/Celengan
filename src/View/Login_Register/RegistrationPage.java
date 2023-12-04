@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -98,6 +99,7 @@ public class RegistrationPage {
         // stage.setFullScreen(true);
         this.stage.setTitle("Register"); // Mengatur isi dari title
         this.stage.setScene(scene); // Memasukkan scene ke dalam stage
+        // this.stage.initStyle(StageStyle.TRANSPARENT);
         // this.stage.show(); // Menampilkan stage
 
         // Handle button click

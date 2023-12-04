@@ -31,6 +31,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class PanenUang {
     private Stage stage;
@@ -291,7 +292,9 @@ public class PanenUang {
 
         StackPane backgroundUtamaPane = new StackPane(mainPane);
         StackPane.setAlignment(mainPane, javafx.geometry.Pos.CENTER);
+        backgroundUtamaPane.setStyle("-fx-background-color: #141F23;");
         Scene scene = new Scene(backgroundUtamaPane, 750, 500);
+        scene.setFill(Color.valueOf("#141F23"));
         scene.getStylesheets().addAll(
                 "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
 
@@ -323,6 +326,8 @@ public class PanenUang {
         this.stage.setScene(scene);
         this.stage.setMinHeight(500);
         this.stage.setMinWidth(750);
+        this.stage.getScene().getRoot().setStyle("-fx-background-color: #141F23;");
+        scene.setFill(Color.TRANSPARENT); // Atur latar belakang scene menjadi transparan
         // setOnMouseClicked(mainPane, welcome);
     }
 
