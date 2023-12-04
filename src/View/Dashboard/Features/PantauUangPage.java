@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 public class PantauUangPage {
@@ -32,18 +33,21 @@ public class PantauUangPage {
         
         Rectangle item1 = createRectangle(200, 200, 10, 10, Color.valueOf("3081D0"));
         Rectangle item2 = createRectangle(200, 200, 10, 10, Color.valueOf("DF826C"));
-        VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
-        vbox.getChildren().addAll(item1, item2);
+        Rectangle item3 = createRectangle(200, 200, 10, 10, Color.valueOf("DC8686"));
+        HBox hbox = new HBox();
+        hbox.getChildren().addAll(item1, item2, item3);
 
-        // Rectangle background = createRectangle(800, 400, 50, 50, Color.rgb(20, 31, 35));
-        Rectangle background = createRectangle(this.stage.getWidth() - 200, this.stage.getHeight() - 100, 50, 50, Color.rgb(20, 31, 35));
+        VBox vbox = new VBox(hbox);
+
+        StackPane background = new StackPane();
+        background.setStyle("-fx-background-color: #231F20;");
+        background.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
+
         StackPane root = new StackPane();
         root.getChildren().addAll(background, vbox, title);
 
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-            background.setWidth(this.stage.getWidth() - 200);
-            background.setHeight(this.stage.getHeight() - 100);
+            background.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
             title.setTranslateX((-this.stage.getWidth() / 2) + 210);
             title.setTranslateY((-this.stage.getHeight() / 2) + 82);
         };
