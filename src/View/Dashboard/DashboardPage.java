@@ -46,9 +46,18 @@ public class DashboardPage {
             SceneController sceneController = new SceneController(this.stage);
             sceneController.switchToPanenUang();
         });
+
+        Button PantauUang = new Button("Pantau Uang");
+        PantauUang.setTranslateY(80);
+        PantauUang.setTranslateX(-100);
+        PantauUang.setOnMouseClicked(e -> {
+            SceneController sceneController = new SceneController(this.stage);
+            sceneController.switchToPantauUang();
+        });
+        
         // membuat main pane
         StackPane mainPane = new StackPane();
-        mainPane.getChildren().addAll(welcome, Tanamuang, PanenUang);
+        mainPane.getChildren().addAll(welcome, Tanamuang, PanenUang, PantauUang);
         mainPane.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
         mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
         mainPane.setPadding(new Insets(10, 10, 10, 10));

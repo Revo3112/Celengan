@@ -3,6 +3,7 @@ package Controller;
 import Model.DatabaseCheckService;
 import Model.RequestNewPassword;
 import View.Dashboard.DashboardPage;
+import View.Dashboard.PantauUangPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.PenentuSaldo;
 import View.Login_Register.RegistrationPage;
@@ -58,6 +59,11 @@ public class SceneController {
                                                                                                          // method start
                                                                                                          // pada objek
                                                                                                          // tanamUang
+    }
+
+    public void switchToPantauUang() {
+        PantauUangPage pantauUang = new PantauUangPage(this.stage);
+        pantauUang.start();
     }
 
     // Request New Password
