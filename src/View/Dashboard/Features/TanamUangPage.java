@@ -1,4 +1,4 @@
-package View.Dashboard;
+package View.Dashboard.Features;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;

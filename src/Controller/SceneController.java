@@ -3,16 +3,16 @@ package Controller;
 import Model.DatabaseCheckService;
 import Model.RequestNewPassword;
 import View.Dashboard.DashboardPage;
-import View.Dashboard.PantauUangPage;
+import View.Dashboard.Features.PanenUang;
+import View.Dashboard.Features.PantauUangPage;
+import View.Dashboard.Features.TanamUangPage;
 import View.Login_Register.LoginPage;
 import View.Login_Register.PenentuSaldo;
 import View.Login_Register.RegistrationPage;
 import View.Login_Register.RequestNewPass;
-import View.PanenUang.PanenUang;
 import View.Splash_Screen.SplashScreen;
 import javafx.stage.Stage;
 import Model.TanamUangModel;
-import View.Dashboard.TanamUangPage;
 
 // class SceneController digunakan untuk mengatur perpindahan scene
 public class SceneController {

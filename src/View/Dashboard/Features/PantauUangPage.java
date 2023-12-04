@@ -1,4 +1,4 @@
-package View.Dashboard;
+package View.Dashboard.Features;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
