@@ -1,78 +1,47 @@
 package View.Dashboard;
 
-import View.Dashboard.Section.MainSect;
 import Controller.SceneController;
 import Model.LoginModel;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
 
     private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
     private String username;
+    private SceneController sceneController; // Tambahkan property SceneController
 
-    // Melakukan inisiasi class DashboardPage dengan parameter stage
     public DashboardPage(Stage stage) {
-        this.stage = stage; // Instansiasi property stage dengan parameter stage
+        this.stage = stage;
         this.username = getUsername();
+        this.sceneController = new SceneController(stage); // Inisialisasi SceneController
     }
 
     // Menampilkan halaman dashboard
     public void start() {
         // membuat text
         Text welcome = createText("Selamat Datang,\n" + this.username, "-fx-font: 30 'Poppins-Regular';", "#FFFFFF",
-                -250, -143);
-        Button Tanamuang = new Button("Tanam Uang");
-        Tanamuang.setTranslateY(80);
-        Tanamuang.setOnMouseClicked(e -> {
-            SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToTanamUang();
-        });
-
-        Button PanenUang = new Button("Panen Uang");
-        PanenUang.setTranslateY(80);
-        PanenUang.setTranslateX(100);
-        PanenUang.setOnMouseClicked(e -> {
-            SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToPanenUang();
-        });
-
-        Button PantauUang = new Button("Pantau Uang");
-        PantauUang.setTranslateY(80);
-        PantauUang.setTranslateX(-100);
-        PantauUang.setOnMouseClicked(e -> {
-            SceneController sceneController = new SceneController(this.stage);
-            sceneController.switchToPantauUang();
-        });
-
-        // Membuat ImageView untuk menampilkan gambar
-        ImageView Logo = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
-        Logo.setFitWidth(200); // Sesuaikan lebar gambar
-        Logo.setFitHeight(48); // Sesuaikan tinggi gambar
-        Logo.setTranslateX(-522);
-        Logo.setTranslateY(-361);
-
-        ImageView HomePage = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
-        HomePage.setFitWidth(200); // Sesuaikan lebar gambar
-        HomePage.setFitHeight(48); // Sesuaikan tinggi gambar
+                -this.stage.getWidth() / 2 + 204, -this.stage.getHeight() / 2 + 6);
+        welcome.toFront();
 
         // membuat main pane
         StackPane isiScrollPane = new StackPane();
-        isiScrollPane.getChildren().addAll(welcome, Tanamuang, PanenUang, PantauUang);
+        isiScrollPane.getChildren().addAll(welcome);
         isiScrollPane.setStyle("-fx-background-color: #141F23;");
 
         ScrollPane scrollMainPane = new ScrollPane(isiScrollPane);
@@ -86,9 +55,12 @@ public class DashboardPage {
         mainPane.setTranslateX(70);
         mainPane.setTranslateY(0);
         mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 30px;");
-        mainPane.setPadding(new Insets(10, 10, 10, 10));
 
-        StackPane welcomePage = new StackPane(mainPane, Logo);
+        /// Membuat side bar
+        HBox SideBar = ImageLinkPane.createImageLinkVBox(stage, sceneController);
+        SideBar.setTranslateX(-stage.getWidth() / 2 + 40);
+
+        StackPane welcomePage = new StackPane(mainPane, SideBar);
         welcomePage.setStyle("-fx-background-color: #0D1416;");
 
         Scene scene = new Scene(welcomePage, 750, 500);
@@ -99,23 +71,15 @@ public class DashboardPage {
 
         // membuat pane sesi welcome
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-            double stageWidth = this.stage.getWidth();
-            double stageHeight = this.stage.getHeight();
+            double stageWidth = stage.getWidth();
+            double stageHeight = stage.getHeight();
 
             // Menyesuaikan ukuran dan posisi StackPane
-            mainPane.setMaxSize(this.stage.getWidth() - 400, this.stage.getHeight() - 30);
+            mainPane.setMaxSize(stage.getWidth() - 400, stage.getHeight() - 30);
 
-            // welcome.setTranslateY(-stageHeight / 2 + 107); // Menggunakan proporsi dengan
-            // tinggi awal 600
-            // welcome.setTranslateX(-stageWidth / 2 + 250); // Menggunakan proporsi dengan
-            // lebar awal 750
+            // welcome.setTranslateY( -this.stage.getWidth() / 2 + 132);
+            // welcome.setTranslateX(-this.stage.getHeight() / 2 + -268);
 
-            // // Tanamuang.setTranslateX(-stageWidth / 2 + 500);
-            // Tanamuang.setTranslateY(-stageHeight / 2 + 330);
-
-            // PanenUang.setTranslateY(-stageHeight / 2 + 330);
-
-            System.out.println("Tanamuang position: " + Tanamuang.getTranslateX() + ", " + Tanamuang.getTranslateY());
             System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
             System.out.println("Stage size: " + stageWidth + ", " + stageHeight);
         };
@@ -129,7 +93,7 @@ public class DashboardPage {
         this.stage.setMinWidth(750);
         this.stage.setFullScreen(true);
         this.stage.show();
-        setOnMouseClicked(welcomePage, Logo);
+        setOnMouseClicked(welcomePage, welcome);
     }
 
     // fungsi untuk membuat text dengan return Text
@@ -169,5 +133,115 @@ public class DashboardPage {
                 System.out.println("Item placed at Y -> " + itemY);
             }
         });
+        // }
     }
+}
+
+class ImageLinkPane {
+    public static HBox createImageLinkVBox(Stage stage, SceneController sceneController) {
+        // Gunakan ImageView untuk semua pilihan di Sidebar
+        ImageView logoImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
+        logoImageView.setFitWidth(200);
+        logoImageView.setFitHeight(50);
+        logoImageView.setTranslateY(-stage.getHeight() / 2 + 270);
+        logoImageView.setTranslateX(-stage.getWidth() / 2 + 450);
+        System.out.println("Logo position: " + -stage.getHeight() + ", " + -stage.getWidth());
+
+        ImageView homePageImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
+        ImageView tanamUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Tanam Uang.png"));
+        ImageView pantauUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Pantau Uang.png"));
+        ImageView panenUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Panen Uang.png"));
+        ImageView modeUser = new ImageView("file:src/Assets/View/Dashboard/Mode User.png");
+        ImageView logOut = new ImageView("file:src/Assets/View/Dashboard/Log Out.png");
+
+        // Menyesuaikan ukuran ImageView
+        homePageImageView.setFitWidth(200);
+        homePageImageView.setFitHeight(40);
+        tanamUangImageView.setFitWidth(200);
+        tanamUangImageView.setFitHeight(40);
+        pantauUangImageView.setFitWidth(200);
+        pantauUangImageView.setFitHeight(40);
+        panenUangImageView.setFitWidth(200);
+        panenUangImageView.setFitHeight(40);
+        modeUser.setFitWidth(200);
+        modeUser.setFitHeight(40);
+        logOut.setFitWidth(200);
+        logOut.setFitHeight(60);
+
+        // Membuat Hyperlink dengan menggunakan ImageView
+        Hyperlink homeHyperlink = createHyperlinkWithImageView(homePageImageView);
+        Hyperlink tanamUangHyperlink = createHyperlinkWithImageView(tanamUangImageView);
+        Hyperlink pantauUangHyperlink = createHyperlinkWithImageView(pantauUangImageView);
+        Hyperlink panenUangHyperlink = createHyperlinkWithImageView(panenUangImageView);
+        Hyperlink modeUserHyperlink = createHyperlinkWithImageView(modeUser);
+        Hyperlink logOutHyperlink = createHyperlinkWithImageView(logOut);
+
+        // Menambahkan fungsi ketika hyperlink diklik
+        homeHyperlink.setOnMouseClicked(e -> sceneController.switchToDashboard());
+        tanamUangHyperlink.setOnMouseClicked(e -> sceneController.switchToTanamUang());
+        pantauUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPantauUang());
+        panenUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPanenUang());
+        // modeUserHyperlink.setOnMouseClicked(e -> sceneController.switchToModeUser());
+        logOutHyperlink.setOnMouseClicked(e -> sceneController.switchToLogin());
+
+        Rectangle region = new Rectangle();
+        region.setWidth(250);
+
+        // Membuat masing - masing Vbox dan menambahkan Hyperlink ke dalamnya
+        VBox homeVBox = new VBox(homeHyperlink, region);
+        homeVBox.setTranslateX(-stage.getWidth() + 990);
+        homeVBox.setTranslateY(-stage.getHeight() / 2 + 250);
+        homeVBox.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20px;");
+        homeVBox.setMaxWidth(200); // Set maksimum lebar VBox
+        homeVBox.setMaxHeight(40); // Set maksimum tinggi VBox
+
+        VBox tanamUangVBox = new VBox(tanamUangHyperlink);
+        tanamUangVBox.setTranslateX(-stage.getWidth() + 970);
+        tanamUangVBox.setMaxWidth(200); // Set maksimum lebar VBox
+        tanamUangVBox.setMaxHeight(40); // Set maksimum tinggi VBox
+
+        VBox pantauUangVBox = new VBox(pantauUangHyperlink);
+        pantauUangVBox.setTranslateX(-stage.getWidth() + 970);
+        pantauUangVBox.setMaxWidth(200); // Set maksimum lebar VBox
+        pantauUangVBox.setMaxHeight(40); // Set maksimum tinggi VBox
+
+        VBox panenUangVBox = new VBox(panenUangHyperlink);
+        panenUangVBox.setTranslateX(-stage.getWidth() + 970);
+        panenUangVBox.setMaxWidth(200); // Set maksimum lebar VBox
+        panenUangVBox.setMaxHeight(40); // Set maksimum tinggi VBox
+
+        VBox modeUserVBox = new VBox(modeUserHyperlink);
+        modeUserVBox.setTranslateX(-stage.getWidth() + 970);
+        modeUserVBox.setMaxWidth(200); // Set maksimum lebar VBox
+        modeUserVBox.setMaxHeight(40); // Set maksimum tinggi VBox
+
+        VBox logOutVBox = new VBox(logOutHyperlink);
+        logOutVBox.setTranslateX(-stage.getWidth() + 970);
+        logOutVBox.setMaxWidth(200); // Set maksimum lebar VBox
+        logOutVBox.setMaxHeight(60); // Set maksimum tinggi VBox
+
+        // Membuat VBox dan menambahkan Hyperlink ke dalamnya
+        VBox kontenSide = new VBox(logoImageView, homeVBox, tanamUangVBox, pantauUangVBox, panenUangVBox,
+                modeUserVBox,
+                logOutVBox);
+        kontenSide.setSpacing(60);
+        kontenSide.setAlignment(Pos.TOP_CENTER);
+        kontenSide.setPadding(new Insets(0, 0, 0, 0));
+
+        // Membuat HBox dan menambahkan VBox ke dalamnya
+        HBox SideBar = new HBox(kontenSide);
+        SideBar.setAlignment(Pos.CENTER_LEFT);
+        SideBar.setMaxHeight(stage.getMaxHeight());
+        SideBar.setMaxWidth(stage.getWidth() / 5 - 50);
+
+        return SideBar;
+
+    }
+
+    private static Hyperlink createHyperlinkWithImageView(ImageView imageView) {
+        Hyperlink hyperlink = new Hyperlink();
+        hyperlink.setGraphic(imageView);
+        return hyperlink;
+    }
+
 }
