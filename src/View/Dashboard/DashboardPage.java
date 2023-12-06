@@ -250,9 +250,11 @@ public class DashboardPage {
             HBox rightBar = new HBox();
 
             HBox mainPaneHBox = new HBox(sideBar, mainPane, rightBar);
-            // menambah Vbox Layout ke dalam main pane
+            // Set horizontal grow priority for mainPane
+            HBox.setHgrow(mainPane, Priority.ALWAYS);
 
             VBox layout = new VBox(mainPaneHBox);
+            layout.setStyle("-fx-background-color: #0D1416;");
 
             Scene scene = new Scene(layout, 750, 500);
             scene.setFill(Color.valueOf("#0D1416"));
