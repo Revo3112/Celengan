@@ -3,9 +3,7 @@ package View.Dashboard;
 import Controller.SceneController;
 import Model.LoginModel;
 import Model.PieChartData;
-import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -26,11 +23,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
-import java.awt.MouseInfo;
+import javafx.scene.transform.Scale;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.stage.StageStyle;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
@@ -40,6 +38,7 @@ public class DashboardPage {
     private SceneController sceneController; // Tambahkan property SceneController\
     private double saldo;
     private Tooltip tooltip = new Tooltip();
+    private Scale pieChartScale = new Scale(1.2, 1.2);
 
     public DashboardPage(Stage stage) {
         this.stage = stage;
@@ -52,7 +51,7 @@ public class DashboardPage {
     public void start() {
         // Membuat side bar
         HBox sideBar = ImageLinkPane.createImageLinkVBox(this.stage, sceneController);
-        sideBar.setTranslateX(-stage.getWidth() / 2 + 40);
+        // sideBar.setTranslateX(-stage.getWidth() / 2 + 40);
 
         // Membuat teks welcome
         Text welcome = createText("Selamat Datang,\n" + this.username + "!", "-fx-font: 40 'Poppins-Regular';",
@@ -96,17 +95,20 @@ public class DashboardPage {
         vboxKiriAtas.setAlignment(Pos.TOP_LEFT);
         vboxKiriAtas.setPadding(new Insets(0, 0, 0, 20));
 
-        Text Saldoawal = createText("Saldo Awal", "-fx-font: 20 'Poppins-Regular';",
+        // Membulatkan tampilan uang agar tidak muncul E
+        long roundedValue = Math.round(this.saldo);
+
+        Text Saldoawal = createText("Saldo Awal", "-fx-font: 15 'Poppins-Regular';",
                 "#064D00", 0, 0);
-        Text Saldoawal2 = createText("Rp. " + this.saldo, "-fx-font: 50 'Poppins-bold';",
+        Text Saldoawal2 = createText(formatDuit(roundedValue), "-fx-font: 30 'Poppins-bold';",
                 "#ffffff", 0, -10);
         VBox vboxKiriTengah = new VBox(Saldoawal, Saldoawal2);
         vboxKiriTengah.setAlignment(Pos.CENTER_LEFT);
         vboxKiriTengah.setPadding(new Insets(0, 0, 0, 20));
 
         ImageView UbahSaldo = new ImageView(new Image("file:src/Assets/View/Dashboard/UbahSaldo.png"));
-        UbahSaldo.setFitWidth(268);
-        UbahSaldo.setFitHeight(53);
+        UbahSaldo.setFitWidth(220);
+        UbahSaldo.setFitHeight(43);
 
         Hyperlink UbahSaldoHyperlink = new Hyperlink();
         UbahSaldoHyperlink.setGraphic(UbahSaldo);
@@ -158,19 +160,36 @@ public class DashboardPage {
 
                 data.getNode().setStyle("-fx-label-line-length: 10px;");
             }
-            pieChart.setLegendVisible(false);
+            pieChart.setLegendVisible(true);
+            pieChart.setStartAngle(90); // Mengatur sudut awal pie chart
+            pieChart.setClockwise(false); // Mengatur arah jarum jam
+            pieChart.setMaxSize(200, 150);
+            pieChart.setLabelLineLength(0); // Menetapkan panjang garis label
+            pieChart.setLabelsVisible(false); // Menyembunyikan label
+            pieChart.getTransforms().add(pieChartScale);
+            pieChart.setTranslateX(-20);
+            pieChart.setTranslateY(-5);
 
-            StackPane kontenPieChart = new StackPane(pieChart);
+            VBox kontenPieChart = new VBox(pieChart);
+            kontenPieChart.setAlignment(Pos.TOP_LEFT);
 
-            HBox kontenPieChartdanDuit = new HBox(kontenPieChart);
+            // Membuat image yang bisa ditekan untuk menuju pantau uang
+            ImageView gotoPantauUang = new ImageView(new Image("file:src/Assets/View/Dashboard/GotoPantauUang.png"));
+            gotoPantauUang.setFitWidth(40);
+            gotoPantauUang.setFitHeight(40);
+            Hyperlink gotoPantauUangHyperlink = new Hyperlink();
+            gotoPantauUangHyperlink.setGraphic(gotoPantauUang);
+            gotoPantauUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPantauUang());
 
-            // Vbox atas pada tengah
-            VBox vboxTengahAtas = new VBox(kontenPieChartdanDuit);
+            VBox kontenGotoPantauUang = new VBox(gotoPantauUangHyperlink);
+            kontenGotoPantauUang.setAlignment(Pos.TOP_RIGHT);
+            kontenGotoPantauUang.setPadding(new Insets(10, 10, 10, 10));
 
-            // Vbox bawah pada tengah
-            VBox vBoxTengahBawah = new VBox();
+            HBox kontenPieChartdanDuit = new HBox(kontenPieChart, kontenGotoPantauUang);
+            kontenPieChartdanDuit.setAlignment(Pos.CENTER);
+            HBox.setHgrow(kontenPieChart, Priority.ALWAYS);
 
-            VBox penyatuanKontenTengah = new VBox(vboxTengahAtas, vBoxTengahBawah);
+            VBox penyatuanKontenTengah = new VBox(kontenPieChartdanDuit);
 
             StackPane KontenTengah = new StackPane(penyatuanKontenTengah);
             KontenTengah.setStyle("-fx-background-color: #6E94FA; -fx-background-radius: 20px");
@@ -225,11 +244,18 @@ public class DashboardPage {
             kontenVBox.setMaxWidth(scrollPane.getMaxWidth() - 10);
 
             // Membuat main pane
-            StackPane mainPane = new StackPane(sideBar, scrollPane);
+            StackPane mainPane = new StackPane(scrollPane);
             mainPane.setStyle("-fx-background-color: #0D1416;");
 
-            Scene scene = new Scene(mainPane, 750, 500);
-            scene.setFill(Color.TRANSPARENT);
+            HBox rightBar = new HBox();
+
+            HBox mainPaneHBox = new HBox(sideBar, mainPane, rightBar);
+            // menambah Vbox Layout ke dalam main pane
+
+            VBox layout = new VBox(mainPaneHBox);
+
+            Scene scene = new Scene(layout, 750, 500);
+            scene.setFill(Color.valueOf("#0D1416"));
 
             // Menanggapi perubahan ukuran layar
             ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
@@ -245,10 +271,9 @@ public class DashboardPage {
             this.stage.heightProperty().addListener(stageSizeListener);
 
             this.stage.setScene(scene);
-            this.stage.setMinHeight(500);
-            this.stage.setMinWidth(750);
-            this.stage.setFullScreen(true);
-            this.stage.show();
+            this.stage.setMaximized(true);
+            this.stage.initStyle(StageStyle.TRANSPARENT);
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -301,7 +326,16 @@ public class DashboardPage {
                 System.out.println("Item placed at Y -> " + itemY);
             }
         });
-        // }
+    }
+
+    private static String formatDuit(double nilai) {
+        // Membuat instance NumberFormat untuk mata uang Indonesia (IDR)
+        Locale locale = Locale.forLanguageTag("id-ID");
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+        // Mengatur nilai
+        String formattedValue = numberFormat.format(nilai);
+
+        return formattedValue;
     }
 }
 

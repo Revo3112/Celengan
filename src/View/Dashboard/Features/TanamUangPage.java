@@ -39,7 +39,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.Group; 
+import javafx.scene.Group;
 import javafx.stage.Stage;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
@@ -110,29 +110,30 @@ public class TanamUangPage {
             StackPane pane = new StackPane();
             pane.setMaxSize(paneWidth, paneHeight);
             pane.setStyle("-fx-background-color: #FFFFFF; -fx-background-radius: 20");
-            
+
             Text titleKategoriPengeluaran = createText("Kategori Pengeluaran", "-fx-font: 16 Poppins;", "#000000");
             ImageView logoTambah = new ImageView(new Image("file:src/Assets/View/Dashboard/Tambah.png"));
-            
+
             HBox topBar = new HBox(titleKategoriPengeluaran, logoTambah);
             topBar.setMaxSize(paneWidth, paneHeight);
             topBar.setStyle("-fx-background-color: #DF826C");
-        
-            HBox.setMargin(titleKategoriPengeluaran, new Insets(10, paneWidth - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 10, 0, 0));
+
+            HBox.setMargin(titleKategoriPengeluaran,
+                    new Insets(10, paneWidth - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 10, 0, 0));
 
             VBox scrollPaneContent = new VBox();
             scrollPaneContent.setSpacing(30);
-        
+
             ScrollPane scrollPane = new ScrollPane(scrollPaneContent);
             scrollPane.setFitToWidth(true);
-        
+
             scrollPaneContent.setMaxSize(scrollPane.getWidth() - 20, scrollPane.getHeight());
-        
+
             VBox mainBar = new VBox(topBar, scrollPane);
             mainBar.setMaxSize(paneWidth, paneHeight);
             mainBar.setSpacing(20);
             mainBar.setAlignment(Pos.CENTER);
-            
+
             int i = 0;
             while (i < listKategoriPengeluaran.length) {
                 Text namaKategori = createText(listKategoriPengeluaran[i], "-fx-font: 16 Poppins;", "#000000");
@@ -140,15 +141,15 @@ public class TanamUangPage {
                 Hyperlink editHyperlink = new Hyperlink();
                 editHyperlink.setStyle("-fx-background-color: #3081D0");
                 editHyperlink.setGraphic(logoEdit);
-                
+
                 int index = i;
                 boolean isKategoriDefault = TanamUangModel.getIsKategoriDefault(namaKategori.getText());
-                
+
                 editHyperlink.setOnMouseClicked(f -> {
                     StackPane paneEdit = new StackPane();
                     paneEdit.setMaxSize(paneWidth - 600, paneHeight - 400);
                     paneEdit.setStyle("-fx-background-radius: 20; -fx-background-color: #505e63");
-                    
+
                     Text editTitle = createText("Ubah Kategori", "-fx-font: 20 Poppins;", "#FFFFFF");
                     Label labelEditNamaKategori = new Label("Nama:");
                     labelEditNamaKategori.setStyle("-fx-font: 16 Poppins");
@@ -171,15 +172,17 @@ public class TanamUangPage {
                         if (isKategoriDefault) {
                             int idKategoriDefault = TanamUangModel.getIdKategoriDefault(nama_kategori);
                             System.out.println("ID: " + idKategoriDefault);
-                            boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori, isKategoriDefault, "pengeluaran", idKategoriDefault);
-                            
+                            boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori,
+                                    isKategoriDefault, "pengeluaran", idKategoriDefault);
+
                             if (statusSimpan) {
                                 AlertHelper.info("Berhasil mengubah nama kategori!");
                             } else {
                                 AlertHelper.info("Gagal mengubah nama kategori!");
                             }
                         } else {
-                            boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori, isKategoriDefault, "pengeluaran", 0);
+                            boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori,
+                                    isKategoriDefault, "pengeluaran", 0);
                             if (statusSimpan) {
                                 AlertHelper.info("Berhasil mengubah nama kategori!");
                             } else {
@@ -187,7 +190,7 @@ public class TanamUangPage {
                             }
                         }
                     });
-                    
+
                     HBox editHBox = new HBox(labelEditNamaKategori, fieldEditNamaKategori);
                     editHBox.setSpacing(20);
                     editHBox.setAlignment(Pos.CENTER);
@@ -203,22 +206,23 @@ public class TanamUangPage {
                     VBox editVBox = new VBox(editTitleHBox, editHBox, editButtonHBox);
                     editVBox.setSpacing(20);
                     editVBox.setAlignment(Pos.CENTER);
-                    
+
                     paneEdit.getChildren().add(editVBox);
                     pane.getChildren().add(paneEdit);
 
                 });
-    
+
                 HBox itemBox = new HBox(namaKategori, editHyperlink);
-                HBox.setMargin(namaKategori, new Insets(10, paneWidth - namaKategori.getBoundsInLocal().getWidth(), 0, 0));
-        
+                HBox.setMargin(namaKategori,
+                        new Insets(10, paneWidth - namaKategori.getBoundsInLocal().getWidth(), 0, 0));
+
                 scrollPaneContent.getChildren().add(itemBox);
 
                 i++;
             }
 
             pane.getChildren().add(mainBar);
-        
+
             this.root.getChildren().add(pane);
         });
 
@@ -252,7 +256,7 @@ public class TanamUangPage {
                 LocalDate selectedTanggal = datePickerTanggal.getValue();
                 DateTimeFormatter formatTanggal = DateTimeFormatter.ofPattern("YYYY-MM-d");
                 String tanggal = selectedTanggal.format(formatTanggal).toString();
-                
+
                 String selectedKategori = this.combobox.getValue().toString();
 
                 int kategoriId = 0;
@@ -273,11 +277,13 @@ public class TanamUangPage {
                 }
 
                 if (tipeTanamUang.toLowerCase().equals("pengeluaran")) {
-                    if (TanamUangModel.simpanPengeluaran(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
+                    if (TanamUangModel.simpanPengeluaran(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran,
+                            keterangan)) {
                         clearSelection("Pengeluaran telah tercatat");
                     }
                 } else {
-                    if (TanamUangModel.simpanPemasukan(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran, keterangan)) {
+                    if (TanamUangModel.simpanPemasukan(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran,
+                            keterangan)) {
                         clearSelection("Pemasukan telah tercatat");
                     }
                 }
@@ -285,7 +291,6 @@ public class TanamUangPage {
                 AlertHelper.alert("Mohon isi data Anda");
             }
         });
-        
 
         // HBOX
 
@@ -306,11 +311,11 @@ public class TanamUangPage {
 
         HBox formJumlah = new HBox(labelJumlah, fieldJumlah);
         formJumlah.setSpacing(20);
-        formJumlah.setAlignment(Pos.CENTER);     
-        
+        formJumlah.setAlignment(Pos.CENTER);
+
         HBox formTipePembayaran = new HBox(labelTipePembayaran, radioButtonCash, radioButtonTransfer);
         formTipePembayaran.setSpacing(20);
-        formTipePembayaran.setAlignment(Pos.CENTER);     
+        formTipePembayaran.setAlignment(Pos.CENTER);
 
         HBox formKeterangan = new HBox(labelKeterangan, fieldKeterangan);
         formKeterangan.setSpacing(20);
@@ -319,7 +324,8 @@ public class TanamUangPage {
         HBox hboxButtonSimpan = new HBox(buttonSimpan);
         hboxButtonSimpan.setAlignment(Pos.CENTER);
 
-        VBox vbox = new VBox(buttonTU, hboxTitle, formTanggal, formKategori, formJumlah, formTipePembayaran, formKeterangan, hboxButtonSimpan);
+        VBox vbox = new VBox(buttonTU, hboxTitle, formTanggal, formKategori, formJumlah, formTipePembayaran,
+                formKeterangan, hboxButtonSimpan);
         vbox.setSpacing(40);
         vbox.setAlignment(Pos.CENTER);
         vbox.setMaxSize(800, 600);
@@ -331,7 +337,8 @@ public class TanamUangPage {
             private int codeLen = 4;
 
             @Override
-            // ObservableValue = StringProperty (Represent an object that has changed its state)
+            // ObservableValue = StringProperty (Represent an object that has changed its
+            // state)
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 // Hapus listener sementara
 
@@ -358,7 +365,7 @@ public class TanamUangPage {
                 double value = Double.parseDouble(text.replace(".", ""));
                 System.out.println(value);
                 fieldJumlah.setText("");
-                fieldJumlah.setText(decimalFormat.format(value));            
+                fieldJumlah.setText(decimalFormat.format(value));
             }
 
             private void updateCodeFormat(String text) {
@@ -401,9 +408,9 @@ public class TanamUangPage {
     }
 
     private boolean isFormFilled() {
-        return  this.datePickerTanggal.getValue() != null && 
-                this.combobox.getValue() != null && 
-                !this.fieldJumlah.getText().isEmpty() && 
+        return this.datePickerTanggal.getValue() != null &&
+                this.combobox.getValue() != null &&
+                !this.fieldJumlah.getText().isEmpty() &&
                 !this.fieldKeterangan.getText().isEmpty() &&
                 (this.radioBtnCash.isSelected() || this.radioBtnTransfer.isSelected());
     }

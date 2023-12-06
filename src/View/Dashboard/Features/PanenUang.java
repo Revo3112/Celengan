@@ -2,7 +2,10 @@ package View.Dashboard.Features;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+
 import Controller.SceneController;
 import Model.HapusTarget;
 import Model.LoginModel;
@@ -333,9 +336,14 @@ public class PanenUang {
     }
 
     // Fungsi untuk mengembalikan format duit
-    private String formatDuit(double nilai) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-        return "Rp. " + decimalFormat.format(nilai);
+    private static String formatDuit(double nilai) {
+        // Membuat instance NumberFormat untuk mata uang Indonesia (IDR)
+        Locale locale = Locale.forLanguageTag("id-ID");
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+        // Mengatur nilai
+        String formattedValue = numberFormat.format(nilai);
+
+        return formattedValue;
     }
 
     // fungsi untuk membuat text dengan return Text
