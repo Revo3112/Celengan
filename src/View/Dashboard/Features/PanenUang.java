@@ -326,7 +326,7 @@ public class PanenUang {
         this.stage.setScene(scene);
         this.stage.setMinHeight(500);
         this.stage.setMinWidth(750);
-        // this.stage.setFullScreen(true);
+        this.stage.setFullScreen(true);
         this.stage.getScene().getRoot().setStyle("-fx-background-color: #141F23;");
         scene.setFill(Color.TRANSPARENT); // Atur latar belakang scene menjadi transparan
         // setOnMouseClicked(mainPane, welcome);

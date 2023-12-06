@@ -2,114 +2,282 @@ package View.Dashboard;
 
 import Controller.SceneController;
 import Model.LoginModel;
+import Model.PieChartData;
+import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
+import java.awt.MouseInfo;
+
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
 
     private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
     private String username;
-    private SceneController sceneController; // Tambahkan property SceneController
+    private SceneController sceneController; // Tambahkan property SceneController\
+    private double saldo;
+    private Tooltip tooltip = new Tooltip();
 
     public DashboardPage(Stage stage) {
         this.stage = stage;
         this.username = getUsername();
         this.sceneController = new SceneController(stage); // Inisialisasi SceneController
+        this.saldo = getSaldo();
     }
 
     // Menampilkan halaman dashboard
     public void start() {
-        // membuat text
-        Text welcome = createText("Selamat Datang,\n" + this.username, "-fx-font: 30 'Poppins-Regular';", "#FFFFFF",
-                -this.stage.getWidth() / 2 + 204, -this.stage.getHeight() / 2 + 6);
-        welcome.toFront();
+        // Membuat side bar
+        HBox sideBar = ImageLinkPane.createImageLinkVBox(this.stage, sceneController);
+        sideBar.setTranslateX(-stage.getWidth() / 2 + 40);
 
-        // membuat main pane
-        StackPane isiScrollPane = new StackPane();
-        isiScrollPane.getChildren().addAll(welcome);
-        isiScrollPane.setStyle("-fx-background-color: #141F23;");
+        // Membuat teks welcome
+        Text welcome = createText("Selamat Datang,\n" + this.username + "!", "-fx-font: 40 'Poppins-Regular';",
+                "#FFFFFF", 0, 0);
 
-        ScrollPane scrollMainPane = new ScrollPane(isiScrollPane);
-        scrollMainPane.setFitToWidth(true);
-        scrollMainPane.setFitToHeight(true);
-        scrollMainPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollMainPane.setStyle("-fx-background-color: #141F23;");
+        // StackPane untuk menampung teks
+        StackPane textPane = new StackPane(welcome);
+        textPane.setAlignment(Pos.CENTER_LEFT);
+        textPane.setPadding(new Insets(0, 0, 0, 10));
 
-        StackPane mainPane = new StackPane(scrollMainPane);
-        mainPane.setMaxSize(this.stage.getWidth() - 400, this.stage.getHeight() - 30);
-        mainPane.setTranslateX(70);
-        mainPane.setTranslateY(0);
-        mainPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 30px;");
+        // Menambahkan gambar
+        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Content.png"));
+        contentImageView.setFitWidth(400);
+        contentImageView.setFitHeight(300);
 
-        /// Membuat side bar
-        HBox SideBar = ImageLinkPane.createImageLinkVBox(stage, sceneController);
-        SideBar.setTranslateX(-stage.getWidth() / 2 + 40);
+        // StackPane untuk menampung gambar
+        StackPane contentImagePane = new StackPane(contentImageView);
+        contentImagePane.setAlignment(Pos.CENTER_RIGHT);
+        contentImagePane.setPadding(new Insets(0, 0, 0, 0));
 
-        StackPane welcomePage = new StackPane(mainPane, SideBar);
-        welcomePage.setStyle("-fx-background-color: #0D1416;");
+        // Konten bagian atas untuk main pane
+        HBox kontenAtasPane = new HBox(textPane, contentImagePane);
+        HBox.setHgrow(textPane, Priority.ALWAYS);
+        textPane.setTranslateX(20);
 
-        Scene scene = new Scene(welcomePage, 750, 500);
-        scene.getStylesheets().addAll(
-                "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
+        // ------------------------------------------------------------------------------------------------------------//
 
-        // Menanggapi perubahan ukuran layar
+        // Membuat teks fitur - fitur celengan
+        Text Fitur = createText("Fitur - Fitur Celengan", "-fx-font: 30 'Poppins-Regular';",
+                "#FFFFFF", 0, 0);
+        // Membuat vbox atas untuk konten tengah
+        VBox kontenTengahAtas = new VBox(Fitur);
+        kontenTengahAtas.setAlignment(Pos.CENTER_LEFT);
 
-        // membuat pane sesi welcome
-        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-            double stageWidth = stage.getWidth();
-            double stageHeight = stage.getHeight();
+        // Konten kiri
+        ImageView Gambarduit = new ImageView(new Image("file:src/Assets/View/Dashboard/Gambarduit.png"));
+        Gambarduit.setFitWidth(120);
+        Gambarduit.setFitHeight(40);
 
-            // Menyesuaikan ukuran dan posisi StackPane
-            mainPane.setMaxSize(stage.getWidth() - 400, stage.getHeight() - 30);
+        VBox vboxKiriAtas = new VBox(Gambarduit);
+        vboxKiriAtas.setAlignment(Pos.TOP_LEFT);
+        vboxKiriAtas.setPadding(new Insets(0, 0, 0, 20));
 
-            // welcome.setTranslateY( -this.stage.getWidth() / 2 + 132);
-            // welcome.setTranslateX(-this.stage.getHeight() / 2 + -268);
+        Text Saldoawal = createText("Saldo Awal", "-fx-font: 20 'Poppins-Regular';",
+                "#064D00", 0, 0);
+        Text Saldoawal2 = createText("Rp. " + this.saldo, "-fx-font: 50 'Poppins-bold';",
+                "#ffffff", 0, -10);
+        VBox vboxKiriTengah = new VBox(Saldoawal, Saldoawal2);
+        vboxKiriTengah.setAlignment(Pos.CENTER_LEFT);
+        vboxKiriTengah.setPadding(new Insets(0, 0, 0, 20));
 
-            System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
-            System.out.println("Stage size: " + stageWidth + ", " + stageHeight);
-        };
+        ImageView UbahSaldo = new ImageView(new Image("file:src/Assets/View/Dashboard/UbahSaldo.png"));
+        UbahSaldo.setFitWidth(268);
+        UbahSaldo.setFitHeight(53);
 
-        // Menambahkan listener ke lebar dan tinggi stage
-        this.stage.widthProperty().addListener(stageSizeListener);
-        this.stage.heightProperty().addListener(stageSizeListener);
+        Hyperlink UbahSaldoHyperlink = new Hyperlink();
+        UbahSaldoHyperlink.setGraphic(UbahSaldo);
+        UbahSaldoHyperlink.setOnMouseClicked(e -> sceneController.switchToTanamUang());
 
-        this.stage.setScene(scene);
-        this.stage.setMinHeight(500);
-        this.stage.setMinWidth(750);
-        this.stage.setFullScreen(true);
-        this.stage.show();
-        setOnMouseClicked(welcomePage, welcome);
+        VBox vboxKiriBawah = new VBox(UbahSaldoHyperlink);
+        vboxKiriBawah.setAlignment(Pos.BOTTOM_CENTER);
+
+        VBox penyatuanKonten = new VBox(vboxKiriAtas, vboxKiriTengah, vboxKiriBawah);
+        penyatuanKonten.setPadding(new Insets(10, 0, 10, 0));
+
+        StackPane Kontenkiri = new StackPane(penyatuanKonten);
+        Kontenkiri.setStyle("-fx-background-color: #39B200; -fx-background-radius: 20px");
+        Kontenkiri.setAlignment(Pos.CENTER);
+
+        // Konten Tengah
+
+        // Membuat pie chart
+        try {
+            PieChart pieChart = new PieChart();
+            ObservableList<PieChart.Data> pieChartData = PieChartData.pieChartData();
+            pieChart.setData(pieChartData);
+            for (PieChart.Data data : pieChart.getData()) {
+
+                Tooltip.install(data.getNode(), tooltip);
+
+                data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+                    tooltip.setText(String.format("%.1f%%", data.getPieValue()));
+                    updateTooltipPosition(e.getScreenX(), e.getScreenY());
+                    tooltip.show(data.getNode(), e.getScreenX(), e.getScreenY());
+                });
+
+                data.getNode().addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+                    tooltip.hide();
+                });
+
+                data.getNode().addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
+                    updateTooltipPosition(e.getScreenX(), e.getScreenY());
+                });
+                data.getNode().setOnMouseEntered(e -> {
+                    data.getNode().setScaleX(1.1);
+                    data.getNode().setScaleY(1.1);
+                });
+
+                data.getNode().setOnMouseExited(e -> {
+                    data.getNode().setScaleX(1);
+                    data.getNode().setScaleY(1);
+                });
+
+                data.getNode().setStyle("-fx-label-line-length: 10px;");
+            }
+            pieChart.setLegendVisible(false);
+
+            StackPane kontenPieChart = new StackPane(pieChart);
+
+            HBox kontenPieChartdanDuit = new HBox(kontenPieChart);
+
+            // Vbox atas pada tengah
+            VBox vboxTengahAtas = new VBox(kontenPieChartdanDuit);
+
+            // Vbox bawah pada tengah
+            VBox vBoxTengahBawah = new VBox();
+
+            VBox penyatuanKontenTengah = new VBox(vboxTengahAtas, vBoxTengahBawah);
+
+            StackPane KontenTengah = new StackPane(penyatuanKontenTengah);
+            KontenTengah.setStyle("-fx-background-color: #6E94FA; -fx-background-radius: 20px");
+
+            StackPane KontenKanan = new StackPane();
+
+            // Membuat bagian bagian konten tangah bawah
+            HBox kontenFiturCelengan = new HBox(Kontenkiri, KontenTengah, KontenKanan);
+            kontenFiturCelengan.setSpacing(20);
+
+            // Membuat konten tengah bawah untuk konten tengah
+            VBox kontenTengahBawah = new VBox(kontenFiturCelengan);
+
+            // Membuat konten bagian tengah untuk main pane
+            VBox kontenTengahPane = new VBox(kontenTengahAtas, kontenTengahBawah);
+            kontenTengahPane.setPadding(new Insets(0, 0, 0, 30));
+            kontenTengahPane.setSpacing(10);
+
+            // ------------------------------------------------------------------------------------------------------------//
+
+            // Membuat konten bagian bawah untuk main pane
+            VBox kontenBawahPane = new VBox();
+
+            // VBox untuk menampung konten atas, tengah, dan bawah
+            VBox kontenVBox = new VBox(kontenAtasPane, kontenTengahPane, kontenBawahPane);
+            kontenVBox.setSpacing(2);
+            kontenVBox.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20px");
+
+            // Membuat konten bagian tengah
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setContent(kontenVBox);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setMaxHeight(this.stage.getHeight() + 250);
+            scrollPane.setMaxWidth(this.stage.getWidth() - 100);
+            scrollPane.setTranslateX(70);
+            scrollPane.setTranslateY(0);
+
+            // Menentukan gaya css untuk scroll bar
+            String scrollbarStyle = "-fx-background-color: #141F23;"; // Warna latar belakang
+            scrollbarStyle += "-fx-background: #0B1214;"; // Warna slider
+            scrollbarStyle += "-fx-background-insets: 0;"; // Menghapus bayangan
+            scrollbarStyle += "-fx-padding: 0;"; // Menghapus padding
+
+            // Menetapkan ID agar dapat diakses menggunakan lookup
+            scrollPane.setId("custom-scrollbar");
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollPane.setStyle(scrollbarStyle); // Mengubah gaya css scroll bar
+            // menghilangkan border dan mengatur warna background scrollPane
+            scrollPane.setStyle("-fx-background: #0D1416; -fx-border-color: #0D1416;");
+
+            kontenVBox.setMaxHeight(scrollPane.getMaxHeight() - 10);
+            kontenVBox.setMaxWidth(scrollPane.getMaxWidth() - 10);
+
+            // Membuat main pane
+            StackPane mainPane = new StackPane(sideBar, scrollPane);
+            mainPane.setStyle("-fx-background-color: #0D1416;");
+
+            Scene scene = new Scene(mainPane, 750, 500);
+            scene.setFill(Color.TRANSPARENT);
+
+            // Menanggapi perubahan ukuran layar
+            ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
+                double stageWidth = stage.getWidth();
+                double stageHeight = stage.getHeight();
+                // mainPane.setMaxSize(stage.getWidth() - 400, stage.getHeight() - 30);
+                System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
+                System.out.println("Stage size: " + stageWidth + ", " + stageHeight);
+            };
+
+            // Menambahkan listener ke lebar dan tinggi stage
+            this.stage.widthProperty().addListener(stageSizeListener);
+            this.stage.heightProperty().addListener(stageSizeListener);
+
+            this.stage.setScene(scene);
+            this.stage.setMinHeight(500);
+            this.stage.setMinWidth(750);
+            this.stage.setFullScreen(true);
+            this.stage.show();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 
-    // fungsi untuk membuat text dengan return Text
-    public Text createText(String text, String style, String color, double transX, double transY) {
-        Text newText = new Text(text);
-        newText.setStyle(style); // menetapkan style text
-        newText.setFill(Color.valueOf(color)); // menetapkan warna text
-        newText.setTranslateX(transX); // menetapkan posisi x pada text
-        newText.setTranslateY(transY); // menetapkan posisi y pada text
-        return newText;
+    private void updateTooltipPosition(double x, double y) {
+        tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
+        tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
+    }
+
+    private Text createText(String text, String font, String color, double translateX, double translateY) {
+        Text welcome = new Text(text);
+        welcome.setStyle(font + "-fx-fill: " + color + ";");
+        welcome.setTranslateX(translateX);
+        welcome.setTranslateY(translateY);
+        welcome.toFront();
+        return welcome;
     }
 
     // Fungsi untuk mendapatkan username
     private String getUsername() {
         LoginModel loginModel = new LoginModel();
         return loginModel.getLastActiveUsers();
+    }
+
+    private double getSaldo() {
+        LoginModel loginModel = new LoginModel();
+        return loginModel.getUserSaldo();
     }
 
     // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari

@@ -113,6 +113,24 @@ public class LoginModel {
         return _userId(connection);
     }
 
+    public double getUserSaldo() {
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+        double saldo = 0;
+        try {
+            String sql = String.format("SELECT balance FROM saldo WHERE user_id='%s'", getUserId());
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            if (result.next()) {
+                saldo = result.getDouble("balance");
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+        }
+        return saldo;
+    }
+
     private boolean getRememberMeFromUsername(Connection connection, String lastUser) {
         this.rememberMe = false;
         try {
