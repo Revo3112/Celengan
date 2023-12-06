@@ -296,7 +296,7 @@ public class PanenUang {
         StackPane backgroundUtamaPane = new StackPane(mainPane);
         StackPane.setAlignment(mainPane, javafx.geometry.Pos.CENTER);
         backgroundUtamaPane.setStyle("-fx-background-color: #141F23;");
-        Scene scene = new Scene(backgroundUtamaPane, 750, 500);
+        Scene scene = new Scene(backgroundUtamaPane, stage.getWidth(), stage.getHeight());
         scene.setFill(Color.valueOf("#141F23"));
         scene.getStylesheets().addAll(
                 "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
@@ -327,9 +327,7 @@ public class PanenUang {
         this.stage.heightProperty().addListener(stageSizeListener);
 
         this.stage.setScene(scene);
-        this.stage.setMinHeight(500);
-        this.stage.setMinWidth(750);
-        this.stage.setFullScreen(true);
+        this.stage.setMaximized(true);
         this.stage.getScene().getRoot().setStyle("-fx-background-color: #141F23;");
         scene.setFill(Color.TRANSPARENT); // Atur latar belakang scene menjadi transparan
         // setOnMouseClicked(mainPane, welcome);

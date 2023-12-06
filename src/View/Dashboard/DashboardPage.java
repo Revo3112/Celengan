@@ -7,6 +7,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
@@ -52,13 +54,16 @@ public class DashboardPage {
         // Membuat side bar
         HBox sideBar = ImageLinkPane.createImageLinkVBox(this.stage, sceneController);
         // sideBar.setTranslateX(-stage.getWidth() / 2 + 40);
-
+        sideBar.setAlignment(Pos.CENTER_RIGHT);
+        sideBar.setPadding(new Insets(0, 0, 0, 50));
         // Membuat teks welcome
-        Text welcome = createText("Selamat Datang,\n" + this.username + "!", "-fx-font: 40 'Poppins-Regular';",
+        Text welcome = createText("Selamat Datang,\n", "-fx-font: 40 'Poppins-Regular';",
                 "#FFFFFF", 0, 0);
+        Text name = createText(this.username, "-fx-font: 40 'Poppins-SemiBold'", "#ffffff", 0, 0);
+        Text welcome2 = createText("!", "-fx-font: 40 'Poppins-Reguler", "#ffffff", 0, 0);
 
         // StackPane untuk menampung teks
-        StackPane textPane = new StackPane(welcome);
+        StackPane textPane = new StackPane(welcome, name, welcome2);
         textPane.setAlignment(Pos.CENTER_LEFT);
         textPane.setPadding(new Insets(0, 0, 0, 10));
 
@@ -158,20 +163,18 @@ public class DashboardPage {
                     data.getNode().setScaleY(1);
                 });
 
-                data.getNode().setStyle("-fx-label-line-length: 10px;");
+                data.getNode().setStyle("-fx-label-line-length: -100px;");
             }
             pieChart.setLegendVisible(true);
             pieChart.setStartAngle(90); // Mengatur sudut awal pie chart
             pieChart.setClockwise(false); // Mengatur arah jarum jam
-            pieChart.setMaxSize(200, 150);
+            pieChart.setMaxSize(500, 500);
             pieChart.setLabelLineLength(0); // Menetapkan panjang garis label
-            pieChart.setLabelsVisible(false); // Menyembunyikan label
-            pieChart.getTransforms().add(pieChartScale);
-            pieChart.setTranslateX(-20);
-            pieChart.setTranslateY(-5);
+            pieChart.setLabelsVisible(true); // Menyembunyikan label
+            pieChart.setLegendSide(Side.RIGHT);
 
             VBox kontenPieChart = new VBox(pieChart);
-            kontenPieChart.setAlignment(Pos.TOP_LEFT);
+            kontenPieChart.setAlignment(Pos.CENTER_LEFT);
 
             // Membuat image yang bisa ditekan untuk menuju pantau uang
             ImageView gotoPantauUang = new ImageView(new Image("file:src/Assets/View/Dashboard/GotoPantauUang.png"));
@@ -216,20 +219,20 @@ public class DashboardPage {
             // VBox untuk menampung konten atas, tengah, dan bawah
             VBox kontenVBox = new VBox(kontenAtasPane, kontenTengahPane, kontenBawahPane);
             kontenVBox.setSpacing(2);
-            kontenVBox.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20px");
+            kontenVBox.setStyle("-fx-background-color: #141F23; -fx-border-color: none;-fx-background-radius: 20px;");
 
             // Membuat konten bagian tengah
             ScrollPane scrollPane = new ScrollPane();
             scrollPane.setContent(kontenVBox);
             scrollPane.setFitToWidth(true);
-            scrollPane.setMaxHeight(this.stage.getHeight() + 250);
-            scrollPane.setMaxWidth(this.stage.getWidth() - 100);
             scrollPane.setTranslateX(70);
             scrollPane.setTranslateY(0);
+            scrollPane.setStyle("-fx-background-color: #0D1416; -fx-border-color: #0D1416;");
 
             // Menentukan gaya css untuk scroll bar
-            String scrollbarStyle = "-fx-background-color: #141F23;"; // Warna latar belakang
-            scrollbarStyle += "-fx-background: #0B1214;"; // Warna slider
+            // warna scroll bar
+            String scrollbarStyle = "-fx-background-color: #141F23;-fx-background-radius: 20px;";
+            scrollbarStyle += "-fx-background-color: #0B1214;"; // Warna slider
             scrollbarStyle += "-fx-background-insets: 0;"; // Menghapus bayangan
             scrollbarStyle += "-fx-padding: 0;"; // Menghapus padding
 
@@ -237,40 +240,27 @@ public class DashboardPage {
             scrollPane.setId("custom-scrollbar");
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             scrollPane.setStyle(scrollbarStyle); // Mengubah gaya css scroll bar
-            // menghilangkan border dan mengatur warna background scrollPane
-            scrollPane.setStyle("-fx-background: #0D1416; -fx-border-color: #0D1416;");
-
-            kontenVBox.setMaxHeight(scrollPane.getMaxHeight() - 10);
-            kontenVBox.setMaxWidth(scrollPane.getMaxWidth() - 10);
 
             // Membuat main pane
             StackPane mainPane = new StackPane(scrollPane);
-            mainPane.setStyle("-fx-background-color: #0D1416;");
+            mainPane.setStyle(
+                    "-fx-background-color: #0D1416; -fx-background-radius: 20px;");
+            mainPane.setPadding(new Insets(20, 0, 0, -80));
+
+            HBox mainPaneHBox = new HBox(mainPane);
+            HBox.setHgrow(mainPane, Priority.ALWAYS);
 
             HBox rightBar = new HBox();
 
-            HBox mainPaneHBox = new HBox(sideBar, mainPane, rightBar);
+            HBox fullPane = new HBox(sideBar, mainPaneHBox, rightBar);
             // Set horizontal grow priority for mainPane
-            HBox.setHgrow(mainPane, Priority.ALWAYS);
+            HBox.setHgrow(mainPaneHBox, Priority.ALWAYS);
+            HBox.setHgrow(rightBar, Priority.ALWAYS);
 
-            VBox layout = new VBox(mainPaneHBox);
-            layout.setStyle("-fx-background-color: #0D1416;");
+            VBox layout = new VBox(fullPane);
+            layout.setStyle("-fx-background-color: #0D1416; -fx-border-color: none;");
 
-            Scene scene = new Scene(layout, 750, 500);
-            scene.setFill(Color.valueOf("#0D1416"));
-
-            // Menanggapi perubahan ukuran layar
-            ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
-                double stageWidth = stage.getWidth();
-                double stageHeight = stage.getHeight();
-                // mainPane.setMaxSize(stage.getWidth() - 400, stage.getHeight() - 30);
-                System.out.println("Welcome position: " + welcome.getTranslateX() + ", " + welcome.getTranslateY());
-                System.out.println("Stage size: " + stageWidth + ", " + stageHeight);
-            };
-
-            // Menambahkan listener ke lebar dan tinggi stage
-            this.stage.widthProperty().addListener(stageSizeListener);
-            this.stage.heightProperty().addListener(stageSizeListener);
+            Scene scene = new Scene(layout, this.stage.getWidth(), this.stage.getHeight());
 
             this.stage.setScene(scene);
             this.stage.setMaximized(true);
@@ -348,8 +338,7 @@ class ImageLinkPane {
         logoImageView.setFitWidth(200);
         logoImageView.setFitHeight(50);
         logoImageView.setTranslateY(-stage.getHeight() / 2 + 270);
-        logoImageView.setTranslateX(-stage.getWidth() / 2 + 450);
-        System.out.println("Logo position: " + -stage.getHeight() + ", " + -stage.getWidth());
+        logoImageView.setTranslateX(-stage.getWidth() / 2 + 485);
 
         ImageView homePageImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
         ImageView tanamUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Tanam Uang.png"));
@@ -359,16 +348,16 @@ class ImageLinkPane {
         ImageView logOut = new ImageView("file:src/Assets/View/Dashboard/Log Out.png");
 
         // Menyesuaikan ukuran ImageView
-        homePageImageView.setFitWidth(200);
-        homePageImageView.setFitHeight(40);
-        tanamUangImageView.setFitWidth(200);
-        tanamUangImageView.setFitHeight(40);
-        pantauUangImageView.setFitWidth(200);
-        pantauUangImageView.setFitHeight(40);
-        panenUangImageView.setFitWidth(200);
-        panenUangImageView.setFitHeight(40);
-        modeUser.setFitWidth(200);
-        modeUser.setFitHeight(40);
+        homePageImageView.setFitWidth(190);
+        homePageImageView.setFitHeight(35);
+        tanamUangImageView.setFitWidth(190);
+        tanamUangImageView.setFitHeight(35);
+        pantauUangImageView.setFitWidth(190);
+        pantauUangImageView.setFitHeight(35);
+        panenUangImageView.setFitWidth(190);
+        panenUangImageView.setFitHeight(35);
+        modeUser.setFitWidth(190);
+        modeUser.setFitHeight(35);
         logOut.setFitWidth(200);
         logOut.setFitHeight(60);
 
@@ -388,55 +377,36 @@ class ImageLinkPane {
         // modeUserHyperlink.setOnMouseClicked(e -> sceneController.switchToModeUser());
         logOutHyperlink.setOnMouseClicked(e -> sceneController.switchToLogin());
 
-        Rectangle region = new Rectangle();
-        region.setWidth(250);
-
+        Rectangle region = new Rectangle(200, 85);
+        region.setArcHeight(30);
+        region.setArcWidth(30);
+        region.setTranslateY(-20);
+        region.setFill(Color.valueOf("#141F23"));
+        Group aktifGroup = new Group(region, homeHyperlink);
         // Membuat masing - masing Vbox dan menambahkan Hyperlink ke dalamnya
-        VBox homeVBox = new VBox(homeHyperlink, region);
-        homeVBox.setTranslateX(-stage.getWidth() + 990);
-        homeVBox.setTranslateY(-stage.getHeight() / 2 + 250);
-        homeVBox.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20px;");
-        homeVBox.setMaxWidth(200); // Set maksimum lebar VBox
-        homeVBox.setMaxHeight(40); // Set maksimum tinggi VBox
-
+        VBox homeVBox = new VBox(aktifGroup);
+        homeVBox.setAlignment(Pos.CENTER);
         VBox tanamUangVBox = new VBox(tanamUangHyperlink);
-        tanamUangVBox.setTranslateX(-stage.getWidth() + 970);
-        tanamUangVBox.setMaxWidth(200); // Set maksimum lebar VBox
-        tanamUangVBox.setMaxHeight(40); // Set maksimum tinggi VBox
-
+        tanamUangVBox.setAlignment(Pos.TOP_CENTER);
         VBox pantauUangVBox = new VBox(pantauUangHyperlink);
-        pantauUangVBox.setTranslateX(-stage.getWidth() + 970);
-        pantauUangVBox.setMaxWidth(200); // Set maksimum lebar VBox
-        pantauUangVBox.setMaxHeight(40); // Set maksimum tinggi VBox
-
+        pantauUangVBox.setAlignment(Pos.TOP_CENTER);
         VBox panenUangVBox = new VBox(panenUangHyperlink);
-        panenUangVBox.setTranslateX(-stage.getWidth() + 970);
-        panenUangVBox.setMaxWidth(200); // Set maksimum lebar VBox
-        panenUangVBox.setMaxHeight(40); // Set maksimum tinggi VBox
-
+        panenUangVBox.setAlignment(Pos.TOP_CENTER);
         VBox modeUserVBox = new VBox(modeUserHyperlink);
-        modeUserVBox.setTranslateX(-stage.getWidth() + 970);
-        modeUserVBox.setMaxWidth(200); // Set maksimum lebar VBox
-        modeUserVBox.setMaxHeight(40); // Set maksimum tinggi VBox
-
+        modeUserVBox.setAlignment(Pos.TOP_CENTER);
         VBox logOutVBox = new VBox(logOutHyperlink);
-        logOutVBox.setTranslateX(-stage.getWidth() + 970);
-        logOutVBox.setMaxWidth(200); // Set maksimum lebar VBox
-        logOutVBox.setMaxHeight(60); // Set maksimum tinggi VBox
-
+        logOutVBox.setAlignment(Pos.TOP_CENTER);
         // Membuat VBox dan menambahkan Hyperlink ke dalamnya
         VBox kontenSide = new VBox(logoImageView, homeVBox, tanamUangVBox, pantauUangVBox, panenUangVBox,
                 modeUserVBox,
                 logOutVBox);
-        kontenSide.setSpacing(60);
+        kontenSide.setSpacing(50);
         kontenSide.setAlignment(Pos.TOP_CENTER);
-        kontenSide.setPadding(new Insets(0, 0, 0, 0));
+        kontenSide.setPadding(new Insets(40, 2, 0, 0));
 
         // Membuat HBox dan menambahkan VBox ke dalamnya
         HBox SideBar = new HBox(kontenSide);
-        SideBar.setAlignment(Pos.CENTER_LEFT);
-        SideBar.setMaxHeight(stage.getMaxHeight());
-        SideBar.setMaxWidth(stage.getWidth() / 5 - 50);
+        SideBar.setAlignment(Pos.CENTER);
 
         return SideBar;
 
