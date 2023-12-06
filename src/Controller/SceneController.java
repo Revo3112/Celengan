@@ -24,6 +24,7 @@ public class SceneController {
         stage.setWidth(1000); // Mengatur lebar panggung menjadi 1000 pixel
         stage.setHeight(500); // Mengatur tinggi panggung menjadi 500 pixel
         stage.setResizable(false);
+        stage.initStyle(StageStyle.TRANSPARENT);
         stage.setFullScreen(true);
         stage.show(); // Menampilkan panggung
     }

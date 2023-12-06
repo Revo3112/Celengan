@@ -3,21 +3,32 @@ package View.Login_Register;
 import Controller.SceneController;
 import Model.*;
 import Utils.AlertHelper;
-import javafx.geometry.Rectangle2D;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -27,23 +38,26 @@ public class LoginPage {
     private boolean statusCheckbox; // Deklarasi property statusCheckbox
     private TextField fieldUsername; // Deklarasi property fieldUsername
     private PasswordField passwordField; // Deklarasi property passwordField
-    private boolean isDragged = false;
-    private double xOffset = 0;
-    private double yOffset = 0;
-    private boolean isMinimized = false;
-    private double mmcSectYPos = -370;
-    private StackPane root;
 
+    private Cursor hand = Cursor.cursor("HAND");
     private Cursor closedHand = Cursor.cursor("CLOSED_HAND");
     private Cursor defaultCursor = Cursor.cursor("DEFAULT");
+
+    private boolean isMousePressed = false;
+    private boolean isWindowMax = true;
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    StackPane root = new StackPane(); // stackpane root
 
     // Melakukan inisiasi class LoginPage dengan parameter stage
     public LoginPage(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
 
         // Set the application icon
-        Image icon = new Image("Assets/View/Login_Register/_89099b4b-e95d-49ca-91c4-2a663e06b72a.jpg");
+        Image icon = new Image("Assets/View/Splash_Screen/images/logo/celengan_image_logo.png");
         this.stage.getIcons().add(icon); // Menambahkan icon ke dalam stage
+        this.stage.setTitle("Celengan");
     }
 
     public void penentuApakahStartAtauLangsungDashboard() {
@@ -61,194 +75,363 @@ public class LoginPage {
     // Menampilkan halaman login
     public void start() {
         /* UI/UX : NULLPTR */
-        // getting screen resolution
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
+        /* BAGIAN MMC (MINIMIZE, MAXIMIZE, CLOSE) */
+        // membuat closeButton
+        Button closeButton = createButton(35, 35, "X", "FF4646", 23, "Poppins", 30, "0F181B");
 
-        // Background for outer pane
-        Rectangle background = new Rectangle(bounds.getWidth(), bounds.getHeight());
-        background.setFill(Color.valueOf("#141F23"));
-        background.setArcHeight(30);
-        background.setArcWidth(30);
+        // membuat maximizeButton
+        Button maximizeButton = createButton(35, 35, " ", "FFFFFF", 23, "Poppins", 30, "0F181B");
+        // set graphic untuk label maximize
+        Rectangle maxIcon = new Rectangle(14, 14);
+        maxIcon.setFill(Color.TRANSPARENT);
+        maxIcon.setStroke(Color.valueOf("#0F181B"));
+        maxIcon.setStrokeWidth(4);
+        maxIcon.setTranslateX(maximizeButton.getTranslateX() + 5);
+        maximizeButton.setGraphic(maxIcon);
 
-        // MMC Section
-        Rectangle mmcSect = new Rectangle(bounds.getWidth(), 30);
-        mmcSect.setArcHeight(30);
-        mmcSect.setArcWidth(30);
-        mmcSect.setTranslateY(mmcSectYPos);
-        mmcSect.setFill(Color.valueOf("#141F23"));
-        // Class MaxMinClose
-        MaxMinClose maxMinClose = new MaxMinClose(stage, root);
-        LoginSystem loginSystem = new LoginSystem(stage, root);
-        DropDown dropDown = new DropDown(stage, root);
+        // membuat minimizeButton
+        Button minimizeButton = createButton(35, 35, "-", "FFFFFF", 23, "Poppins", 30, "0F181B");
 
-        Node dropDownElements = dropDown.callDropDown();
-        StackPane loginSystemPane = loginSystem.callLogSysPane();
-        StackPane mmcElements = maxMinClose.callMMC();
-
-        maxMinClose.listenMMC();
-        mmcElements.setTranslateX(640);
-        mmcElements.setTranslateY(mmcSect.getTranslateY() + 30);
-        // StackPane dropdown
-        // StackPane of mmc
-        StackPane mmc = new StackPane(mmcSect, mmcElements);
-        dropDownElements.setMouseTransparent(true);
-
-        // background declaration
-        StackPane outPane = new StackPane(background);
-        // inside declaration
-        StackPane inPane = new StackPane(mmc, dropDownElements, loginSystemPane);
-        // Membuat root container menggunakan StackPane
-        StackPane root = new StackPane(outPane, inPane);
-        // listening
-
-        // Root condition
-        // Draggable root window
-        mmcSect.setOnMouseDragged(e -> {
-            root.getScene().setCursor(closedHand);
-            isDragged = true;
-            stage.setX(e.getScreenX() - xOffset);
-            stage.setY(e.getScreenY() - yOffset);
+        // BUTTON EVENTS
+        // CLOSE BUTTON: saat dipencet maka close button akan menstop aplikasi
+        closeButton.setOnMouseClicked(closeEvent -> stage.hide());
+        // saat di hover maka cursor berbeda
+        closeButton.setOnMouseEntered(closeEvent -> {
+            closeButton.getScene().setCursor(hand);
+            updateButton(closeButton, 35, 35, "X", "6A1B1B", 23, "Poppins", 30, "0F181B");
+        });
+        closeButton.setOnMouseExited(closeEvent -> {
+            closeButton.getScene().setCursor(defaultCursor);
+            updateButton(closeButton, 35, 35, "X", "FF4646", 23, "Poppins", 30, "0F181B");
         });
 
-        mmcSect.setOnMouseReleased(e -> {
-            root.getScene().setCursor(defaultCursor);
-            isDragged = false;
-        });
-        // Minimize by double click
-        mmcSect.setOnMousePressed(e -> {
-            xOffset = e.getSceneX();
-            yOffset = e.getSceneY();
-            if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
-                if (isMinimized) {
-                    // Maximize
-                    isMinimized = false;
-                    if (isDragged) {
-                        stage.setX(0);
-                        stage.setY(0);
+        // MAXIMIZE BUTTON: saat dipencet maka akan mengecilkan windows
+        maximizeButton.setOnMouseClicked(maxEvent -> {
+            if (stage.isMaximized()) {
+                stage.setMaximized(false);
+                isWindowMax = false;
+                System.out.println("IsWindMax =" + isWindowMax);
+                root.setOnMousePressed(e -> {
+                    if (e.isPrimaryButtonDown() && e.getClickCount() == 2 && !isWindowMax) {
+                        root.getScene().setCursor(closedHand);
+                        isMousePressed = true;
+                        xOffset = e.getSceneX();
+                        yOffset = e.getSceneY();
                     }
-                    background.setWidth(bounds.getWidth());
-                    background.setHeight(bounds.getHeight());
-                    // mmc pref
-                    mmcSect.setTranslateY(mmcSectYPos);
-                    mmcSect.setWidth(background.getWidth());
-                    mmcSect.setHeight(30);
-                    // mmcElements
-                    mmcElements.setTranslateX(640);
-                    mmcElements.setTranslateY(mmcSectYPos + 25);
-                    resizeChildren(mmcElements, 10, true);
-                } else {
-                    // Minimize
-                    isMinimized = true;
-                    background.setWidth(bounds.getWidth() - 400);
-                    background.setHeight(bounds.getHeight() - 200);
-                    // mmc pref
-                    mmcSect.setTranslateY(mmcSectYPos + 100);
-                    mmcSect.setWidth(background.getWidth());
-                    mmcSect.setHeight(30);
-                    // mmcElements
-                    mmcElements.setTranslateY(mmcSectYPos + 120);
-                    mmcElements.setTranslateX(440);
-                    resizeChildren(mmcElements, -10, false);
-                }
+                });
+                // saat dilepas
+                root.setOnMouseReleased(e -> {
+                    root.getScene().setCursor(defaultCursor);
+                    isMousePressed = false;
+                });
+                // saat ditarik
+                root.setOnMouseDragged(e -> {
+                    if (isMousePressed && !isWindowMax) {
+                        root.getScene().setCursor(closedHand);
+                        stage.setX(e.getScreenX() - xOffset);
+                        stage.setY(e.getScreenY() - yOffset);
+                    }
+                });
+            } else {
+                isWindowMax = true;
+                System.out.println("IsWindMax =" + isWindowMax);
+                stage.setMaximized(true);
             }
         });
 
-        // Membuat Scene dengan latar belakang transparent
-        Scene scene = new Scene(root, Color.TRANSPARENT);
+        // saat di hover maka cursor berbeda
+        maximizeButton.setOnMouseEntered(closeEvent -> {
+            maximizeButton.getScene().setCursor(hand);
+            updateButton(maximizeButton, 35, 35, "", "959595", 23, "Poppins", 30, "0F181B");
+            maxIcon.setTranslateX(maximizeButton.getTranslateX());
+            maximizeButton.setGraphic(maxIcon);
+        });
+        maximizeButton.setOnMouseExited(closeEvent -> {
+            maximizeButton.getScene().setCursor(defaultCursor);
+            updateButton(maximizeButton, 35, 35, "", "FFFFFF", 23, "Poppins", 30, "0F181B");
+            maxIcon.setTranslateX(maximizeButton.getTranslateX());
+            maximizeButton.setGraphic(maxIcon);
+        });
 
+        // MINIMIZE BUTTON: saat dipencet akan menutup sementara window
+        minimizeButton.setOnMouseClicked(maxEvent -> {
+            stage.setIconified(true);
+        });
+        // saat di hover maka cursor berbeda
+        minimizeButton.setOnMouseEntered(closeEvent -> {
+            minimizeButton.getScene().setCursor(hand);
+            updateButton(minimizeButton, 35, 35, "-", "959595", 23, "Poppins", 30, "0F181B");
+        });
+        minimizeButton.setOnMouseExited(closeEvent -> {
+            minimizeButton.getScene().setCursor(defaultCursor);
+            updateButton(minimizeButton, 35, 35, "-", "FFFFFF", 23, "Poppins", 30, "0F181B");
+        });
+
+        /* BAGIAN DROPDOWN LOGIN */
+        // membuat dropdown login
+        SplitMenuButton dropDownButton = new SplitMenuButton();
+        MenuItem toLoginBtn = new MenuItem("Login Page");
+        MenuItem toRegisterBtn = new MenuItem("Register Page");
+        MenuItem toRNPBtn = new MenuItem("Request New Password");
+        // dropdownButton styling
+        dropDownButton.setText("Login Page");
+        dropDownButton.getItems().addAll(toRegisterBtn, toRNPBtn);
+        dropDownButton.setStyle(
+                "-fx-background-radius: 10, 10, 10, 10;" + // Set corner radius for all corners
+                        "-fx-color: #111A1E;" +
+                        "-fx-background-color: #263940;" +
+                        "-fx-font: 15 Poppins;" +
+                        "-fx-text-fill: #AB77FF;" +
+                        "-fx-pref-width: 140;" + // Set preferred width
+                        "-fx-min-width: 140;" + // Set minimum width
+                        "-fx-max-width: 140;" + // Set maximum width
+                        "-fx-pref-height: 50;" + // Set preferred height
+                        "-fx-min-height: 50;" + // Set minimum height
+                        "-fx-max-height: 50;" + // Set maximum height
+                        "-fx-border-radius: 30;" +
+                        "-fx-border-color: #263940;");
+        // register button styling
+
+        // BUTTON EVENTS LOGIN DROPDOWN: logic yang terjadi untuk button dropdown
+        dropDownButton.setOnAction(event -> {
+            // change this
+            System.out.println("On Login Page!");
+        });
+        toRegisterBtn.setOnAction(event -> {
+            swapButton(dropDownButton, toRegisterBtn, "Register");
+            System.out.println("On Register Page!");
+        });
+
+        toRNPBtn.setOnAction(event -> {
+            swapButton(dropDownButton, toRNPBtn, "Request New Password");
+            System.out.println("On Request New Password Page!");
+        });
+
+        toLoginBtn.setOnAction(event -> {
+            swapButton(dropDownButton, toLoginBtn, "Login");
+            System.out.println("To Login Page!");
+        });
+
+        // BUTTON ORGANIZER
+        // memasukkan button ke dalam HBox
+        HBox mmcButton = new HBox(5); // 5 spacing
+        mmcButton.getChildren().addAll(minimizeButton, maximizeButton, closeButton);
+        mmcButton.setMaxWidth(150);
+        mmcButton.setAlignment(Pos.TOP_RIGHT);
+        // memasukkan dropdown ke dalam HBox
+        HBox dropDownLogin = new HBox(20);
+        dropDownLogin.getChildren().add(dropDownButton);
+        dropDownLogin.setAlignment(Pos.TOP_LEFT);
+        // menggabungkan kedua HBox ke dalam satu HBox
+        HBox topElements = new HBox(500);
+        topElements.getChildren().addAll(dropDownLogin, mmcButton);
+        topElements.setStyle("-fx-padding: 16, 16, 0, 16;"); // padding: top left bottom right
+        HBox.setHgrow(dropDownLogin, Priority.ALWAYS);
+        topElements.setAlignment(Pos.TOP_RIGHT);
+        // menggabungkan topElements ke section
+        VBox topSection = new VBox(topElements);
+
+        /* BAGIAN MAIN CONTENT */
+        // membuat base main content
+        Rectangle backgroundBase = createRect(550, 360, 60, 60, "0F181B");
+        Rectangle mainBase = createRect(backgroundBase.getWidth(), backgroundBase.getHeight(), 60, 60,
+                "263940");
+        // menambahkan stroke pada mainBase
+        mainBase.setStroke(Color.valueOf("#0F181B"));
+        mainBase.setStrokeWidth(3);
+        // mengubah posisi mainBase agar turun sedikit dari backgroundBase
+        mainBase.setTranslateY(backgroundBase.getTranslateY() - 15);
+        // menggabungkan backgroundBase dengan mainBase menjadi satu group
+        Group base = new Group(backgroundBase, mainBase);
+        // MAIN ELEMENTS: elemen di dalam main base
+        // USERNAME TEXT: bagian informasi text username dan icon
+        Text username = createText("username", 25, "Poppins", "AD7AFF");
+        ImageView usr_icon = createImage("/Assets/View/Login_Register/username_icon.png", 40, 40);
+        // menambah masing-masing username elements ke hbox
+        HBox usernameText = new HBox(5);
+        usernameText.getChildren().addAll(usr_icon, username);
+        // USERNAME FIELD: bagian yang dapat diinput username
+        TextField inputUsername = new TextField();
+        inputUsername.setMaxWidth(mainBase.getWidth() - 80);
+        inputUsername.setMaxHeight(120);
+        inputUsername.setStyle(
+                "-fx-background-radius: 30;" +
+                        "-fx-background-color: #141F23;" +
+                        "-fx-font: 23 Poppins;" +
+                        "-fx-text-fill: white;");
+        // PASSWORD TEXT: bagian informasi text password dan icon
+        Text password = createText("password", 25, "Poppins", "AD7AFF");
+        ImageView pwd_icon = createImage("/Assets/View/Login_Register/password_icon.png", 40, 40);
+        // menambah masing-masing elemen password elements ke hbox
+        HBox passwordText = new HBox(5);
+        passwordText.getChildren().addAll(pwd_icon, password);
+        // PASSWORD FIELD: bagian yang dapat diinput password
+        PasswordField inputPassword = new PasswordField();
+        inputPassword.setMaxWidth(mainBase.getWidth() - 80);
+        inputPassword.setMaxHeight(120);
+        inputPassword.setStyle(
+                "-fx-background-radius: 30;" +
+                        "-fx-background-color: #141F23;" +
+                        "-fx-font: 23 Poppins;" +
+                        "-fx-text-fill: white;");
+        // ADDITIONAL OPTIONS: berisi lupa password? dan ingatkan saya
+        Hyperlink lupaPassword = new Hyperlink("Lupa Password?");
+        lupaPassword.setStyle(
+                "-fx-text-fill: #FF7474;" +
+                        "-fx-font: 14 Poppins;");
+        CheckBox ingatkanSaya = new CheckBox("Ingatkan Saya");
+        ingatkanSaya.setStyle(
+                "-fx-text-fill: #AD7AFF;" +
+                        "-fx-font: 14 Poppins;");
+        // menggabungkan elemen addoptions
+        HBox addOption = new HBox(200);
+        addOption.getChildren().addAll(lupaPassword, ingatkanSaya);
+        // BUTTON LOGIN: seluruh tombol masuk dan belum punya akun?
+        // button login
+        Button masukLogin = createButton(100, 50, "Masuk", "AB77FF", 22, "Poppins", 30, "141F23");
+        Rectangle masukLoginBG = new Rectangle();
+
+        // button register
+        Button registButton = createButton(350, 50, "Belum Punya Akun?", "141F23", 22, "Poppins", 30, "AB77FF");
+        Rectangle registButtonBG = new Rectangle();
+
+        // menyatukan elemen login ke satu group
+        Group loginButton = new Group(masukLogin, masukLoginBG);
+        // menyatukan elemen register ke satu group
+        Group registerButton = new Group(registButton, registButtonBG);
+        // memasukkan loginButton ke HBox
+        HBox loginBtn = new HBox();
+        loginBtn.getChildren().add(loginButton);
+        // memasukkan registerButton ke HBox
+        HBox registBtn = new HBox();
+        registBtn.getChildren().add(registerButton);
+        // menggabungkan keduanya ke VBox
+        HBox loginRegistButton = new HBox();
+        loginRegistButton.getChildren().addAll(loginBtn, registBtn);
+
+        // menggabungkan seluruh elements
+        VBox contentElements = new VBox();
+        contentElements.getChildren().addAll(usernameText, inputUsername, passwordText, inputPassword, addOption,
+                loginRegistButton);
+        contentElements.setAlignment(Pos.CENTER);
+        contentElements.setStyle("-fx-padding: 30;");
+
+        // LOGO: logo celengan
+        // inisiasi logo
+        ImageView logo = createImage("/Assets/View/Splash_Screen/images/logo/celengan_image_logo.png", 60, 60);
+        // inisiasi logo text
+        Text logoText = createText("Celengan", 40, "Poppins", "FFFFFF");
+        // memasukkan keduanya di HBox
+        HBox logoElements = new HBox(5);
+        logoElements.getChildren().addAll(logo, logoText);
+        logoElements.setAlignment(Pos.BOTTOM_CENTER);
+        // menggabungkan semua elemen logo ke stackPane
+        StackPane logoCelengan = new StackPane(logoElements);
+        logoCelengan.setMaxHeight(50);
+        logoCelengan.setTranslateY(logoCelengan.getTranslateY() + 270);
+
+        // memasukkan seluruh elemen ke dalam stackPane mainContent
+        StackPane mainContent = new StackPane(base, contentElements, logoCelengan);
+        mainContent.setMaxSize(600, 300);
+        // mainContent.setStyle("-fx-background-color: red");
+
+        // root stackPane
+        root.getChildren().addAll(topSection, mainContent);
+        root.setStyle("-fx-background-color: #141F23;");
+
+        // Membuat Scene dengan latar belakang transparent
+        Scene scene = new Scene(root);
+        scene.getStylesheets()
+                .addAll("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
         // Memberikan judul pada stage
-        stage.initStyle(StageStyle.TRANSPARENT);
+        // stage.initStyle(StageStyle.UNDECORATED);
         stage.setMaximized(true);
         stage.setScene(scene); // menetapkan scene dari sebuah stage
         stage.show(); // menampilkan stage
 
         /* END OF UI/UX */
+    }
 
-        // this.fieldUsername = new TextField(); // Kode ini akan membuat TextField baru
-        // this.passwordField = new PasswordField(); // Konstruktor PasswordField untuk
-        // membuat PasswordField baru
+    /* BUTTON METHODS */
+    // method untuk membuat background button rectangular
 
-        // // Components
-        // Text title = new Text(); // Membuat objek text
-        // title.setText("Please Login"); // Mengatur isi dari text
-        // title.setFont(Font.font("Verdana", 20)); // Mengatur font dari text
-        // title.setFill(Color.BLACK); // Mengatur warna dari text
-        // title.setTranslateY(-40); // Mengatur posisi dari text pada sumbu y
+    // method untuk menukar button
+    private void swapButton(SplitMenuButton dropDownButton, MenuItem selectedItem, String buttonText) {
+        dropDownButton.setText(buttonText);
+        dropDownButton.getItems().remove(selectedItem);
+        dropDownButton.getItems().add(0, selectedItem);
+    }
 
-        // fieldUsername.setMaxWidth(200); // Mengatur lebar maximum dari field username
-        // fieldUsername.setTranslateX(200); // Mengatur posisi x dari field username
+    // method untuk mengupdate button
+    private void updateButton(Button btn, int width, int height, String text, String bgColor,
+            int fontSize, String font,
+            int radius, String textFill) {
+        btn.setPrefSize(width, height);
+        btn.setText(text);
+        btn.setStyle(
+                "-fx-background-color: #" + bgColor + ", transparent; " +
+                        "-fx-font: " + fontSize + " " + font + "; " +
+                        "-fx-text-fill: #" + textFill + ";" +
+                        "-fx-background-radius: " + radius + ";" +
+                        "-fx-padding: 0;");
+    }
 
-        // // Mengatur lebar maximum dari field password
-        // passwordField.setMaxWidth(200);
+    // method untuk membuat button
+    private Button createButton(int width, int height, String text, String bgColor, int fontSize,
+            String font,
+            int radius, String textFill) {
+        Button button = new Button();
+        button.setPrefSize(width, height);
+        button.setText(text);
+        button.setStyle(
+                "-fx-background-color: #" + bgColor + ", transparent; " +
+                        "-fx-font: " + fontSize + " " + font + "; " +
+                        "-fx-text-fill: #" + textFill + ";" +
+                        "-fx-background-radius: " + radius + ";" +
+                        "-fx-padding: 0;");
+        return button;
+    }
 
-        // // Mengatur posisi x dari field password
-        // passwordField.setTranslateX(200);
+    // method membuat background button
+    private Circle backgroundButton(int radius, String valueBgCol, double d, double e) {
+        Circle backgroundBtn = new Circle();
+        backgroundBtn.setRadius(radius - 10);
+        backgroundBtn.setFill(Color.valueOf("#" + valueBgCol));
+        backgroundBtn.setTranslateX(d);
+        backgroundBtn.setTranslateY(e);
+        return backgroundBtn;
+    }
 
-        // // Mengatur posisi y dari field password
-        // passwordField.setTranslateY(40);
+    /* MAIN CONTENT METHODS */
+    // method membuat Image
+    private ImageView createImage(String imgPath, double width, double height) {
 
-        // // Membuat label "Username:"
-        // Label labelUsername = new Label("Username:");
-        // labelUsername.setTranslateX(-50); // Mengatur posisi x dari label username
+        ImageView imageView = new ImageView();
+        Image imageImg = new Image(imgPath);
 
-        // // Membuat label "Password:"
-        // Label labelPassword = new Label("Password:");
-        // labelPassword.setTranslateX(-50); // Mengatur posisi x dari label password
-        // labelPassword.setTranslateY(40); // Mengatur posisi y dari label password
+        imageView.setImage(imageImg); // menetapkan gambar
+        imageView.setFitWidth(width); // menetapkan panjang gambar
+        imageView.setFitHeight(height); // menetapkan tinggi gambar
 
-        // // Membuat Hyperlink "Register" untuk pindah ke halaman registrasi
-        // Hyperlink registerLink = new Hyperlink("Register");
-        // registerLink.setTranslateX(280); // Mengatur posisi x dari registerlink
-        // registerLink.setTranslateY(80); // Mengatur posisi y dari registerlink
-        // registerLink.setStyle( // Mengatur style pada tulisan register link
-        // "-fx-underline: true;" +
-        // "-fx-font-family: Verdana");
-        // registerLink.setOnAction(e -> { // Menginisiasi ketika registet link di tekan
-        // SceneController sceneController = new SceneController(this.stage); // Membuat
-        // objek scenecontroller
-        // sceneController.switchToRegistration(); // Merubah stage menggunakan scene
-        // controller menuju registrasi
-        // });
+        return imageView;
+    }
 
-        // Hyperlink forgotPasswordLink = new Hyperlink("Forgot Password?");
-        // forgotPasswordLink.setTranslateX(280);
-        // forgotPasswordLink.setTranslateY(120);
-        // forgotPasswordLink.setStyle(
-        // "-fx-underline: true;" +
-        // "-fx-font-family: Verdana");
-        // forgotPasswordLink.setOnAction(e -> {
-        // SceneController sceneController = new SceneController(this.stage);
-        // sceneController.switchToRequestNewPassword();
-        // });
+    // method membuat text
+    private Text createText(String text, int textSize, String textFont, String textFill) {
+        Text txt = new Text(text);
+        txt.setStyle("-fx-font: " + textSize + " " + textFont + ";");
+        txt.setFill(Color.valueOf("#" + textFill));
+        return txt;
+    }
 
-        // // Membuat CheckBox "Remember Me"
-        // CheckBox checkbox = new CheckBox("Remember Me");
-        // checkbox.setTranslateX(-30); // mengatur posisi x pada checkbox
-        // checkbox.setTranslateY(80); // mengatur posisi y pada checkbox
-        // checkbox.setOnAction(e -> { // Menjalankan kondisi ketika checkbox ditekan
-        // if (checkbox.isSelected()) {
-        // this.statusCheckbox = true; // Merubah status checkbox menjadi true
-        // } else {
-        // this.statusCheckbox = false; // Merubah status checkbox menjadi false
-        // }
-        // });
-
-        // // Membuat Button "Login"
-        // Button btnLogin = new Button("Login");
-        // btnLogin.setTranslateY(120); // Mengatur posisi y dari tombol login
-        // Mengatur margin dari StackPane
-        // Menambahkan semua item kedalam Stackpane
-        // root.getChildren().addAll(title, labelUsername, fieldUsername, labelPassword,
-        // passwordField, registerLink,
-        // forgotPasswordLink,
-        // checkbox,
-        // btnLogin);
-
-        // Menangani klik tombol "Login"
-        // btnLogin.setOnAction(e -> handleLogin(fieldUsername.getText(),
-        // passwordField.getText()));
-
+    // method membuat rectangle
+    private Rectangle createRect(double width, double height, double arcWidth, double arcHeight,
+            String fill) {
+        Rectangle rect = new Rectangle(width, height);
+        rect.setArcWidth(arcWidth);
+        rect.setArcHeight(arcHeight);
+        rect.setFill(Color.valueOf("#" + fill));
+        return rect;
     }
 
     private void resizeChildren(Pane parent, double deltaSize, boolean isBack) {
@@ -318,205 +501,8 @@ public class LoginPage {
 }
 
 class LoginSystem {
-    Stage stage;
-    StackPane root;
-    StackPane logSysPane;
-
-    public LoginSystem(Stage stage, StackPane root) {
-        this.stage = stage;
-        this.root = root;
-        logSysPane = createLoginSystemPane();
-    }
-
-    public StackPane callLogSysPane() {
-        return logSysPane;
-    }
-
-    private StackPane createLoginSystemPane() {
-        Rectangle base = new Rectangle(600, 400);
-        base.setArcWidth(30);
-        base.setArcHeight(30);
-        base.setFill(Color.valueOf("#0F181B"));
-        base.setTranslateY(base.getTranslateY() - 30);
-
-        Rectangle mainBase = new Rectangle(600, 400);
-        mainBase.setArcWidth(30);
-        mainBase.setArcHeight(30);
-        mainBase.setFill(Color.valueOf("#263940"));
-        mainBase.setStroke(Color.valueOf("#0F181B"));
-        mainBase.setStrokeWidth(3);
-        mainBase.setTranslateY(base.getTranslateY() - 15);
-
-        StackPane logSysElement = new StackPane(base, mainBase);
-        logSysPane = new StackPane(logSysElement);
-        return logSysPane;
-    }
 }
 
 class DropDown {
-    private Stage stage;
-    private StackPane root;
-    private Node dropDownPane;
 
-    public DropDown(Stage stage, StackPane root) {
-        this.stage = stage;
-        this.root = root;
-        dropDownPane = createDropDown();
-    }
-
-    public Node callDropDown() {
-        return dropDownPane;
-    }
-
-    private ImageView createImage(String imgPath, double width, double height, double transX, double transY) {
-
-        ImageView imageView = new ImageView();
-        Image imageImg = new Image(imgPath);
-
-        imageView.setImage(imageImg); // menetapkan gambar
-        imageView.setFitWidth(width); // menetapkan panjang gambar
-        imageView.setFitHeight(height); // menetapkan tinggi gambar
-        imageView.setTranslateX(transX); // menetapkan posisi x gambar
-        imageView.setTranslateY(transY); // menetapkan posisi y gambar
-
-        return imageView;
-    }
-
-    private Node createDropDown() {
-        // base
-        Rectangle base = new Rectangle(140, 40);
-        base.setFill(Color.valueOf("#111A1E"));
-        base.setStroke(Color.valueOf("#263940"));
-        base.setStrokeWidth(3);
-        base.setArcWidth(50);
-        base.setArcHeight(50);
-        // text
-        Text loginText = new Text("Login");
-        loginText.setStyle("-fx-font: 23 Poppins;");
-        loginText.setFill(Color.valueOf("#AB77FF"));
-        loginText.setTranslateX(loginText.getTranslateX() - 10);
-
-        // triangle
-        ImageView triangle = createImage("Assets/View/Login_Register/dropdown_icon.png", 20, 15,
-                loginText.getTranslateX() + 52,
-                loginText.getTranslateY() + 3);
-
-        // stackPane
-        StackPane dropDownElement = new StackPane(base, loginText, triangle);
-        dropDownElement.setTranslateX(-575);
-        dropDownElement.setTranslateY(-340);
-        dropDownPane = new StackPane(dropDownElement);
-        return dropDownPane;
-    }
-}
-
-class MaxMinClose {
-    Stage stage;
-    StackPane root;
-
-    StackPane mmcPane;
-    Rectangle buttonClose;
-    Rectangle buttonClose_S;
-    Text closeSign;
-    Rectangle buttonMax;
-    Rectangle buttonMax_S;
-    Rectangle maximizeSign;
-    Rectangle buttonMin;
-    Rectangle buttonMin_S;
-    Rectangle minimizeSign;
-
-    private Cursor defaultCursor = Cursor.cursor("DEFAULT");
-    private Cursor handCursor = Cursor.cursor("HAND");
-
-    public MaxMinClose(Stage stage, StackPane root) {
-        this.stage = stage;
-        this.root = root;
-        mmcPane = createMMC();
-        listenMMC();
-    }
-
-    public StackPane callMMC() {
-        return mmcPane;
-    }
-
-    private StackPane createMMC() {
-        // CLOSE BUTTON ASSET
-        buttonClose = new Rectangle(45, 45);
-        buttonClose.setArcWidth(90);
-        buttonClose.setArcHeight(90);
-        buttonClose.setFill(Color.valueOf("#FF4646"));
-        // shadow
-        buttonClose_S = new Rectangle(buttonClose.getWidth(), buttonClose.getHeight());
-        buttonClose_S.setArcWidth(90);
-        buttonClose_S.setArcHeight(90);
-        buttonClose_S.setTranslateX(buttonClose.getTranslateX());
-        buttonClose_S.setTranslateY(buttonClose.getTranslateY() + 5);
-        buttonClose_S.setFill(Color.valueOf("#9A2727"));
-        // sign
-        closeSign = new Text("X");
-        closeSign.setStyle("-fx-font: 26 Poppins;");
-        closeSign.setFill(Color.valueOf("#141F23"));
-        closeSign.setTranslateX(buttonClose.getTranslateX());
-        closeSign.setTranslateY(buttonClose.getTranslateY());
-
-        // MAXIMIZE BUTTON ASSET
-        buttonMax = new Rectangle(45, 45);
-        buttonMax.setArcWidth(90);
-        buttonMax.setArcHeight(90);
-        buttonMax.setTranslateX(buttonClose.getTranslateX() - 52);
-        buttonMax.setFill(Color.WHITE);
-        //
-        buttonMax_S = new Rectangle(buttonMax.getWidth(), buttonMax.getHeight());
-        buttonMax_S.setArcWidth(90);
-        buttonMax_S.setArcHeight(90);
-        buttonMax_S.setTranslateX(buttonMax.getTranslateX());
-        buttonMax_S.setTranslateY(buttonMax.getTranslateY() + 5);
-        buttonMax_S.setFill(Color.valueOf("#9B9B9B"));
-        //
-        maximizeSign = new Rectangle(buttonMax.getWidth() - 30, buttonMax.getHeight() - 30);
-        maximizeSign.setFill(Color.TRANSPARENT);
-        maximizeSign.setStroke(Color.valueOf("#141F23"));
-        maximizeSign.setStrokeWidth(5);
-        maximizeSign.setTranslateX(buttonMax.getTranslateX());
-        maximizeSign.setTranslateY(buttonMax.getTranslateY());
-
-        // MINIMIZE BUTTON ASSET
-        buttonMin = new Rectangle(45, 45);
-        buttonMin.setArcWidth(90);
-        buttonMin.setArcHeight(90);
-        buttonMin.setTranslateX(buttonMax.getTranslateX() - 52);
-        buttonMin.setFill(Color.WHITE);
-        //
-        buttonMin_S = new Rectangle(buttonMin.getWidth(), buttonMin.getHeight());
-        buttonMin_S.setArcWidth(90);
-        buttonMin_S.setArcHeight(90);
-        buttonMin_S.setTranslateX(buttonMin.getTranslateX());
-        buttonMin_S.setTranslateY(buttonMin.getTranslateY() + 5);
-        buttonMin_S.setFill(Color.valueOf("#9B9B9B"));
-        //
-        minimizeSign = new Rectangle(buttonMin.getWidth() - 20, 5);
-        minimizeSign.setFill(Color.valueOf("#141F23"));
-        minimizeSign.setTranslateX(buttonMin.getTranslateX());
-        minimizeSign.setTranslateY(buttonMin.getTranslateY());
-
-        // Pane each button
-
-        mmcPane = new StackPane(buttonClose_S, buttonClose, closeSign, buttonMax_S, buttonMax, maximizeSign,
-                buttonMin_S, buttonMin, minimizeSign);
-        return mmcPane;
-    }
-
-    public void listenMMC() {
-        // Making sure buttonClose is not mouse-transparent
-        buttonClose.setMouseTransparent(false);
-
-        buttonClose.setOnMouseClicked(event -> {
-            System.out.println("Closing APP!");
-            stage.hide();
-        });
-
-        // Setting cursor and handling mouse events for the close button
-        buttonClose.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> root.setCursor(handCursor));
-        buttonClose.addEventHandler(MouseEvent.MOUSE_EXITED, e -> root.setCursor(defaultCursor));
-    }
 }

@@ -358,6 +358,7 @@ class Loading {
     private void handleDatabaseCheck(DatabaseCheckService databaseCheckService, int count) {
         SplashScreen splashScreen = new SplashScreen(this.stage);
         Stage splashStage = new Stage();
+        splashStage.initStyle(StageStyle.TRANSPARENT);
         // Instansiasi class SceneController ke dalam variabel mainScene
         SceneController mainScene = new SceneController(splashStage);
         // Menentukan tampilan berikutnya berdasarkan hasil pengecekan
