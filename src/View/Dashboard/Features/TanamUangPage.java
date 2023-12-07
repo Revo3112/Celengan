@@ -77,6 +77,7 @@ public class TanamUangPage {
             this.tipeTanamUang = "pemasukan";
             this.combobox.setItems(FXCollections.observableArrayList(listKategoriPemasukan));
         });
+
         buttonPengeluaran.setOnMouseClicked(e -> {
             this.title.setText("Pengeluaran");
             this.tipeTanamUang = "pengeluaran";
@@ -119,7 +120,7 @@ public class TanamUangPage {
             scrollPane.setFitToWidth(true);
             scrollPane.setPrefSize(contentPane.getMaxWidth(), contentPane.getMaxHeight() - 100);
             scrollPane.setStyle("-fx-background-color: #3081D0;");
-            
+
             VBox scrollPaneContent;
             if (this.tipeTanamUang.equals("pengeluaran")) {
                 scrollPaneContent = createScrollPaneContent(scrollPane, listKategoriPengeluaran, mainPane);
@@ -132,9 +133,9 @@ public class TanamUangPage {
             Text titleKategoriPengeluaran = createText("Kategori Pengeluaran", "-fx-font: 16 Poppins;", "#000000");
             ImageView logoTambah = new ImageView(new Image("file:src/Assets/View/Dashboard/Tambah.png"));
             HBox.setMargin(titleKategoriPengeluaran,
-                    new Insets(10, paneWidth - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 20  , 0, 0));
+                    new Insets(10, paneWidth - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 20, 0, 0));
 
-            //====== ADD CHILD ======\\
+            // ====== ADD CHILD ======\\
             topBar.getChildren().addAll(titleKategoriPengeluaran, logoTambah);
             contentPane.getChildren().addAll(topBar, scrollPane);
             mainPane.getChildren().add(contentPane);
@@ -301,7 +302,8 @@ public class TanamUangPage {
         System.out.println("ROOT WIDTH: " + this.root.getWidth());
         System.out.println("ROOT HEIGHT: " + this.root.getHeight());
 
-        Scene scene = new Scene(this.root, this.stage.getWidth(), this.stage.getHeight()); // Memasukkan root node ke dalam scene
+        Scene scene = new Scene(this.root, this.stage.getWidth(), this.stage.getHeight()); // Memasukkan root node ke
+                                                                                           // dalam scene
         this.stage.setScene(scene); // Memasukkan scene ke dalam stage
         this.stage.setMaximized(true);
         // this.stage.show(); // Menampilkan stage
@@ -329,7 +331,7 @@ public class TanamUangPage {
         contentPane.setStyle("-fx-background-radius: 20");
         contentPane.setMaxSize(mainPane.getMaxWidth(), mainPane.getMaxHeight() - 20);
         contentPane.setSpacing(20);
-        
+
         VBox scrollPaneContent;
         if (this.tipeTanamUang.equals("pengeluaran")) {
             scrollPaneContent = createScrollPaneContent(scrollPane, kategori, mainPane);
@@ -380,7 +382,8 @@ public class TanamUangPage {
 
                     if (isKategoriDefault) {
                         int idKategoriDefault = TanamUangModel.getIdKategoriDefault(nama_kategori);
-                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori, namaKategori.getText(),
+                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori,
+                                namaKategori.getText(),
                                 isKategoriDefault, this.tipeTanamUang, idKategoriDefault);
 
                         if (statusSimpan) {
@@ -395,15 +398,16 @@ public class TanamUangPage {
                             AlertHelper.alert("Gagal mengubah nama kategori!");
                         }
                     } else {
-                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori, namaKategori.getText(),
+                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori,
+                                namaKategori.getText(),
                                 isKategoriDefault, this.tipeTanamUang, 0);
                         if (statusSimpan) {
                             refreshView(scrollPane, scrollPaneContent, mainPane);
-                            
+
                             if (mainPane.getParent() != null) {
                                 mainPane.getChildren().remove(paneEdit);
                             }
-                            
+
                             AlertHelper.info("Berhasil mengubah nama kategori!");
                         } else {
                             AlertHelper.alert("Gagal mengubah nama kategori!");
@@ -438,10 +442,9 @@ public class TanamUangPage {
         }
 
         scrollPaneContent.setSpacing(20);
-        
+
         return scrollPaneContent;
     }
-
 
     // fungsi untuk membuat text dengan return Text
     private Text createText(String text, String style, String color) {
@@ -450,7 +453,6 @@ public class TanamUangPage {
         newText.setFill(Color.valueOf(color)); // menetapkan warna text
         return newText;
     }
-
 
     private void clearSelectionTanamUang(String message) {
         this.datePickerTanggal.setValue(null);

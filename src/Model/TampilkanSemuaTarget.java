@@ -159,4 +159,46 @@ public class TampilkanSemuaTarget {
         }
         return TotalDuitUntukProgress;
     }
+
+    public String ambilDataNamaTargetPertama(int user_id) {
+        String namaTarget = "";
+        try {
+            DBConnection dbc = DBConnection.getDatabaseConnection();
+            Connection connection = dbc.getConnection();
+
+            String query = "SELECT nama_target FROM target WHERE user_id = ? LIMIT 1";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, user_id);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    namaTarget = resultSet.getString("nama_target");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return namaTarget;
+    }
+
+    public double ambilHargaDataPertama(int user_id) {
+        double hargaTarget = 0;
+        try {
+            DBConnection dbc = DBConnection.getDatabaseConnection();
+            Connection connection = dbc.getConnection();
+
+            String query = "SELECT harga_barang FROM target WHERE user_id = ? LIMIT 1";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setInt(1, user_id);
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    hargaTarget = resultSet.getDouble("harga_barang");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return hargaTarget;
+    }
 }
