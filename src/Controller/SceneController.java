@@ -54,7 +54,7 @@ public class SceneController {
                                                                  // TanamUangPage ke dalam
                                                                  // variable
         // tanamUang
-        tanamUang.start(TanamUangModel.getKategoriPemasukan(), TanamUangModel.getKategoriPengeluaran()); // Menjalankan
+        tanamUang.start(TanamUangModel.getKategoriTanamUang("pemasukan"), TanamUangModel.getKategoriTanamUang("pengeluaran")); // Menjalankan
                                                                                                          // method start
                                                                                                          // pada objek
                                                                                                          // tanamUang

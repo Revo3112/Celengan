@@ -184,7 +184,7 @@ public class SplashScreen {
                 "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
 
         // inisiasi style stage
-        stage.initStyle(StageStyle.TRANSPARENT);
+        // stage.initStyle(StageStyle.TRANSPARENT);
         stage.setScene(scene); // menetapkan scene dari sebuah stage
         stage.show(); // menampilkan stage
 
