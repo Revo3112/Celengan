@@ -91,7 +91,7 @@ public class TanamUangModel {
             }
         }
         return false;
-    }
+    }   
     public static boolean getIsKategoriDefault(String namaKategori) {
         return isKategoriDefault(namaKategori);
     }
@@ -130,7 +130,7 @@ public class TanamUangModel {
             ResultSet result = statement.executeQuery(sql); 
 
             result.next();
-            return result.getInt(1);
+            return result.getInt("id");
 
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
@@ -192,27 +192,46 @@ public class TanamUangModel {
                                                                 // Berguna untuk mendapat koneksi ke database
         Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection() dari object dbc
 
+        List<String> kategoriListTemp = new ArrayList<>();
         List<String> kategoriList = new ArrayList<>();
+
         List<String> listKategoriDefault = new ArrayList<>();
         List<Integer> listIdKategoriDefault = new ArrayList<>();
         List<String> listKategoriUser = new ArrayList<>();
         List<Integer> listIdKategoriUser = new ArrayList<>();
+        List<String> listKategoriUserNonDefault = new ArrayList<>();
 
         String tipeTanamUang = tipeTU.toLowerCase();
+        String[] arrKategoriHapus = getKategoriHapus();
 
         LoginModel user = new LoginModel();
         int userId = user.getUserId();
 
         try {                   
-            String sql_1 = String.format("SELECT * FROM transac_kategori AS tk WHERE tipe='%s'", tipeTanamUang); // Membuat query untuk mengambil data kategori default
-            // String sql_2 = "SELECT COUNT(*) AS hasil FROM user_kategori AS uk JOIN users AS u ON (u.id = uk.user_id)"; // Membuat query untuk mengambil data kategori yang ditambahkan user.
-            String sql_2 = String.format("SELECT uk.name, uk.transac_kategori_id FROM user_kategori AS uk WHERE user_id=%d AND tipe='%s';", userId, tipeTanamUang);
+            // String sql_1 = String.format("SELECT * FROM transac_kategori AS tk WHERE tipe='%s'", tipeTanamUang); // Membuat query untuk mengambil data kategori default
+            String sql_1 = String.format(
+                "SELECT tk.* " +
+                "FROM transac_kategori AS tk " +
+                "WHERE NOT EXISTS ( " +
+                    "SELECT 1 " +
+                    "FROM hapus_kategori AS kh " +
+                    "WHERE tk.id = kh.id) " +
+                "AND tk.tipe = '%s';",
+                tipeTanamUang
+            );
+            
+            String sql_2 = String.format("SELECT uk.name, uk.transac_kategori_id FROM user_kategori AS uk WHERE user_id=%d AND tipe='%s' AND transac_kategori_id != 0;", userId, tipeTanamUang);
+
+            String sql_3 = String.format("SELECT name FROM user_kategori WHERE transac_kategori_id = 0");
 
             Statement statement_1 = connection.createStatement(); // Membuat statement dari method createStatement()
             ResultSet resultKategori = statement_1.executeQuery(sql_1); // Execute query sql menggunakan method executeQuery dan dimasukkan ke dalam variabel result
 
             Statement statement_2 = connection.createStatement(); // Membuat statement dari method createStatement()
             ResultSet resultUserKategori = statement_2.executeQuery(sql_2); // Execute query sql menggunakan method executeQuery dan dimasukkan ke dalam variabel result
+
+            Statement statement_3 = connection.createStatement(); // Membuat statement dari method createStatement()
+            ResultSet resultUserKategoriNonDefault = statement_3.executeQuery(sql_3); // Execute query sql menggunakan method executeQuery dan dimasukkan ke dalam variabel result
             
             while (resultKategori.next()) {
                 listKategoriDefault.add(resultKategori.getString("name"));
@@ -222,9 +241,13 @@ public class TanamUangModel {
                 listKategoriUser.add(resultUserKategori.getString("name"));
                 listIdKategoriUser.add(resultUserKategori.getInt("transac_kategori_id"));
             }
+            while(resultUserKategoriNonDefault.next()) {
+                listKategoriUserNonDefault.add(resultUserKategoriNonDefault.getString("name"));
+            }
 
             String[] arrKategoriDefault = listKategoriDefault.toArray(new String[0]);
             String[] arrKategoriUser = listKategoriUser.toArray(new String[0]);
+            String[] arrKategoriUserNonDefault = listKategoriUserNonDefault.toArray(new String[0]);
             Integer[] arrIdKategoriDefault = listIdKategoriDefault.toArray(new Integer[0]);
             Integer[] arrIdKategoriUser = listIdKategoriUser.toArray(new Integer[0]);
 
@@ -233,32 +256,37 @@ public class TanamUangModel {
                 isDefault = false;
                 for (int j = 0; j < arrKategoriUser.length; j++) {
                     if (arrIdKategoriDefault[i] == arrIdKategoriUser[j]) {
-                        kategoriList.add(arrKategoriUser[j]);
+                        kategoriListTemp.add(arrKategoriUser[j]);
                         isDefault = true;
                     }
                 }
                 if (!isDefault) {
-                    kategoriList.add(arrKategoriDefault[i]);
+                    kategoriListTemp.add(arrKategoriDefault[i]);
                 }
             }
             
-            // boolean isDefault;
-            // while (resultKategori.next()) {
-            //     isDefault = false;
-            //     while (resultUserKategori.next()) {
-            //         if (resultUserKategori.getInt("id") == resultKategori.getInt("id")) {
-            //             kategoriList.add(resultUserKategori.getString("name"));
-            //             isDefault = true;
-            //             break;
-            //         }
-            //     }
-            //     if (!isDefault) {
-            //         kategoriList.add(resultKategori.getString("name")); // Menambah data kategori default ke dalam kategoriList 
-            //     }
-            //     resultUserKategori.beforeFirst();
-            // }
-            
-            String[] kategori = kategoriList.toArray(new String[0]); // Mengubah kategoriList menjadi array
+            String[] kategoriTemp = kategoriListTemp.toArray(new String[0]); // Mengubah kategoriList menjadi array
+
+            boolean isHapus;
+            for (int i = 0; i < kategoriTemp.length; i++) {
+                isHapus = false;
+                for (int j = 0; j < arrKategoriHapus.length; j++) {
+                    if (kategoriTemp[i].equals(arrKategoriHapus[j])) {
+                        isHapus = true;
+                        break;
+                    }
+                }
+
+                if (!isHapus) {
+                    kategoriList.add(kategoriTemp[i]);
+                }
+            }
+
+            for (int i = 0; i < arrKategoriUserNonDefault.length; i++) {
+                kategoriList.add(arrKategoriUserNonDefault[i]);
+            }
+
+            String[] kategori = kategoriList.toArray(new String[0]);
 
             return kategori; // Mengembalikan array kategori
             
@@ -272,4 +300,89 @@ public class TanamUangModel {
     public static String[] getKategoriTanamUang(String tipeTanamUang) {
         return _kategoriTanamUang(tipeTanamUang);
     } 
+
+    private static String[] getKategoriHapus() {
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+
+        LoginModel user = new LoginModel();
+        int userId = user.getUserId();
+        List<String> listKategoriHapus = new ArrayList<>();
+
+        try {
+            String sql = String.format("SELECT tk.name FROM hapus_kategori AS kh JOIN transac_kategori as tk ON (kh.kategori_id = tk.id) WHERE kh.user_id=%d;", userId);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            while(result.next()) {
+                listKategoriHapus.add(result.getString("name"));
+            }
+
+            String[] arrKategoriHapus = listKategoriHapus.toArray(new String[0]);
+
+            return arrKategoriHapus;
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return new String[0];
+    }
+
+    private static boolean _hapusKategori(String namaKategori, boolean isDefault) {
+        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
+                                                                // dengan nilai dari method getDatabaseConnection().
+                                                                // Berguna untuk mendapat koneksi ke database
+        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection() dari object dbc    }
+
+        LoginModel user = new LoginModel();
+        int userId = user.getUserId();
+        String sql = "";
+        System.out.println("Id Kategori: " + getIdKategoriUser(namaKategori));
+
+        try {
+            if (isDefault) {
+                sql = String.format("INSERT INTO hapus_kategori(user_id, kategori_id) VALUES(%d, %d)", userId, getIdKategoriDefault(namaKategori));
+            } else {
+                sql = String.format("DELETE FROM user_kategori WHERE id=%d", getIdKategoriUser(namaKategori));
+            }
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return false;
+    }
+    public static boolean hapusKategori(String namaKategori, boolean isDefault) {
+        return _hapusKategori(namaKategori, isDefault);
+    }
+
+    private static boolean _tambahKategori(String namaKategori, String tipeTU) {
+        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc 
+                                                                // dengan nilai dari method getDatabaseConnection().
+                                                                // Berguna untuk mendapat koneksi ke database
+        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection() dari object dbc    }
+
+        LoginModel user = new LoginModel();
+        int userId = user.getUserId();
+
+        String tipeTanamUang = tipeTU.toLowerCase();
+
+        try {
+            String sql = String.format("INSERT INTO user_kategori(user_id, name, tipe, transac_kategori_id) VALUES(%d, '%s', '%s', 0)", userId, namaKategori, tipeTanamUang);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        return false;
+    }
+    public static boolean tambahKategori(String namaKategori, String tipeTU) {
+        return _tambahKategori(namaKategori, tipeTU);
+    }
 }

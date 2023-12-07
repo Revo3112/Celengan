@@ -22,6 +22,7 @@ public class SceneController {
     public SceneController(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
         stage.setResizable(false);
+        stage.setMaximized(true);
         stage.show(); // Menampilkan panggung
     }
 

@@ -1,43 +1,41 @@
 package View.Login_Register;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Controller.SceneController;
 import Model.*;
-import Utils.AlertHelper;
-import javafx.application.Platform;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 // membuat class LoginPage
 public class LoginPage {
     private Stage stage; // Deklarasi property stage
-    private boolean statusCheckbox; // Deklarasi property statusCheckbox
-    private TextField fieldUsername; // Deklarasi property fieldUsername
-    private PasswordField passwordField; // Deklarasi property passwordField
 
     private Cursor hand = Cursor.cursor("HAND");
     private Cursor closedHand = Cursor.cursor("CLOSED_HAND");
@@ -108,6 +106,8 @@ public class LoginPage {
         // MAXIMIZE BUTTON: saat dipencet maka akan mengecilkan windows
         maximizeButton.setOnMouseClicked(maxEvent -> {
             if (stage.isMaximized()) {
+                stage.setWidth(stage.getWidth() - 100);
+                stage.setHeight(stage.getHeight() - 100);
                 stage.setMaximized(false);
                 isWindowMax = false;
                 System.out.println("IsWindMax =" + isWindowMax);
@@ -168,49 +168,20 @@ public class LoginPage {
         });
 
         /* BAGIAN DROPDOWN LOGIN */
-        // membuat dropdown login
-        SplitMenuButton dropDownButton = new SplitMenuButton();
-        MenuItem toLoginBtn = new MenuItem("Login Page");
-        MenuItem toRegisterBtn = new MenuItem("Register Page");
-        MenuItem toRNPBtn = new MenuItem("Request New Password");
-        // dropdownButton styling
-        dropDownButton.setText("Login Page");
-        dropDownButton.getItems().addAll(toRegisterBtn, toRNPBtn);
-        dropDownButton.setStyle(
-                "-fx-background-radius: 10, 10, 10, 10;" + // Set corner radius for all corners
-                        "-fx-color: #111A1E;" +
-                        "-fx-background-color: #263940;" +
-                        "-fx-font: 15 Poppins;" +
-                        "-fx-text-fill: #AB77FF;" +
-                        "-fx-pref-width: 140;" + // Set preferred width
-                        "-fx-min-width: 140;" + // Set minimum width
-                        "-fx-max-width: 140;" + // Set maximum width
-                        "-fx-pref-height: 50;" + // Set preferred height
-                        "-fx-min-height: 50;" + // Set minimum height
-                        "-fx-max-height: 50;" + // Set maximum height
-                        "-fx-border-radius: 30;" +
-                        "-fx-border-color: #263940;");
-        // register button styling
-
-        // BUTTON EVENTS LOGIN DROPDOWN: logic yang terjadi untuk button dropdown
-        dropDownButton.setOnAction(event -> {
-            // change this
-            System.out.println("On Login Page!");
-        });
-        toRegisterBtn.setOnAction(event -> {
-            swapButton(dropDownButton, toRegisterBtn, "Register");
-            System.out.println("On Register Page!");
-        });
-
-        toRNPBtn.setOnAction(event -> {
-            swapButton(dropDownButton, toRNPBtn, "Request New Password");
-            System.out.println("On Request New Password Page!");
-        });
-
-        toLoginBtn.setOnAction(event -> {
-            swapButton(dropDownButton, toLoginBtn, "Login");
-            System.out.println("To Login Page!");
-        });
+        // membuat dropdown button
+        ComboBox<String> dropDownBtn = new ComboBox<>();
+        dropDownBtn.setMinWidth(20);
+        dropDownBtn.setMinHeight(40);
+        dropDownBtn.setPromptText("Login Page");
+        dropDownBtn.setItems(FXCollections.observableArrayList("Login Page", "Register Page", "Request New Password"));
+        dropDownBtn.setStyle(
+                "-fx-background-radius: 130;" +
+                        "-fx-background-color: #FFFFFF;" +
+                        "-fx-font: 16 Poppins;" +
+                        "-fx-border-color: #000000; " + // Set the stroke color
+                        "-fx-border-width: 3px;" +
+                        "-fx-border-radius: 90;");
+        // logic dropdownButton
 
         // BUTTON ORGANIZER
         // memasukkan button ke dalam HBox
@@ -220,7 +191,7 @@ public class LoginPage {
         mmcButton.setAlignment(Pos.TOP_RIGHT);
         // memasukkan dropdown ke dalam HBox
         HBox dropDownLogin = new HBox(20);
-        dropDownLogin.getChildren().add(dropDownButton);
+        dropDownLogin.getChildren().add(dropDownBtn);
         dropDownLogin.setAlignment(Pos.TOP_LEFT);
         // menggabungkan kedua HBox ke dalam satu HBox
         HBox topElements = new HBox(500);
@@ -233,7 +204,7 @@ public class LoginPage {
 
         /* BAGIAN MAIN CONTENT */
         // membuat base main content
-        Rectangle backgroundBase = createRect(550, 360, 60, 60, "0F181B");
+        Rectangle backgroundBase = createRect(490, 360, 60, 60, "0F181B");
         Rectangle mainBase = createRect(backgroundBase.getWidth(), backgroundBase.getHeight(), 60, 60,
                 "263940");
         // menambahkan stroke pada mainBase
@@ -250,6 +221,7 @@ public class LoginPage {
         // menambah masing-masing username elements ke hbox
         HBox usernameText = new HBox(5);
         usernameText.getChildren().addAll(usr_icon, username);
+        usernameText.setStyle("-fx-padding: 0 0 10 40;");
         // USERNAME FIELD: bagian yang dapat diinput username
         TextField inputUsername = new TextField();
         inputUsername.setMaxWidth(mainBase.getWidth() - 80);
@@ -265,15 +237,17 @@ public class LoginPage {
         // menambah masing-masing elemen password elements ke hbox
         HBox passwordText = new HBox(5);
         passwordText.getChildren().addAll(pwd_icon, password);
+        passwordText.setStyle("-fx-padding: 10 0 10 40;");
         // PASSWORD FIELD: bagian yang dapat diinput password
         PasswordField inputPassword = new PasswordField();
-        inputPassword.setMaxWidth(mainBase.getWidth() - 80);
-        inputPassword.setMaxHeight(120);
+        inputPassword.setMaxWidth(mainBase.getWidth() - 90);
+        inputPassword.setMaxHeight(40);
         inputPassword.setStyle(
-                "-fx-background-radius: 30;" +
+                "-fx-background-radius: 90;" +
                         "-fx-background-color: #141F23;" +
                         "-fx-font: 23 Poppins;" +
                         "-fx-text-fill: white;");
+
         // ADDITIONAL OPTIONS: berisi lupa password? dan ingatkan saya
         Hyperlink lupaPassword = new Hyperlink("Lupa Password?");
         lupaPassword.setStyle(
@@ -282,21 +256,58 @@ public class LoginPage {
         CheckBox ingatkanSaya = new CheckBox("Ingatkan Saya");
         ingatkanSaya.setStyle(
                 "-fx-text-fill: #AD7AFF;" +
-                        "-fx-font: 14 Poppins;");
+                        "-fx-font: 14 Poppins;" +
+                        "-fx-mark-color: #AD7AFF;");
         // menggabungkan elemen addoptions
-        HBox addOption = new HBox(200);
+        HBox addOption = new HBox(150);
         addOption.getChildren().addAll(lupaPassword, ingatkanSaya);
+        addOption.setStyle("-fx-padding: 10 0 10 40;");
         // BUTTON LOGIN: seluruh tombol masuk dan belum punya akun?
         // button login
-        Button masukLogin = createButton(100, 50, "Masuk", "AB77FF", 22, "Poppins", 30, "141F23");
+        Button masukLogin = createButton(120, 50, "Masuk", "AB77FF", 22, "Poppins", 30, "141F23");
         Rectangle masukLoginBG = new Rectangle();
 
         // button register
-        Button registButton = createButton(350, 50, "Belum Punya Akun?", "141F23", 22, "Poppins", 30, "AB77FF");
+        Button registButton = createButton(280, 50, "Belum Punya Akun?", "141F23", 22, "Poppins", 30, "AB77FF");
         Rectangle registButtonBG = new Rectangle();
 
         // menyatukan elemen login ke satu group
         Group loginButton = new Group(masukLogin, masukLoginBG);
+        // LOGIN BUTTON EVENTS: saat di hover atau di klik
+        // login button
+        masukLogin.setOnMouseEntered(e -> {
+            masukLogin.getScene().setCursor(hand);
+            System.out.println("Username: " + inputUsername.getText());
+            System.out.println("Password: " + inputPassword.getText());
+            updateButton(masukLogin, 120, 50, "Masuk", "56348D", 22, "Poppins", 30, "0A0F11");
+        });
+        masukLogin.setOnMouseExited(e -> {
+            masukLogin.getScene().setCursor(defaultCursor);
+            updateButton(masukLogin, 120, 50, "Masuk", "AB77FF", 22, "Poppins", 30, "141F23");
+        });
+        masukLogin.setOnAction(e -> {
+            System.out.println("Login button clicked!");
+            System.out.println(
+                    "Before handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
+            handleLogin(inputUsername.getText(), inputPassword.getText(), ingatkanSaya, inputUsername, inputPassword);
+            System.out.println(
+                    "After handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
+
+        });
+        // Register Button
+        registButton.setOnMouseEntered(e -> {
+            registButton.getScene().setCursor(hand);
+            updateButton(registButton, 280, 50, "Belum Punya Akun?", "040707", 22, "Poppins", 30, "3E2862");
+        });
+        registButton.setOnMouseExited(e -> {
+            registButton.getScene().setCursor(defaultCursor);
+            updateButton(registButton, 280, 50, "Belum Punya Akun?", "141F23", 22, "Poppins", 30, "AB77FF");
+        });
+        registButton.setOnAction(e -> {
+            // change this
+            System.out.println("Register button clicked!");
+        });
+
         // menyatukan elemen register ke satu group
         Group registerButton = new Group(registButton, registButtonBG);
         // memasukkan loginButton ke HBox
@@ -306,15 +317,17 @@ public class LoginPage {
         HBox registBtn = new HBox();
         registBtn.getChildren().add(registerButton);
         // menggabungkan keduanya ke VBox
-        HBox loginRegistButton = new HBox();
+        HBox loginRegistButton = new HBox(10);
         loginRegistButton.getChildren().addAll(loginBtn, registBtn);
+        loginRegistButton.setStyle("-fx-padding: 10 0 10 40;");
 
         // menggabungkan seluruh elements
         VBox contentElements = new VBox();
         contentElements.getChildren().addAll(usernameText, inputUsername, passwordText, inputPassword, addOption,
                 loginRegistButton);
         contentElements.setAlignment(Pos.CENTER);
-        contentElements.setStyle("-fx-padding: 30;");
+        contentElements.setMaxWidth(mainBase.getWidth());
+        contentElements.setMaxHeight(200);
 
         // LOGO: logo celengan
         // inisiasi logo
@@ -330,21 +343,95 @@ public class LoginPage {
         logoCelengan.setMaxHeight(50);
         logoCelengan.setTranslateY(logoCelengan.getTranslateY() + 270);
 
+        // AYAM: animasi ayam
+        ImageView ayamBetina = createImage("/Assets/View/Login_Register/ayamBetina.png", 180, 180);
+        double ayamOriginY = ayamBetina.getTranslateY();
+        // timeline animasi untuk hop in ayam betina
+        Timeline hopAyamBetina_IN = new Timeline(
+                new KeyFrame(Duration.millis(600),
+                        new KeyValue(ayamBetina.translateYProperty(), ayamOriginY - 250, Interpolator.EASE_BOTH)));
+        // timeline animasi untuk hop out ayam betina
+        Timeline hopAyamBetina_OUT = new Timeline(
+                new KeyFrame(Duration.millis(600),
+                        new KeyValue(ayamBetina.translateYProperty(), ayamOriginY, Interpolator.EASE_BOTH)));
+        // CHAT AYAM: animasi chat ayam
+        ImageView chatAyam = createImage("/Assets/View/Login_Register/ayamChat.png", 250, 250);
+        chatAyam.setTranslateY(chatAyam.getTranslateY() - 280);
+        chatAyam.setTranslateX(chatAyam.getTranslateX() - 210);
+        chatAyam.setOpacity(0);
+        // timeline animasi untuk chat ayam fade in
+        Timeline fadeChatAyam_IN = new Timeline(
+                new KeyFrame(Duration.millis(700),
+                        new KeyValue(chatAyam.opacityProperty(), 1)));
+        // timeline animasi untuk chat ayam fade out
+        Timeline fadeChatAyam_OUT = new Timeline(
+                new KeyFrame(Duration.millis(300),
+                        new KeyValue(chatAyam.opacityProperty(), 0)));
+        // TANGAN AYAM: animasi tangan ayam saat password field diketik
+        ImageView ayamHand = createImage("/Assets/View/Login_Register/ayamHand.png", 170, 170);
+        double ayamHandOriginY = ayamHand.getTranslateY();
+        Timeline ayamHand_IN = new Timeline(
+                new KeyFrame(Duration.millis(400),
+                        new KeyValue(ayamHand.translateYProperty(), ayamHandOriginY - 220, Interpolator.EASE_BOTH)));
+        Timeline ayamHand_OUT = new Timeline(
+                new KeyFrame(Duration.millis(500),
+                        new KeyValue(ayamHand.translateYProperty(), ayamHandOriginY, Interpolator.EASE_BOTH)));
+        // ANIMASI ERROR AYAM:
+        // deklarasi path asset error
+        String logRegPath = "/Assets/View/Login_Register/";
+        // animasi ayam error
+        ImageView ayamError = createImage(logRegPath + "ayamMarah.png", 180, 180);
+        Timeline ayamError_IN = new Timeline();
+        // animasi text ayam error
+        List<ImageView> chatErrorAyam = new ArrayList<>();
+        // menambahkan error password (chat)
+        chatErrorAyam.add(createImage(logRegPath + "passwordKosong.png", 250, 250)); // password kosong
+        chatErrorAyam.add(createImage(logRegPath + "passwordSalah.png", 250, 250)); // password salah
+        // menambahkan error username (chat)
+        chatErrorAyam.add(createImage(logRegPath + "usernameKosong.png", 250, 250)); // username kosong
+        chatErrorAyam.add(createImage(logRegPath + "usernameSalah.png", 250, 250)); // username salah
+        // menambahkan error keduanya
+        chatErrorAyam.add(createImage(logRegPath + "usernamePasswordKosong.png", 250, 250)); // username dan password
+                                                                                             // kosong
+        chatErrorAyam.add(createImage(logRegPath + "usernamePasswordSalah.png", 250, 250)); // username dan password
+                                                                                            // kosong
+
         // memasukkan seluruh elemen ke dalam stackPane mainContent
-        StackPane mainContent = new StackPane(base, contentElements, logoCelengan);
+        StackPane mainContent = new StackPane(chatAyam, ayamBetina, ayamHand, base, contentElements,
+                logoCelengan);
         mainContent.setMaxSize(600, 300);
         // mainContent.setStyle("-fx-background-color: red");
+        // GENERAL EVENTS: events yang mencakup semua
+        inputPassword.setOnKeyTyped(e -> {
+            ayamHand_IN.play();
+        });
+        inputUsername.setOnMousePressed(e -> {
+            ayamHand_OUT.play();
+        });
+        mainContent.setOnMouseEntered(e -> {
+            hopAyamBetina_IN.play();
+            fadeChatAyam_IN.play();
+        });
+        root.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 1) {
+                hopAyamBetina_OUT.play();
+                fadeChatAyam_OUT.play();
+                ayamHand_OUT.play();
+            }
+        });
 
         // root stackPane
         root.getChildren().addAll(topSection, mainContent);
         root.setStyle("-fx-background-color: #141F23;");
 
         // Membuat Scene dengan latar belakang transparent
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(this.root, this.stage.getWidth(), this.stage.getHeight()); // Memasukkan root node ke dalam scene
+        System.out.println("Width: " + stage.getWidth());
+        System.out.println("Height " + stage.getHeight());
         scene.getStylesheets()
                 .addAll("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
         // Memberikan judul pada stage
-        // stage.initStyle(StageStyle.UNDECORATED);
+        // stage.initStyle(StageStyle.TRANSPARENT);
         stage.setMaximized(true);
         stage.setScene(scene); // menetapkan scene dari sebuah stage
         stage.show(); // menampilkan stage
@@ -353,15 +440,6 @@ public class LoginPage {
     }
 
     /* BUTTON METHODS */
-    // method untuk membuat background button rectangular
-
-    // method untuk menukar button
-    private void swapButton(SplitMenuButton dropDownButton, MenuItem selectedItem, String buttonText) {
-        dropDownButton.setText(buttonText);
-        dropDownButton.getItems().remove(selectedItem);
-        dropDownButton.getItems().add(0, selectedItem);
-    }
-
     // method untuk mengupdate button
     private void updateButton(Button btn, int width, int height, String text, String bgColor,
             int fontSize, String font,
@@ -390,16 +468,6 @@ public class LoginPage {
                         "-fx-background-radius: " + radius + ";" +
                         "-fx-padding: 0;");
         return button;
-    }
-
-    // method membuat background button
-    private Circle backgroundButton(int radius, String valueBgCol, double d, double e) {
-        Circle backgroundBtn = new Circle();
-        backgroundBtn.setRadius(radius - 10);
-        backgroundBtn.setFill(Color.valueOf("#" + valueBgCol));
-        backgroundBtn.setTranslateX(d);
-        backgroundBtn.setTranslateY(e);
-        return backgroundBtn;
     }
 
     /* MAIN CONTENT METHODS */
@@ -434,34 +502,19 @@ public class LoginPage {
         return rect;
     }
 
-    private void resizeChildren(Pane parent, double deltaSize, boolean isBack) {
-        for (Node node : parent.getChildren()) {
-            if (node instanceof Rectangle) {
-                Rectangle rect = (Rectangle) node;
-                if (rect.getArcWidth() != 0) {
-                    rect.setWidth(rect.getWidth() + deltaSize);
-                    rect.setHeight(rect.getHeight() + deltaSize);
-                }
-            } else if (node instanceof Text) {
-                Text text = (Text) node;
-                if (isBack) {
-                    text.setStyle("-fx-font: 26 Poppins;");
-                } else {
-                    text.setStyle("-fx-font: 20 Poppins;");
-                }
-            }
-            // Add more conditions for other node types if needed
-        }
-    }
-
     // Metode untuk melakukan pengecekan ke database dan kondisi
-    private void handleLogin(String username, String password) {
+    private void handleLogin(String username, String password, CheckBox checkBox, TextField usernameField,
+            PasswordField passwordField) {
         LoginModel login = new LoginModel(); // Membuat objek login
         SceneController sceneController = new SceneController(this.stage); // Membuat objek sceneController
 
         // Mengatur kondisi login antara username dan password baik itu menuju database
-        // atau mengecek kondisi field
-        if (login.isValidated(username, password, statusCheckbox)) {
+        // atau mengecek kondisi
+
+        // me-reset keduanya error style
+        removeErrorStyle(usernameField, passwordField, 3);
+
+        if (login.isValidated(username, password, checkBox.isSelected())) {
             if (login.penentuApakahSudahAdaSaldo()) {
                 sceneController.switchToDashboard(); // Merubah scene menuju dashboard
             } else {
@@ -469,40 +522,52 @@ public class LoginPage {
             }
         } else if (username.isEmpty() && password.isEmpty()) {
             // Memanggil metode untuk mengimplementasikan error style
-            applyErrorStyle(fieldUsername, passwordField);
+            applyErrorStyle(usernameField, passwordField, 3);
         } else if (username.isEmpty()) {
-            // Mereset error style passwordField menjadi normal
-            passwordField.setStyle("");
             // Memanggil metode untuk mengimplementasikan error style
-            applyErrorStyle(fieldUsername);
+            applyErrorStyle(usernameField, passwordField, 1);
+            removeErrorStyle(usernameField, passwordField, 2); // remove error style for password
         } else if (password.isEmpty()) {
-            // Mereset error style fieldUsername menjadi normal
-            fieldUsername.setStyle("");
             // Memanggil metode untuk mengimplementasikan error style
-            applyErrorStyle(passwordField);
+            applyErrorStyle(usernameField, passwordField, 2);
+            removeErrorStyle(usernameField, passwordField, 1); // remove error style for username
         } else {
-            // Mereset error style fieldUsername menjadi normal
-            fieldUsername.setStyle("");
-            // Mereset error style passwordField menjadi normal
-            passwordField.setStyle("");
-            // Memunculkan pesan kesalahan
-            AlertHelper.alert("Username or password is incorrect.");
+            // keduanya empty
+            applyErrorStyle(usernameField, passwordField, 3);
         }
-
     }
 
     // Membuat metode untuk menerapkan error style
-    private void applyErrorStyle(TextField... fields2) { // Menampung berbagai macam field
-        for (TextField field : fields2) { // Melakukan loop untuk setiap field yang ada
-            // Mengimplementasikan error style ke setiap field
-            field.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+    private void applyErrorStyle(TextField textField, PasswordField passwordField, int switcher) { // Menampung berbagai
+                                                                                                   // macam field
+        if (switcher == 1) {
+            textField.setStyle(
+                    textField.getStyle() + "-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 30;");
+        } else if (switcher == 2) {
+            passwordField.setStyle(
+                    passwordField.getStyle() + "-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 30;");
+        } else {
+            textField.setStyle(
+                    textField.getStyle() + "-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 30;");
+            passwordField.setStyle(
+                    passwordField.getStyle() + "-fx-border-color: red; -fx-border-width: 2; -fx-border-radius: 30;");
         }
     }
-}
 
-class LoginSystem {
-}
-
-class DropDown {
-
+    // membuat metode untuk menghapus error style
+    private void removeErrorStyle(TextField textField, PasswordField passwordField, int switcher) { // Menampung
+        // macam field
+        if (switcher == 1) {
+            textField.setStyle(
+                    textField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
+        } else if (switcher == 2) {
+            passwordField.setStyle(
+                    passwordField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
+        } else {
+            textField.setStyle(
+                    textField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
+            passwordField.setStyle(
+                    passwordField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
+        }
+    }
 }
