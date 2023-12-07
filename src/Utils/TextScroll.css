@@ -1,0 +1,11 @@
+/* styles.css */
+
+.text-rolling {
+    -fx-font: 30 'Poppins SemiBold';
+    -fx-fill: #ffffff;
+    -fx-transition: translateX 0.5s;
+}
+
+.text-rolling:hover {
+    -fx-translate-x: 20; /* Ganti nilai sesuai keinginan untuk efek gulung */
+}

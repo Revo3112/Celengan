@@ -11,6 +11,8 @@ import View.Login_Register.PenentuSaldo;
 import View.Login_Register.RegistrationPage;
 import View.Login_Register.RequestNewPass;
 import View.Splash_Screen.SplashScreen;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import Model.TanamUangModel;
@@ -55,10 +57,11 @@ public class SceneController {
                                                                  // TanamUangPage ke dalam
                                                                  // variable
         // tanamUang
-        tanamUang.start(TanamUangModel.getKategoriTanamUang("pemasukan"), TanamUangModel.getKategoriTanamUang("pengeluaran")); // Menjalankan
-                                                                                                         // method start
-                                                                                                         // pada objek
-                                                                                                         // tanamUang
+        tanamUang.start(TanamUangModel.getKategoriTanamUang("pemasukan"),
+                TanamUangModel.getKategoriTanamUang("pengeluaran")); // Menjalankan
+        // method start
+        // pada objek
+        // tanamUang
     }
 
     public void switchToPantauUang() {

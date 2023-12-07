@@ -1,0 +1,48 @@
+/* General scroll style */
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #0B1214;
+    -fx-background-insets: 0.0, 0.0, 0.0;
+    -fx-background-radius: 100em;
+    -fx-border-color: #2D464F;
+    -fx-border-radius: 100em;
+}
+
+
+.scroll-bar:horizontal .thumb:hover,
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #0B1214;
+    -fx-background-insets: 2.0, 0.0, 0.0;
+    -fx-background-radius: 100em;
+    -fx-opacity: 0.1000em; /* Mengubah opacity tanpa satuan "em" */
+    -fx-border-color: #2D464F;
+    -fx-border-radius: 100em;
+    -fx-background-pref-color: #000000;
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: #141F23;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 10 0 0;
+}
+
+/* Menyembunyikan panah increment dan decrement */
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: ""; 
+    -fx-padding: 0;
+    -fx-pref-width: 0; /* Sesuaikan dengan lebar yang diinginkan */
+    -fx-background-color: #141F23;
+}
+  
+.scroll-bar .track {
+    -fx-background-color: #141F23;
+}
+
+.scroll-bar {
+    -fx-background-color: #141F23;
+}
+
+

@@ -10,7 +10,7 @@ public class RequestNewPassword {
     private String pinCode, salt, username;
     hashingregister hashing = new hashingregister();
 
-    public boolean updateNewPassword(String keyUser, String newPassword) throws Exception {
+    public boolean updateNewPassword(String keyUser, String newPassword) {
         boolean status = false;
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -27,7 +27,7 @@ public class RequestNewPassword {
         return status;
     }
 
-    public boolean checkData(String inputUsername, String keyUser, String newPassword) throws Exception {
+    public boolean checkData(String inputUsername, String keyUser, String newPassword) {
         boolean status = false;
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();

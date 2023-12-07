@@ -78,6 +78,7 @@ public class TanamUangPage {
             this.tipeTanamUang = "pemasukan";
             this.combobox.setItems(FXCollections.observableArrayList(listKategoriPemasukan));
         });
+
         buttonPengeluaran.setOnMouseClicked(e -> {
             this.title.setText("Pengeluaran");
             this.tipeTanamUang = "pengeluaran";
@@ -114,15 +115,16 @@ public class TanamUangPage {
             VBox contentPane = new VBox();
             contentPane.setStyle("-fx-background-radius: 20");
             contentPane.setMaxSize(mainPane.getMaxWidth() - 100, mainPane.getMaxHeight() - 20);
+            
             contentPane.setSpacing(20);
-
+            
             HBox topBar = new HBox();
+            // topBar.setStyle("-fx-background-color: #3081D0;");
 
             ScrollPane scrollPane = new ScrollPane();
             scrollPane.setFitToWidth(true);
-            scrollPane.setPrefSize(contentPane.getMaxWidth(), contentPane.getMaxHeight() - 100);
-            scrollPane.setStyle("-fx-background-color: #3081D0;");
-            
+            scrollPane.setMaxSize(contentPane.getMaxWidth(), contentPane.getMaxHeight() - 100);
+
             VBox scrollPaneContent;
             if (this.tipeTanamUang.equals("pengeluaran")) {
                 scrollPaneContent = createScrollPaneContent(scrollPane, listKategoriPengeluaran, mainPane);
@@ -134,14 +136,13 @@ public class TanamUangPage {
             Text titleKategoriPengeluaran = createText("Kategori " + firstCapitalLetter, "-fx-font: 16 Poppins;", "#000000");
             Hyperlink backHyperlink = new Hyperlink();
             backHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Back.png")));
-            HBox.setMargin(titleKategoriPengeluaran,
-                        new Insets(10, contentPane.getMaxWidth() - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 40, 0, 20));
+            // HBox.setMargin(titleKategoriPengeluaran,
+                        // new Insets(10, contentPane.getMaxWidth() - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 40, 0, 20));
 
             backHyperlink.setOnMouseClicked(f -> {
                 this.root.getChildren().remove(mainPane);
                 this.root.getChildren().remove(backgroundMainPane);
             });
-
 
             Hyperlink tambahHyperlink = new Hyperlink();
             tambahHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Tambah.png")));
@@ -150,7 +151,7 @@ public class TanamUangPage {
             StackPane backgroundTambahPane = new StackPane();
 
             tambahHyperlink.setOnMouseClicked(f -> {
-                tambahPane.setMaxSize(mainPane.getMaxWidth() - 600, mainPane.getMaxHeight() - 400);
+                tambahPane.setMaxSize(mainPane.getMaxWidth() - 400, mainPane.getMaxHeight() - 200);
                 tambahPane.setStyle("-fx-background-color: #E48F45; -fx-background-radius: 20;");
 
                 backgroundTambahPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8)");
@@ -177,6 +178,7 @@ public class TanamUangPage {
 
                         if (mainPane.getParent() != null) {
                             mainPane.getChildren().remove(tambahPane);
+                            mainPane.getChildren().remove(backgroundTambahPane);
                         }
 
                         AlertHelper.info("Kategori " + fieldTambah.getText() + " berhasil ditambahkan!");
@@ -205,11 +207,14 @@ public class TanamUangPage {
 
             scrollPane.setContent(scrollPaneContent);
 
-            //====== ADD CHILD ======\\
             topBar.getChildren().addAll(backHyperlink, titleKategoriPengeluaran, tambahHyperlink);
+            // HBox.setMargin(titleKategoriPengeluaran,
+                    // new Insets(10, mainPane.getWidth() - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 20, 0, 0));
+
+            // ====== ADD CHILD ======\\
+            // topBar.getChildren().addAll(titleKategoriPengeluaran, logoTambah);
             contentPane.getChildren().addAll(topBar, scrollPane);
             mainPane.getChildren().add(contentPane);
-
             this.root.getChildren().addAll(backgroundMainPane, mainPane);
         });
 
@@ -372,7 +377,8 @@ public class TanamUangPage {
         System.out.println("ROOT WIDTH: " + this.root.getWidth());
         System.out.println("ROOT HEIGHT: " + this.root.getHeight());
 
-        Scene scene = new Scene(this.root, this.stage.getWidth(), this.stage.getHeight()); // Memasukkan root node ke dalam scene
+        Scene scene = new Scene(this.root, this.stage.getWidth(), this.stage.getHeight()); // Memasukkan root node ke
+                                                                                           // dalam scene
         this.stage.setScene(scene); // Memasukkan scene ke dalam stage
         this.stage.setMaximized(true);
         // this.stage.show(); // Menampilkan stage
@@ -400,7 +406,7 @@ public class TanamUangPage {
         contentPane.setStyle("-fx-background-radius: 20");
         contentPane.setMaxSize(mainPane.getMaxWidth(), mainPane.getMaxHeight() - 20);
         contentPane.setSpacing(20);
-        
+
         VBox scrollPaneContent;
         if (this.tipeTanamUang.equals("pengeluaran")) {
             scrollPaneContent = createScrollPaneContent(scrollPane, kategori, mainPane);
@@ -425,7 +431,6 @@ public class TanamUangPage {
 
             HBox itemContent = new HBox(namaKategori, editHyperlink, deleteHyperlink);
 
-
             int index = i;
             boolean isKategoriDefault = TanamUangModel.getIsKategoriDefault(namaKategori.getText());
 
@@ -433,7 +438,7 @@ public class TanamUangPage {
             StackPane backgroundPaneHapus = new StackPane();
 
             deleteHyperlink.setOnMouseClicked(e -> {
-                paneHapus.setMaxSize(scrollPane.getWidth() - 600, scrollPane.getHeight() - 200);
+                paneHapus.setMaxSize(mainPane.getWidth() - 600, mainPane.getHeight() - 600);
                 paneHapus.setStyle("-fx-background-radius: 20; -fx-background-color: #505e63");
 
                 backgroundPaneHapus.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8)");
@@ -461,7 +466,8 @@ public class TanamUangPage {
     
                             if (mainPane.getParent() != null) {
                                     mainPane.getChildren().remove(paneHapus);
-                                }
+                                    mainPane.getChildren().remove(backgroundPaneHapus);
+                            }
                             AlertHelper.info("Kategori " + listKategori[index] + " berhasil dihapus!");
                         } else {
                             AlertHelper.alert("Kategori gagal dihapus!");
@@ -502,7 +508,7 @@ public class TanamUangPage {
             StackPane backgroundPaneEdit = new StackPane();
             
             editHyperlink.setOnMouseClicked(e -> {
-                paneEdit.setMaxSize(scrollPane.getWidth() - 500, scrollPane.getHeight() - 100);
+                paneEdit.setMaxSize(mainPane.getWidth() - 400, mainPane.getHeight() - 200);
                 paneEdit.setStyle("-fx-background-radius: 20; -fx-background-color: #505e63");
 
                 backgroundPaneEdit.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8)");
@@ -529,7 +535,8 @@ public class TanamUangPage {
 
                     if (isKategoriDefault) {
                         int idKategoriDefault = TanamUangModel.getIdKategoriDefault(nama_kategori);
-                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori, namaKategori.getText(),
+                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori,
+                                namaKategori.getText(),
                                 isKategoriDefault, this.tipeTanamUang, idKategoriDefault);
 
                         if (statusSimpan) {
@@ -545,7 +552,8 @@ public class TanamUangPage {
                             AlertHelper.alert("Gagal mengubah nama kategori!");
                         }
                     } else {
-                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori, namaKategori.getText(),
+                        boolean statusSimpan = TanamUangModel.simpanNamaKategori(valueFieldEditNamaKategori,
+                                namaKategori.getText(),
                                 isKategoriDefault, this.tipeTanamUang, 0);
                         if (statusSimpan) {
                             refreshView(scrollPane, scrollPaneContent, mainPane);
@@ -554,7 +562,7 @@ public class TanamUangPage {
                                 mainPane.getChildren().remove(paneEdit);
                                 mainPane.getChildren().remove(backgroundPaneEdit);
                             }
-                            
+
                             AlertHelper.info("Berhasil mengubah nama kategori!");
                         } else {
                             AlertHelper.alert("Gagal mengubah nama kategori!");
@@ -567,14 +575,13 @@ public class TanamUangPage {
                 editHBox.setAlignment(Pos.CENTER);
 
                 HBox editTitleHBox = new HBox(titleEdit);
-                editTitleHBox.setAlignment(Pos.TOP_LEFT);
-                // HBox.setMargin(titleEdit, new Insets(0, 0, 0, 20));
 
                 HBox editButtonHBox = new HBox(editButtonBatalKategori, editButtonSimpanKategori);
                 editButtonHBox.setSpacing(20);
                 editButtonHBox.setAlignment(Pos.CENTER);
 
                 VBox editVBox = new VBox(editTitleHBox, editHBox, editButtonHBox);
+                editVBox.setMaxSize(paneEdit.getMaxWidth() - 20, paneEdit.getHeight() - 20);
                 editVBox.setSpacing(20);
                 editVBox.setAlignment(Pos.CENTER);
 
@@ -587,7 +594,7 @@ public class TanamUangPage {
             });
 
             VBox itemBox = new VBox();
-            itemBox.setStyle("-fx-background-color: #EE7214");
+            // itemBox.setStyle("-fx-background-color: #EE7214");
             itemBox.setMaxSize(mainPane.getMaxWidth() - 20, 200);
             itemBox.getChildren().add(itemContent);
             itemBox.setAlignment(Pos.CENTER);
@@ -597,13 +604,11 @@ public class TanamUangPage {
         }
 
         scrollPaneContent.setSpacing(20);
-        scrollPaneContent.setMaxSize(mainPane.getWidth(), mainPane.getHeight() - 20);
+        // scrollPaneContent.setMaxSize(mainPane.getWidth(), mainPane.getHeight() - 20);
         scrollPaneContent.setAlignment(Pos.CENTER);
-        scrollPaneContent.setStyle("-fx-background-color: #C21292");
-        
+        // scrollPaneContent.setStyle("-fx-background-color: #C21292");
         return scrollPaneContent;
     }
-
 
     // fungsi untuk membuat text dengan return Text
     private Text createText(String text, String style, String color) {
@@ -612,7 +617,6 @@ public class TanamUangPage {
         newText.setFill(Color.valueOf(color)); // menetapkan warna text
         return newText;
     }
-
 
     private void clearSelectionTanamUang(String message) {
         this.datePickerTanggal.setValue(null);

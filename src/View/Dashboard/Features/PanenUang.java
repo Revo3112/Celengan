@@ -1,12 +1,10 @@
 package View.Dashboard.Features;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import Controller.SceneController;
 import Model.HapusTarget;
 import Model.LoginModel;
 import Model.TambahTarget;
@@ -20,21 +18,16 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class PanenUang {
     private Stage stage;
@@ -209,7 +202,7 @@ public class PanenUang {
 
             // Untuk membuat progres bar
             ProgressBar progressBar = new ProgressBar();
-            progressBar.setProgress(kemajuanProgress(namaTarget));
+            progressBar.setProgress(kemajuanProgres(namaTarget));
 
             // Menampilkan progress text
             Text progressText = new Text(
@@ -394,7 +387,7 @@ public class PanenUang {
     }
 
     // Digunakan untuk mengembalikan kemajuan progress bar
-    private double kemajuanProgress(String namaTarget) {
+    private double kemajuanProgres(String namaTarget) {
         TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
         return tampilkanSemuaTarget.mendapatkanHargaTarget(namaTarget);
     }
@@ -434,7 +427,7 @@ public class PanenUang {
 
             // Create a progress bar
             ProgressBar progressBar = new ProgressBar();
-            progressBar.setProgress(kemajuanProgress(namaTarget));
+            progressBar.setProgress(kemajuanProgres(namaTarget));
 
             long roundedValue = Math.round(nominalTarget);
 
