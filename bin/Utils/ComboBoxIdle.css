@@ -28,31 +28,23 @@
 .combo-box .list-cell:filled:selected,
 .combo-box .list-cell:filled:selected:arm {
     -fx-background-color: none;
-    -fx-background-color: #68FB50;
     -fx-background-radius: 200;
-    -fx-font: 20px;
-    -fx-font-family: "Poppins Bold";
-    -fx-text-align: center;
 }
-
 
 .combo-box-popup .list-view .list-cell:filled:hover {
     -fx-text-fill: -fx-text-inner-color;
 }
 
-
-
 .combo-box-base {
-    -fx-background-color: #68FB50;
+    -fx-background-color: #466671;
     -fx-background-radius: 200;
     -fx-padding: 0;
-    -fx-text-font: 20px "Poppins Bold";
 }
 
 
 .combo-box-base:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: #68FB50;
+    -fx-background-color: #466671;
     -fx-background-radius: 200;
 }
 

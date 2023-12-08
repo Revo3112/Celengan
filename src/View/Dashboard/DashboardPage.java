@@ -5,6 +5,7 @@ import Model.LoginModel;
 import Model.PantauPemasukanPengeluaran;
 import Model.PieChartData;
 import Model.TampilkanSemuaTarget;
+import View.Dashboard.DashboardPage.CustomItem.CustomItemConverter;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,16 +18,19 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
-
+import javafx.util.StringConverter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -45,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
@@ -78,11 +83,10 @@ public class DashboardPage {
         // sideBar.setTranslateX(-stage.getWidth() / 2 + 40);
         sideBar.setAlignment(Pos.CENTER_RIGHT);
         VBox.setVgrow(sideBar, Priority.ALWAYS);
-
         // Membuat teks welcome
         Text welcome = createText("Selamat Datang,\n", "-fx-font: 40 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
         Text name = createText(this.username, "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 10);
-        Text welcome2 = createText("!", "-fx-font: 40 'Poppins Regular'; -fx-fill: #FFFFFF;", 88, 10);
+        Text welcome2 = createText("!", "-fx-font: 40 'Poppins Regular'; -fx-fill: #FFFFFF;", 100, 10);
 
         // StackPane untuk menampung teks
         StackPane textPane = new StackPane(welcome, name, welcome2);
@@ -93,6 +97,7 @@ public class DashboardPage {
         ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Content.png"));
         contentImageView.setFitWidth(400);
         contentImageView.setFitHeight(300);
+        contentImageView.setPreserveRatio(true);
 
         // StackPane untuk menampung gambar
         StackPane contentImagePane = new StackPane(contentImageView);
@@ -128,14 +133,14 @@ public class DashboardPage {
         long roundedValue = Math.round(this.saldo);
 
         Text Saldoawal = createText("Saldo Awal", "-fx-font: 15 'Poppins-Regular'; -fx-fill: #064D00;", 0, 0);
-        Text Saldoawal2 = createText(formatDuit(roundedValue), "-fx-font: 30 'Poppins SemiBold'; -fx-fill: #ffffff;", 0,
+        Text Saldoawal2 = createText(formatDuit(roundedValue), "-fx-font: 25 'Poppins SemiBold'; -fx-fill: #ffffff;", 0,
                 -6);
 
-        String saldoTampilan = Saldoawal2.getText().length() > 7 ? Saldoawal2.getText().substring(0, 7) + "..."
+        String saldoTampilan = Saldoawal2.getText().length() > 13 ? Saldoawal2.getText().substring(0, 13) + "..."
                 : Saldoawal2.getText();
 
         Label labelSaldo = new Label(saldoTampilan);
-        labelSaldo.setStyle("-fx-font: 30 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
+        labelSaldo.setStyle("-fx-font: 25 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
 
         // Tambahkan tooltip yang menampilkan saldo lengkap
         Tooltip tooltipSaldo = new Tooltip(Saldoawal2.getText());
@@ -331,39 +336,67 @@ public class DashboardPage {
             // Membuat combo box
             ComboBox<CustomItem> comboBox = new ComboBox<>();
             comboBox.getItems().addAll(
-                    new CustomItem("Pengeluaran", new Image("file:src/Assets/View/Dashboard/Pengeluaran.png")),
-                    new CustomItem("Pemasukan", new Image("file:src/Assets/View/Dashboard/Pemasukan.png")));
-            comboBox.setCellFactory(listView -> new ListCell<CustomItem>() {
-                private final HBox graphic = new HBox();
-                private final ImageView imageView = new ImageView();
+                    new CustomItem("Pengeluaran", Color.valueOf("#FB5050")),
+                    new CustomItem("Pemasukan", Color.valueOf("#68FB50")));
 
-                {
-                    graphic.getChildren().add(imageView);
-                    graphic.setSpacing(10);
-                }
+            comboBox.setConverter(new CustomItemConverter());
 
+            comboBox.setCellFactory(new Callback<>() {
                 @Override
-                protected void updateItem(CustomItem item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setGraphic(null);
-                        setText(null);
-                        getStyleClass().removeAll("pengeluaran", "pemasukan");
-                    } else {
-                        setText(item.getText());
-                        setFont(Font.font("Poppins", FontWeight.BOLD, 30));
-                        getStyleClass().removeAll("pengeluaran", "pemasukan");
-                        getStyleClass().add(item.getText().toLowerCase());
-                    }
+                public ListCell<CustomItem> call(javafx.scene.control.ListView<CustomItem> param) {
+                    return new ListCell<>() {
+                        private final HBox graphic = new HBox();
+
+                        {
+                            graphic.setSpacing(10);
+                        }
+
+                        @Override
+                        protected void updateItem(CustomItem item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setGraphic(null);
+                                setText(null);
+                                getStyleClass().removeAll("income", "expense");
+                                setBackground(null);
+                            } else {
+                                setText(item.getText());
+                                setFont(Font.font("Poppins", FontWeight.BOLD, 10));
+                                getStyleClass().removeAll("income", "expense");
+                                getStyleClass().add(item.getText().toLowerCase());
+
+                                // Set background color based on item type
+                                if ("Pemasukan".equals(item.getText())) {
+                                    setBackground(
+                                            new Background(new BackgroundFill(Color.valueOf("#68FB50"), null, null)));
+                                } else if ("Pengeluaran".equals(item.getText())) {
+                                    setBackground(
+                                            new Background(new BackgroundFill(Color.valueOf("#FB5050"), null, null)));
+                                }
+
+                                setGraphic(graphic);
+                            }
+                        }
+                    };
                 }
             });
 
             comboBox.setOnAction(event -> {
                 CustomItem selectedItem = comboBox.getSelectionModel().getSelectedItem();
                 System.out.println("Selected Option: " + selectedItem.getText());
+
+                // Clear existing stylesheets
+                comboBox.getStylesheets().clear();
+
+                // Tambahkan gaya baru berdasarkan kategori yang dipilih
+                if ("Pemasukan".equals(selectedItem.getText())) {
+                    comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox.css").toExternalForm());
+                } else {
+                    comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox2.css").toExternalForm());
+                }
             });
 
-            comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox.css").toExternalForm());
+            comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBoxIdle.css").toExternalForm());
 
             HBox isiKontenTulisan = new HBox(historiKeuanganmu, comboBox);
             isiKontenTulisan.setSpacing(15);
@@ -388,7 +421,18 @@ public class DashboardPage {
                 Text keteranganText = createText(keterangan, "-fx-font: 15 'Poppins Bold'; -fx-fill: #FFFFFF;",
                         0, 0);
 
-                VBox keteranganStackPane = new VBox(keteranganText);
+                String tampilanKeterangan = keteranganText.getText().length() > 10
+                        ? keteranganText.getText().substring(0, 10) + "..."
+                        : keteranganText.getText();
+
+                Label labelKeterangan = new Label(tampilanKeterangan);
+                labelKeterangan.setStyle("-fx-font: 15 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
+
+                // Tambahkan tooltip yang menampilkan saldo lengkap
+                Tooltip tooltipKeterangan = new Tooltip(keteranganText.getText());
+                Tooltip.install(labelKeterangan, tooltipKeterangan);
+
+                VBox keteranganStackPane = new VBox(labelKeterangan);
                 keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
 
                 Long roundedValueNominal = Math.round(nominal);
@@ -563,21 +607,36 @@ public class DashboardPage {
         return tanggalDiformat;
     }
 
-    private static class CustomItem {
+    // CustomItem class with Color property
+    public static class CustomItem {
         private final String text;
-        private final Image image;
+        private final Color color;
 
-        public CustomItem(String text, Image image) {
+        public CustomItem(String text, Color color) {
             this.text = text;
-            this.image = image;
+            this.color = color;
         }
 
         public String getText() {
             return text;
         }
 
-        public Image getImage() {
-            return image;
+        public Color getColor() {
+            return color;
+        }
+
+        public static class CustomItemConverter extends StringConverter<CustomItem> {
+
+            @Override
+            public String toString(CustomItem object) {
+                return (object != null) ? object.getText() : null;
+            }
+
+            @Override
+            public CustomItem fromString(String string) {
+                // Tidak perlu mengimplementasikan ini kecuali jika Anda memerlukannya
+                return null;
+            }
         }
     }
 }

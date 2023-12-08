@@ -1,61 +1,93 @@
 .combo-box .list-cell {
-    -fx-background: white;
-    -fx-background-color: transparent;
-    -fx-padding: 0 0 0 0;
-    -fx-cell-size: 1.66667em; 
+    -fx-cell-size: 1.66667em;
+    -fx-background-radius: 0;
 }
 
+
 .combo-box-popup .list-view {
-    -fx-background-color: #2E4952;
     -fx-background-insets: 0, 1;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+    -fx-background-radius: 0;
 }    
 
 .combo-box-popup .list-view .list-cell {
     -fx-padding: 0 0 0 0;
-    -fx-background-color: #2E4952;
+    -fx-background-radius: 0;
 }
 
-.combo-box-popup .list-view .list-cell:filled:selected,
+/* .combo-box-popup .list-view .list-cell:filled:selected, 
 .combo-box-popup .list-view .list-cell:filled:selected:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
-    -fx-text-fill: -fx-selection-bar-text;
+    -fx-fill: #FFFFFF
+} */
+
+/* Mengatur background color saat ComboBox dipilih untuk kategori "Pengeluaran" */
+
+/* Mengatur background color saat ComboBox dipilih untuk kategori "Pemasukan" */
+.combo-box .list-cell:filled:selected,
+.combo-box .list-cell:filled:selected:arm {
+    -fx-background-color: none;
+    -fx-background-color: #68FB50;
+    -fx-background-radius: 200;
+    -fx-font: 20px;
+    -fx-font-family: "Poppins Bold";
+    -fx-text-align: center;
 }
 
+
 .combo-box-popup .list-view .list-cell:filled:hover {
-    -fx-background-color: #466671;
     -fx-text-fill: -fx-text-inner-color;
 }
 
+
+
 .combo-box-base {
-    -fx-background-color: #2E4952;
-    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-color: #68FB50;
+    -fx-background-radius: 200;
     -fx-padding: 0;
+    -fx-text-font: 20px "Poppins Bold";
 }
+
 
 .combo-box-base:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: #466671;
+    -fx-background-color: #68FB50;
+    -fx-background-radius: 200;
 }
 
-.combo-box-base:showing {
-    -fx-color: -fx-pressed-base;
+
+.combo-box-base::content
+{
+    -fx-background-color: #ffffff;
 }
 
-.combo-box-base:focused {
-    -fx-background-color: #2E4952;
-}
+/* .income, .combo-box-base:focused {
+    -fx-background-color: #68FB50;
+} */
+
+
 
 .combo-box-base:disabled {
     -fx-opacity: .4;
 }
 
+/* .income .combo-box-base .list-view {
+    -fx-background-color: #39B200;
+    -fx-background-radius: 0;
+}
+.expense .combo-box-base {
+    -fx-background-color: #FF4040;
+    -fx-background-radius: 0;
+} */
+
+
+.combo-box .item:selected {
+    color: white;
+    -fx-background-radius: 200;
+}
+  
 /* Tambahkan aturan CSS untuk Pengeluaran dan Pemasukan */
 /* Mengatur warna teks untuk ComboBox pertama */
 
 /* Mengatur warna teks untuk ComboBox kedua */
-.combo-box-base .list-cell {
-    -fx-text-fill: #68FB50; 
-    -fx-text-fill:#FF4040/* Ganti #color2 dengan kode warna yang Anda inginkan untuk ComboBox kedua */
-}
