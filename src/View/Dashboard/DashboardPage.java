@@ -60,11 +60,11 @@ public class DashboardPage {
     private double saldo;
     private int userId;
     private Tooltip tooltip = new Tooltip();
-    private static PantauPemasukanPengeluaran model = new PantauPemasukanPengeluaran();
-    private static List<String> keteranganBarangList = model.getKeteranganBarangList();
-    private static List<Double> nominalBarangList = model.getNominalBarangList();
-    private static List<String> tipeBarangList = model.getTipeBarangList();
-    private static List<String> tanggalBarangList = model.getTanggalBarangList();
+    private PantauPemasukanPengeluaran model;
+    private List<String> keteranganBarangList;
+    private List<Double> nominalBarangList;
+    private List<String> tipeBarangList;
+    private List<String> tanggalBarangList;
 
     public DashboardPage(Stage stage) {
         this.stage = stage;
@@ -73,6 +73,11 @@ public class DashboardPage {
         this.saldo = getSaldo();
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
+        this.model = new PantauPemasukanPengeluaran();
+        this.keteranganBarangList = model.getKeteranganBarangList();
+        this.nominalBarangList = model.getNominalBarangList();
+        this.tipeBarangList = model.getTipeBarangList();
+        this.tanggalBarangList = model.getTanggalBarangList();
     }
 
     // Menampilkan halaman dashboard
