@@ -222,7 +222,7 @@ public class TanamUangModel {
                     "SELECT uk.name, uk.transac_kategori_id FROM user_kategori AS uk WHERE user_id=%d AND tipe='%s' AND transac_kategori_id != 0;",
                     userId, tipeTanamUang);
 
-            String sql_3 = String.format("SELECT name FROM user_kategori WHERE transac_kategori_id = 0");
+            String sql_3 = String.format("SELECT name FROM user_kategori WHERE transac_kategori_id = 0 AND tipe='%s'", tipeTanamUang);
 
             Statement statement_1 = connection.createStatement(); // Membuat statement dari method createStatement()
             ResultSet resultKategori = statement_1.executeQuery(sql_1); // Execute query sql menggunakan method
@@ -294,6 +294,11 @@ public class TanamUangModel {
             }
 
             String[] kategori = kategoriList.toArray(new String[0]);
+
+            System.out.println("Tipe tanam uang: " + tipeTanamUang);
+            for (int i = 0; i < kategori.length; i++) {
+                System.out.println("Kategori[" + i+1 + "] = " + kategori[i]);
+            }
 
             return kategori; // Mengembalikan array kategori
 
