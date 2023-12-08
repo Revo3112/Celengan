@@ -11,45 +11,45 @@ import javafx.collections.ObservableList;
 import javafx.scene.chart.PieChart;
 
 public class PieChartData {
-    private static int user_id;
-
-    public PieChartData(int user_id) {
-        this.user_id = user_id;
-    }
+    static LoginModel loginModel = new LoginModel();
+    private static int user_id = loginModel.getUserId();
 
     public static ObservableList<PieChart.Data> pieChartData() throws SQLException {
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        pieChartData.clear();
         DBConnection dbConnection = new DBConnection();
-        Connection connection = dbConnection.getConnection();
-        try {
+        try (Connection connection = dbConnection.getConnection()) {
             String query = "SELECT kategori_id, tipe_kategori, SUM(nominal) AS total_nominal FROM transac WHERE tipe_transaksi = 'pengeluaran' and user_id = ? GROUP BY kategori_id, tipe_kategori";
 
             // Mencegah sql injection
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 // Set user_id as a parameter
-                statement.setInt(1, user_id); // Replace 'yourUserId' with the actual user ID
+                statement.setInt(1, user_id);
 
                 // Menjalankan query
-                ResultSet result = statement.executeQuery();
-                while (result.next()) {
-                    int kategori_id = result.getInt("kategori_id");
-                    int tipe_kategori = result.getInt("tipe_kategori");
-                    double total_nominal = result.getDouble("total_nominal");
+                try (ResultSet result = statement.executeQuery()) {
+                    while (result.next()) {
+                        int kategori_id = result.getInt("kategori_id");
+                        int tipe_kategori = result.getInt("tipe_kategori");
+                        double total_nominal = result.getDouble("total_nominal");
 
-                    if (tipe_kategori == 0) {
-                        pieChartData.add(new PieChart.Data(getKategoriNameUser(kategori_id),
-                                total_nominal / totalpengeluaran() * 100));
-                    } else {
-                        pieChartData.add(new PieChart.Data(getKategoriNameByDefault(kategori_id),
-                                total_nominal / totalpengeluaran() * 100));
+                        if (tipe_kategori == 0) {
+                            pieChartData.add(new PieChart.Data(getKategoriNameUser(kategori_id),
+                                    total_nominal / totalpengeluaran() * 100));
+                        } else {
+                            pieChartData.add(new PieChart.Data(getKategoriNameByDefault(kategori_id),
+                                    total_nominal / totalpengeluaran() * 100));
+                        }
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            // Log or rethrow the exception
+            e.printStackTrace();
+            throw e;
         }
         return pieChartData;
-    };
+    }
 
     private static String getKategoriNameByDefault(int id) throws SQLException {
         DBConnection dbConnection = new DBConnection();
@@ -70,7 +70,7 @@ public class PieChartData {
     private static String getKategoriNameUser(int id) throws SQLException {
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
-        String query = "SELECT name FROM user_kategori WHERE transac_kategori_id = ? and user_id = ?";
+        String query = "SELECT name FROM user_kategori WHERE id = ? and user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.setInt(2, user_id);

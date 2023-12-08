@@ -60,7 +60,6 @@ public class DashboardPage {
     private double saldo;
     private int userId;
     private Tooltip tooltip = new Tooltip();
-    private Scale pieChartScale = new Scale(1, 1);
     private static PantauPemasukanPengeluaran model = new PantauPemasukanPengeluaran();
     private static List<String> keteranganBarangList = model.getKeteranganBarangList();
     private static List<Double> nominalBarangList = model.getNominalBarangList();
@@ -179,9 +178,10 @@ public class DashboardPage {
             PieChart pieChart = new PieChart();
             ObservableList<PieChart.Data> pieChartData = PieChartData.pieChartData();
             pieChart.setData(pieChartData);
-            for (PieChart.Data data : pieChart.getData()) {
 
+            for (PieChart.Data data : pieChartData) {
                 Tooltip.install(data.getNode(), tooltip);
+                System.out.println(data.getPieValue());
 
                 data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
                     tooltip.setText(String.format("%.1f%%", data.getPieValue()));
@@ -196,6 +196,7 @@ public class DashboardPage {
                 data.getNode().addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
                     updateTooltipPosition(e.getScreenX(), e.getScreenY());
                 });
+
                 data.getNode().setOnMouseEntered(e -> {
                     data.getNode().setScaleX(1.1);
                     data.getNode().setScaleY(1.1);
@@ -208,17 +209,18 @@ public class DashboardPage {
 
                 data.getNode().setStyle("-fx-label-line-length: -100px;");
             }
-            pieChart.setStartAngle(90); // Mengatur sudut awal pie chart
-            pieChart.setClockwise(false); // Mengatur arah jarum jam
+
+            pieChart.setStartAngle(90);
+            pieChart.setClockwise(false);
             pieChart.setMaxSize(350, 100);
-            pieChart.setLabelLineLength(0); // Menetapkan panjang garis label
+            pieChart.setLabelLineLength(0);
             pieChart.setLegendSide(Side.RIGHT);
             pieChart.setLegendVisible(true);
             pieChart.setLabelsVisible(false);
             pieChart.setAnimated(true);
-            pieChartScale.setX(1);
-            pieChartScale.setY(1);
-            pieChart.setTranslateX(-25);
+
+            Scale pieChartScale = new Scale(1, 1);
+            pieChart.setTranslateX(-60);
             pieChart.setTranslateY(0);
             pieChart.getTransforms().add(pieChartScale);
 
@@ -412,7 +414,9 @@ public class DashboardPage {
             VBox kontenHistoriKeuangan = new VBox();
             kontenHistoriKeuangan.setSpacing(10);
             kontenHistoriKeuangan.setSpacing(10);
+
             for (int i = 0; i < getTotalBarangyangDIbeli(); i++) {
+                System.out.println(keteranganBarangList.get(i));
                 String keterangan = keteranganBarangList.get(i);
                 double nominal = nominalBarangList.get(i);
                 String tipe = tipeBarangList.get(i);
