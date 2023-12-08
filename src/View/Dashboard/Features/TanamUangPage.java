@@ -260,12 +260,12 @@ public class TanamUangPage {
             scrollPane.setFitToWidth(true);
             scrollPane.setMaxSize(contentPane.getMaxWidth(), contentPane.getMaxHeight() - 100);
 
-            VBox scrollPaneContent;
-            if (this.tipeTanamUang.equals("pengeluaran")) {
-                scrollPaneContent = createScrollPaneContent(scrollPane, listKategoriPengeluaran, editMainPane);
-            } else {
-                scrollPaneContent = createScrollPaneContent(scrollPane, listKategoriPemasukan, editMainPane);
-            }
+            VBox scrollPaneContent = createScrollPaneContent(scrollPane, editMainPane);
+            // if (this.tipeTanamUang.equals("pengeluaran")) {
+            //     scrollPaneContent = createScrollPaneContent(scrollPane, listKategoriPengeluaran, editMainPane);
+            // } else {
+            //     scrollPaneContent = createScrollPaneContent(scrollPane, listKategoriPemasukan, editMainPane);
+            // }
 
             String firstCapitalLetter = this.tipeTanamUang.substring(0, 1).toUpperCase() + this.tipeTanamUang.substring(1);
             Text titleKategoriPengeluaran = createText("Kategori " + firstCapitalLetter, "-fx-font: 24 'Poppins Bold';", "#FFFFFF");
@@ -275,6 +275,7 @@ public class TanamUangPage {
                         // new Insets(10, contentPane.getMaxWidth() - titleKategoriPengeluaran.getBoundsInLocal().getWidth() - 40, 0, 20));
 
             backHyperlink.setOnMouseClicked(f -> {
+                this.combobox.setItems(FXCollections.observableArrayList(TanamUangModel.getKategoriTanamUang(this.tipeTanamUang)));
                 mainPane.getChildren().remove(editMainPane);
                 mainPane.getChildren().remove(backgroundMainPane);
             });
@@ -573,34 +574,28 @@ public class TanamUangPage {
 
     private void refreshView(ScrollPane scrollPane, VBox scrollContentBox, StackPane mainPane) {
         scrollContentBox.getChildren().clear();
-        List<String> listKategori = new ArrayList<>();
-
-        String[] kategoriTemp = TanamUangModel.getKategoriTanamUang(this.tipeTanamUang);
-        for (int i = 0; i < kategoriTemp.length; i++) {
-            listKategori.add(kategoriTemp[i]);
-        }
-
-        String[] kategori = listKategori.toArray(new String[0]);
-
+        
         VBox contentPane = new VBox();
         contentPane.setStyle("-fx-background-radius: 20");
         contentPane.setMaxSize(mainPane.getMaxWidth(), mainPane.getMaxHeight() - 20);
         contentPane.setSpacing(20);
 
-        VBox scrollPaneContent;
-        if (this.tipeTanamUang.equals("pengeluaran")) {
-            scrollPaneContent = createScrollPaneContent(scrollPane, kategori, mainPane);
-        } else {
-            scrollPaneContent = createScrollPaneContent(scrollPane, kategori, mainPane);
-        }
+        VBox scrollPaneContent = createScrollPaneContent(scrollPane, mainPane);
 
-        scrollPaneContent.setStyle("-fx-background-color: #213339;");
+        // scrollPaneContent.setStyle("-fx-background-color: #213339;");
+        // scrollPane.setContent(scrollPaneContent);
+        // scrollPane.setStyle("-fx-background-color: #213339;");
+
+        scrollPaneContent.setSpacing(15);
+        scrollPaneContent.setAlignment(Pos.CENTER);
+        scrollPaneContent.setStyle("-fx-background-color: #141F23");
+        
         scrollPane.setContent(scrollPaneContent);
-        scrollPane.setStyle("-fx-background-color: #213339;");
     }
 
-    private VBox createScrollPaneContent(ScrollPane scrollPane, String[] listKategori, StackPane mainPane) {
+    private VBox createScrollPaneContent(ScrollPane scrollPane, StackPane mainPane) {
         VBox scrollPaneContent = new VBox();
+        String[] listKategori = TanamUangModel.getKategoriTanamUang(this.tipeTanamUang);
 
         for (int i = 0; i < listKategori.length; i++) {
             Text namaKategori = createText(listKategori[i], "-fx-font: 16 Poppins;", "#FFFFFF");
@@ -704,6 +699,7 @@ public class TanamUangPage {
             StackPane backgroundPaneEdit = new StackPane();
 
             editHyperlink.setOnMouseClicked(e -> {
+                
                 paneEdit.setMaxSize(mainPane.getWidth() - 400, mainPane.getHeight() - 200);
                 paneEdit.setStyle("-fx-background-radius: 20; -fx-background-color: #505e63");
 
