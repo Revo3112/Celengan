@@ -5,20 +5,23 @@ import Model.LoginModel;
 import Model.PantauPemasukanPengeluaran;
 import Model.PieChartData;
 import Model.TampilkanSemuaTarget;
-import javafx.animation.*;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 
 import javafx.scene.image.Image;
@@ -29,17 +32,19 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-import javax.swing.text.BoxView;
-
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
@@ -75,9 +80,9 @@ public class DashboardPage {
         VBox.setVgrow(sideBar, Priority.ALWAYS);
 
         // Membuat teks welcome
-        Text welcome = createText("Selamat Datang,\n", "-fx-font: 40 'Poppins-Regular'; -fx-fill: #FFFFFF;", 0, 0);
-        Text name = createText(this.username, "-fx-font: 40 'Poppins-SemiBold'; -fx-fill: #FFFFFF;", 0, 10);
-        Text welcome2 = createText("!", "-fx-font: 40 'Poppins-Regular'; -fx-fill: #FFFFFF;", 88, 10);
+        Text welcome = createText("Selamat Datang,\n", "-fx-font: 40 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
+        Text name = createText(this.username, "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 10);
+        Text welcome2 = createText("!", "-fx-font: 40 'Poppins Regular'; -fx-fill: #FFFFFF;", 88, 10);
 
         // StackPane untuk menampung teks
         StackPane textPane = new StackPane(welcome, name, welcome2);
@@ -125,26 +130,18 @@ public class DashboardPage {
         Text Saldoawal = createText("Saldo Awal", "-fx-font: 15 'Poppins-Regular'; -fx-fill: #064D00;", 0, 0);
         Text Saldoawal2 = createText(formatDuit(roundedValue), "-fx-font: 30 'Poppins SemiBold'; -fx-fill: #ffffff;", 0,
                 -6);
-        Saldoawal2.setWrappingWidth(200); // Wrap the Saldoawal2 to a certain width
-        Saldoawal2.setVisible(true); // Hide the Saldoawal2 initially
 
-        // Create a timeline for the rolling animation
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10),
-                new KeyValue(Saldoawal2.layoutYProperty(), -Saldoawal2.getLayoutBounds().getHeight())));
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        String saldoTampilan = Saldoawal2.getText().length() > 7 ? Saldoawal2.getText().substring(0, 7) + "..."
+                : Saldoawal2.getText();
 
-        // Trigger the animation when the Saldoawal2 is hovered
-        Saldoawal2.setOnMouseEntered(e -> {
-            Saldoawal2.setVisible(true);
-            timeline.play();
-        });
+        Label labelSaldo = new Label(saldoTampilan);
+        labelSaldo.setStyle("-fx-font: 30 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
 
-        // Stop the animation and hide the Saldoawal2 when the mouse is not hovering
-        Saldoawal2.setOnMouseExited(e -> {
-            timeline.stop();
-            Saldoawal2.setVisible(false);
-        });
-        VBox vboxKiriTengah = new VBox(Saldoawal, Saldoawal2);
+        // Tambahkan tooltip yang menampilkan saldo lengkap
+        Tooltip tooltipSaldo = new Tooltip(Saldoawal2.getText());
+        Tooltip.install(labelSaldo, tooltipSaldo);
+
+        VBox vboxKiriTengah = new VBox(Saldoawal, labelSaldo);
         vboxKiriTengah.setAlignment(Pos.CENTER_LEFT);
         vboxKiriTengah.setPadding(new Insets(0, 0, 0, 20));
 
@@ -315,15 +312,6 @@ public class DashboardPage {
                     "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;",
                     0, 0);
 
-            ImageView plusIcon = new ImageView("file:src/Assets/View/Dashboard/Plus Sign.png");
-            plusIcon.setFitWidth(30);
-            plusIcon.setFitHeight(30);
-            plusIcon.setPreserveRatio(true);
-
-            Hyperlink plusIconHypleHyperlink = new Hyperlink();
-            plusIconHypleHyperlink.setGraphic(plusIcon);
-            plusIconHypleHyperlink.setOnMouseClicked(null);
-
             ImageView pengeluaranImage = new ImageView("file:src/Assets/View/Dashboard/Pengeluaran.png");
             pengeluaranImage.setFitWidth(110);
             pengeluaranImage.setFitHeight(30);
@@ -334,8 +322,47 @@ public class DashboardPage {
             pemasukanImage.setFitHeight(30);
             pemasukanImage.setPreserveRatio(true);
 
-            HBox isiKontenTulisan = new HBox(historiKeuanganmu, plusIconHypleHyperlink, pengeluaranImage,
-                    pemasukanImage);
+            // ImageView plusIcon = new ImageView("file:src/Assets/View/Dashboard/Plus
+            // Sign.png");
+            // plusIcon.setFitWidth(30);
+            // plusIcon.setFitHeight(30);
+            // plusIcon.setPreserveRatio(true);
+
+            // Membuat combo box
+            ComboBox<CustomItem> comboBox = new ComboBox<>();
+            comboBox.getItems().addAll(
+                    new CustomItem("Pengeluaran", new Image("file:src/Assets/View/Dashboard/Pengeluaran.png")),
+                    new CustomItem("Pemasukan", new Image("file:src/Assets/View/Dashboard/Pemasukan.png")));
+            comboBox.setCellFactory(listView -> new ListCell<CustomItem>() {
+                private final HBox graphic = new HBox();
+                private final ImageView imageView = new ImageView();
+
+                {
+                    graphic.getChildren().add(imageView);
+                    graphic.setSpacing(10);
+                }
+
+                @Override
+                protected void updateItem(CustomItem item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        setText(item.getText());
+                        setFont(Font.font("Poppins", FontWeight.BOLD, 30)); // Set gaya font
+                    }
+                }
+            });
+
+            comboBox.setOnAction(event -> {
+                CustomItem selectedItem = comboBox.getSelectionModel().getSelectedItem();
+                System.out.println("Selected Option: " + selectedItem.getText());
+            });
+
+            comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox.css").toExternalForm());
+
+            HBox isiKontenTulisan = new HBox(historiKeuanganmu, comboBox);
             isiKontenTulisan.setSpacing(15);
             isiKontenTulisan.setPadding(new Insets(5, 0, 0, 25));
             isiKontenTulisan.setAlignment(Pos.CENTER_LEFT);
@@ -383,7 +410,8 @@ public class DashboardPage {
                 VBox nominalStackPane = new VBox(gambarKondisidanNominal);
                 nominalStackPane.setAlignment(Pos.CENTER);
 
-                Text tanggalText = createText(tanggal, "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
+                Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
+                        0, 0);
 
                 VBox tanggalTextPane = new VBox(tanggalText);
                 tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
@@ -397,6 +425,9 @@ public class DashboardPage {
                 kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
 
                 kontenHistoriKeuangan.getChildren().add(kontenHistoriKeuanganBarang);
+                keteranganStackPane.setMaxWidth(200);
+                nominalStackPane.setMaxWidth(200);
+                tanggalTextPane.setMaxWidth(200);
             }
 
             // Membuat konten bagian bawah untuk main pane
@@ -414,7 +445,7 @@ public class DashboardPage {
             ScrollPane scrollPane = new ScrollPane();
             scrollPane.setContent(kontenVBox);
             scrollPane.setFitToHeight(true);
-            scrollPane.setMaxHeight(this.stage.getHeight() + 100);
+            scrollPane.setMaxHeight(this.stage.getHeight() - 100);
             scrollPane.setMaxWidth(this.stage.getWidth() - 100);
             scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
 
@@ -431,7 +462,7 @@ public class DashboardPage {
 
             StackPane mainPane = new StackPane(scrollPane);
             mainPane.setStyle("-fx-background-color: #141F23;-fx-background-radius: 30px;");
-            mainPane.setMaxHeight(this.stage.getHeight() + 240);
+            mainPane.setMaxHeight(this.stage.getHeight() - 20);
             mainPane.setMaxWidth(this.stage.getWidth() + 400);
             mainPane.setPadding(new Insets(0, 10, 0, 0));
             mainPane.setAlignment(Pos.CENTER);
@@ -443,6 +474,7 @@ public class DashboardPage {
 
             HBox penggabunganMainPanedenganSideBar = new HBox(sideBar, mainPane);
             penggabunganMainPanedenganSideBar.setStyle("-fx-background-color: #0B1214;");
+            penggabunganMainPanedenganSideBar.setPadding(new Insets(10, 0, 0, 0));
             HBox fullPane = new HBox(penggabunganMainPanedenganSideBar, rightBar);
             // Set horizontal grow priority for mainPane
             // HBox.setHgrow(mainPaneHBox, Priority.ALWAYS);
@@ -451,7 +483,6 @@ public class DashboardPage {
             Scene scene = new Scene(fullPane, this.stage.getWidth(), this.stage.getHeight());
 
             this.stage.setScene(scene);
-            this.stage.setMaximized(true);
             this.stage.show(); // Tetapkan setelah styling selesai
 
         } catch (Exception e) {
@@ -495,29 +526,6 @@ public class DashboardPage {
         return model.banyakDatadiTransac();
     }
 
-    // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
-    // sebuah mouse yang diklik
-    private void setOnMouseClicked(StackPane root, Node item) {
-        root.setOnMouseClicked(new javafx.event.EventHandler<javafx.scene.input.MouseEvent>() {
-            @Override
-            public void handle(javafx.scene.input.MouseEvent me) {
-                double x = me.getSceneX();
-                double y = me.getSceneY();
-
-                // mengkalkulasi posisi translasi x dan y untuk mendapatkan posisi yang ideal
-                double itemX = x - (root.getWidth() / 2); // untuk menetapkan pada tengah node root
-                double itemY = y - (root.getHeight() / 2); // untuk menetapkan pada tengah node root
-
-                // menetapkan posisi baru untuk item
-                item.setTranslateX(itemX); // posisi baru untuk koordinat x
-                item.setTranslateY(itemY); // posisi baru untuk kooordinat y
-
-                System.out.println("Item placed at X -> " + itemX);
-                System.out.println("Item placed at Y -> " + itemY);
-            }
-        });
-    }
-
     // Fungsi untuk mengambil data yang paling pertama di database target
     private String getTarget() {
         TampilkanSemuaTarget target1 = new TampilkanSemuaTarget();
@@ -539,6 +547,36 @@ public class DashboardPage {
 
         return formattedValue;
     }
+
+    private static String formatTanggal(String tanggal) {
+        // Parse string tanggal dari database ke objek LocalDate
+        LocalDate tanggalLocalDate = LocalDate.parse(tanggal);
+
+        // Format ulang LocalDate ke dalam string dengan format yang diinginkan
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMMM-yyyy");
+        String tanggalDiformat = tanggalLocalDate.format(formatter);
+
+        // Gunakan hasil tanggal yang sudah diformat
+        return tanggalDiformat;
+    }
+
+    private static class CustomItem {
+        private final String text;
+        private final Image image;
+
+        public CustomItem(String text, Image image) {
+            this.text = text;
+            this.image = image;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public Image getImage() {
+            return image;
+        }
+    }
 }
 
 class ImageLinkPane {
@@ -547,8 +585,8 @@ class ImageLinkPane {
         ImageView logoImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
         logoImageView.setFitWidth(200);
         logoImageView.setFitHeight(50);
-        logoImageView.setTranslateY(-stage.getHeight() / 2 + 270);
-        logoImageView.setTranslateX(-stage.getWidth() / 2 + 485);
+        logoImageView.setPreserveRatio(true);
+        logoImageView.setTranslateX(-10);
 
         ImageView homePageImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
         ImageView tanamUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Tanam Uang.png"));
