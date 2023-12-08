@@ -348,9 +348,12 @@ public class DashboardPage {
                     if (empty || item == null) {
                         setGraphic(null);
                         setText(null);
+                        getStyleClass().removeAll("pengeluaran", "pemasukan");
                     } else {
                         setText(item.getText());
-                        setFont(Font.font("Poppins", FontWeight.BOLD, 30)); // Set gaya font
+                        setFont(Font.font("Poppins", FontWeight.BOLD, 30));
+                        getStyleClass().removeAll("pengeluaran", "pemasukan");
+                        getStyleClass().add(item.getText().toLowerCase());
                     }
                 }
             });
