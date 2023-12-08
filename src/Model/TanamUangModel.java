@@ -15,34 +15,22 @@ import javafx.scene.control.DatePicker;
 
 public class TanamUangModel {
 
-    public static boolean simpanPengeluaran(String tanggal, String kategori, int kategoriId, int jumlah, String tipePembayaran, String keterangan) {
+    public static boolean simpanTanamUang(String tanggal, String kategori, int kategoriId, int jumlah, String tipePembayaran, String keterangan, String tipeTU, boolean isDefault) {
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
+        String sql = "";
+        String tipeTanamUang = tipeTU.toLowerCase();
+        int tipeKategori = 0;
 
         try {
             LoginModel user = new LoginModel();
             int userId = user.getUserId();
 
-            String sql = String.format("INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %d, '%s', %d, '%s', '%s', 'pengeluaran')", userId, jumlah, keterangan, kategoriId, tipePembayaran, tanggal);
+            if (isDefault) {
+                tipeKategori = 1;
+            } 
 
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sql);
-            return true;
-        } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        return false;
-    }
-
-    public static boolean simpanPemasukan(String tanggal, String kategori, int kategoriId, int jumlah, String tipePembayaran, String keterangan) {
-        DBConnection dbc = DBConnection.getDatabaseConnection();
-        Connection connection = dbc.getConnection();
-
-        try {
-            LoginModel user = new LoginModel();
-            int userId = user.getUserId();
-
-            String sql = String.format("INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %d, '%s', %d, '%s', '%s', 'pemasukan')", userId, jumlah, keterangan, kategoriId, tipePembayaran, tanggal);
+            sql = String.format("INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_kategori, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %d, '%s', %d, %d, '%s', '%s', '%s')", userId, jumlah, keterangan, kategoriId, tipeKategori, tipePembayaran, tanggal, tipeTanamUang);
 
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);

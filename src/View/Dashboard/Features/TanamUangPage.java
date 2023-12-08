@@ -59,8 +59,8 @@ public class TanamUangPage {
     private String tipeTanamUang = "pengeluaran";
     private TextField fieldJumlah = new TextField();
     private TextField fieldKeterangan = new TextField();
-    private RadioButton radioBtnCash = new RadioButton("Cash");
-    private RadioButton radioBtnTransfer = new RadioButton("Transfer");
+    private RadioButton radioButtonCash = new RadioButton("Cash");
+    private RadioButton radioButtonTransfer = new RadioButton("Transfer");
     private DatePicker datePickerTanggal = new DatePicker();
 
     // Melakukan inisiasi class Tanamuang dengan parameter stage
@@ -92,7 +92,7 @@ public class TanamUangPage {
         Label labelTanggal = new Label("Tanggal:");
         labelTanggal.setStyle("-fx-font: 14 Poppins, Regular");
         labelTanggal.setTextFill(Color.valueOf("#FFFFFF"));
-        DatePicker datePickerTanggal = new DatePicker();
+        // DatePicker datePickerTanggal = new DatePicker();
 
         Label labelKategori = new Label("Kategori:");
         labelKategori.setStyle("-fx-font: 14 Poppins, Regular");
@@ -221,44 +221,39 @@ public class TanamUangPage {
         Label labelJumlah = new Label("Jumlah:");
         labelJumlah.setStyle("-fx-font: 14 Poppins, Regular");
         labelJumlah.setTextFill(Color.valueOf("#FFFFFF"));
-        TextField fieldJumlah = new TextField();
-        fieldJumlah.setMaxWidth(200);
+        // TextField fieldJumlah = new TextField();
+        this.fieldJumlah.setMaxWidth(200);
 
         Label labelTipePembayaran = new Label("Tipe Pembayaran:");
         labelTipePembayaran.setStyle("-fx-font: 14 Poppins, Regular");
         labelTipePembayaran.setTextFill(Color.valueOf("#FFFFFF"));
-        RadioButton radioButtonCash = new RadioButton("Cash");
-        radioButtonCash.setTextFill(Color.valueOf("#FFFFFF"));
-        RadioButton radioButtonTransfer = new RadioButton("Transfer");
-        radioButtonTransfer.setTextFill(Color.valueOf("#FFFFFF"));
+        this.radioButtonCash = new RadioButton("Cash");
+        this.radioButtonCash.setTextFill(Color.valueOf("#FFFFFF"));
+        this.radioButtonTransfer = new RadioButton("Transfer");
+        this.radioButtonTransfer.setTextFill(Color.valueOf("#FFFFFF"));
 
         ToggleGroup toggleGroup = new ToggleGroup();
-        radioButtonCash.setToggleGroup(toggleGroup);
-        radioButtonTransfer.setToggleGroup(toggleGroup);
+        this.radioButtonCash.setToggleGroup(toggleGroup);
+        this.radioButtonTransfer.setToggleGroup(toggleGroup);
 
         Label labelKeterangan = new Label("Keterangan:");
         labelKeterangan.setStyle("-fx-font: 14 Poppins, Regular");
         labelKeterangan.setTextFill(Color.valueOf("#FFFFFF"));
-        TextField fieldKeterangan = new TextField();
-        fieldKeterangan.setMaxWidth(200);
+        // TextField fieldKeterangan = new TextField();
+        this.fieldKeterangan.setMaxWidth(200);
 
         Button buttonSimpan = new Button("Simpan");
         buttonSimpan.setOnMouseClicked(e -> {
             if (isFormFilled()) {
-                LocalDate selectedTanggal = datePickerTanggal.getValue();
+                LocalDate selectedTanggal = this.datePickerTanggal.getValue();
                 DateTimeFormatter formatTanggal = DateTimeFormatter.ofPattern("YYYY-MM-d");
                 String tanggal = selectedTanggal.format(formatTanggal).toString();
 
                 String selectedKategori = this.combobox.getValue().toString();
 
                 int kategoriId = 0;
-                if (this.tipeTanamUang.equals("pengeluaran")) {
-                    kategoriId = getKategoriId(listKategoriPengeluaran, selectedKategori);
-                } else {
-                    kategoriId = getKategoriId(listKategoriPemasukan, selectedKategori);
-                }
-
-                int jumlah = Integer.parseInt(fieldJumlah.getText().replace(".", ""));
+                
+                int jumlah = Integer.parseInt(fieldJumlah.getText().replace(",", ""));
                 String keterangan = fieldKeterangan.getText();
                 String tipePembayaran = "";
 
@@ -268,18 +263,28 @@ public class TanamUangPage {
                     tipePembayaran = radioButtonTransfer.getText();
                 }
 
-                if (tipeTanamUang.toLowerCase().equals("pengeluaran")) {
-                    if (TanamUangModel.simpanPengeluaran(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran,
-                            keterangan)) {
-                        clearSelectionTanamUang("Pengeluaran telah tercatat");
-                    }
+                boolean isDefault = TanamUangModel.getIsKategoriDefault(selectedKategori);
+
+                if (isDefault) {
+                    kategoriId = TanamUangModel.getIdKategoriDefault(selectedKategori);
                 } else {
-                    if (TanamUangModel.simpanPemasukan(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran,
-                            keterangan)) {
+                    kategoriId = TanamUangModel.getIdKategoriUser(selectedKategori);
+                }
+
+                System.out.println("Kategori Id: " + kategoriId);
+                System.out.println("Is Default: " + isDefault);
+
+                if (TanamUangModel.simpanTanamUang(tanggal, selectedKategori, kategoriId, jumlah, tipePembayaran, keterangan, this.tipeTanamUang, isDefault)) {
+                    if (this.tipeTanamUang.toLowerCase().equals("pengeluaran")) {
+                        clearSelectionTanamUang("Pengeluaran telah tercatat");
+                    } else {
                         clearSelectionTanamUang("Pemasukan telah tercatat");
                     }
+                } else {
+                    AlertHelper.alert("Mohon isi data Anda.");
                 }
             } else {
+                System.out.println("FORM GA FILLED BANG");
                 AlertHelper.alert("Mohon isi data Anda");
             }
         });
@@ -325,7 +330,7 @@ public class TanamUangPage {
         this.root.getChildren().addAll(vbox);
 
         fieldJumlah.textProperty().addListener(new ChangeListener<String>() {
-            private String codeFormat = ".##0";
+            private String codeFormat = ",##0";
             private int codeLen = 4;
 
             @Override
@@ -335,7 +340,7 @@ public class TanamUangPage {
                 // Hapus listener sementara
 
                 fieldJumlah.textProperty().removeListener(this);
-                if (newValue.replace(".", "").matches("\\d*")) { // Check inputan angka atau tidak
+                if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
                     if (newValue.length() > oldValue.length()) {
                         if (newValue.length() > 13) {
                             fieldJumlah.setText(oldValue);
@@ -354,16 +359,16 @@ public class TanamUangPage {
 
             private void formatAndSet(String text, String format) {
                 DecimalFormat decimalFormat = new DecimalFormat(format);
-                double value = Double.parseDouble(text.replace(".", ""));
+                double value = Double.parseDouble(text.replace(",", ""));
                 System.out.println(value);
                 fieldJumlah.setText("");
                 fieldJumlah.setText(decimalFormat.format(value));
             }
 
             private void updateCodeFormat(String text) {
-                int newLen = text.replace(".", "").length();
+                int newLen = text.replace(",", "").length();
                 if (newLen == this.codeLen + 3) {
-                    this.codeFormat = "#." + this.codeFormat;
+                    this.codeFormat = "#," + this.codeFormat;
                     codeLen += 3;
                 } else if (newLen >= 4) {
                     this.codeFormat = "#" + this.codeFormat;
@@ -623,30 +628,37 @@ public class TanamUangPage {
         this.combobox.getSelectionModel().clearSelection();
         this.fieldJumlah.setText("");
         this.fieldKeterangan.setText("");
-        this.radioBtnCash.setSelected(false);
-        this.radioBtnTransfer.setSelected(false);
+        this.radioButtonCash.setSelected(false);
+        this.radioButtonTransfer.setSelected(false);
 
         AlertHelper.info(message);
     }
 
     private boolean isFormFilled() {
+        System.out.println("DatePicker: " + (this.datePickerTanggal.getValue() != null));
+        System.out.println("ComboBox: " + (this.combobox.getValue() != null));
+        System.out.println("Field Jumlah: " + (!this.fieldJumlah.getText().isEmpty()));
+        System.out.println("field Keterangan: " + (!this.fieldKeterangan.getText().isEmpty()));
+        System.out.println("Radio button: " + (this.radioButtonCash.isSelected() || this.radioButtonTransfer.isSelected()));
+
         return this.datePickerTanggal.getValue() != null &&
                 this.combobox.getValue() != null &&
                 !this.fieldJumlah.getText().isEmpty() &&
                 !this.fieldKeterangan.getText().isEmpty() &&
-                (this.radioBtnCash.isSelected() || this.radioBtnTransfer.isSelected());
+                (this.radioButtonCash.isSelected() || this.radioButtonTransfer.isSelected());
     }
 
-    private int getKategoriId(String[] listKategori, String selectedKategori) {
-        int kategoriId = 0;
+    // private int getKategoriId(String[] listKategori, String selectedKategori) {
+    //     int kategoriId = 0;
 
-        for (int i = 0; i < listKategori.length; i++) {
-            if (listKategori[i] == selectedKategori) {
-                kategoriId = i + 1;
-            }
-        }
+    //     for (int i = 0; i < listKategori.length; i++) {
+    //         if (listKategori[i] == selectedKategori) {
+    //             kategoriId = i + 1;
+    //         }
+    //     }
+    //     System.out.println("Kategori ID: " + kategoriId);
 
-        return kategoriId;
-    }
+    //     return kategoriId;
+    // }
 
 }
