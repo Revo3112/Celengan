@@ -588,8 +588,8 @@ class ImageLinkPane {
         ImageView logoImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
         logoImageView.setFitWidth(200);
         logoImageView.setFitHeight(50);
-        logoImageView.setPreserveRatio(true);
-        logoImageView.setTranslateX(-10);
+        // logoImageView.setPreserveRatio(true);
+        // logoImageView.setTranslateX(-10);
 
         ImageView homePageImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
         ImageView tanamUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Tanam Uang.png"));

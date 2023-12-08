@@ -52,10 +52,10 @@
 }
 
 /* Tambahkan aturan CSS untuk Pengeluaran dan Pemasukan */
-.pengeluaran .list-cell {
-    -fx-text-fill: red; /* Warna teks untuk Pengeluaran */
-}
+/* Mengatur warna teks untuk ComboBox pertama */
 
-.pemasukan .list-cell {
-    -fx-text-fill: green; /* Warna teks untuk Pemasukan */
+/* Mengatur warna teks untuk ComboBox kedua */
+.combo-box-base .list-cell {
+    -fx-text-fill: #68FB50; 
+    -fx-text-fill:#FF4040/* Ganti #color2 dengan kode warna yang Anda inginkan untuk ComboBox kedua */
 }
