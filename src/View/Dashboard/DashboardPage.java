@@ -1,18 +1,23 @@
 package View.Dashboard;
 
 import Controller.SceneController;
+import Model.BatasKritis;
 import Model.LoginModel;
 import Model.PantauPemasukanPengeluaran;
 import Model.PieChartData;
+import Model.RefreshViewDashboard;
 import Model.TampilkanSemuaTarget;
 import View.Dashboard.DashboardPage.CustomItem.CustomItemConverter;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Hyperlink;
@@ -37,11 +42,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
+
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -61,10 +70,12 @@ public class DashboardPage {
     private int userId;
     private Tooltip tooltip = new Tooltip();
     private PantauPemasukanPengeluaran model;
+    private RefreshViewDashboard refreshViewDashboard;
     private List<String> keteranganBarangList;
     private List<Double> nominalBarangList;
     private List<String> tipeBarangList;
     private List<String> tanggalBarangList;
+    public static StackPane root = new StackPane();
 
     public DashboardPage(Stage stage) {
         this.stage = stage;
@@ -183,13 +194,23 @@ public class DashboardPage {
             PieChart pieChart = new PieChart();
             ObservableList<PieChart.Data> pieChartData = PieChartData.pieChartData();
             pieChart.setData(pieChartData);
-
             for (PieChart.Data data : pieChartData) {
                 Tooltip.install(data.getNode(), tooltip);
                 System.out.println(data.getPieValue());
 
                 data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
-                    tooltip.setText(String.format("%.1f%%", data.getPieValue()));
+                    double pieValue = data.getPieValue();
+                    double nominalValue = PieChartData.totalpengeluaran() * ((pieValue / 100));
+
+                    // Format nominalValue as currency
+                    String formattedNominal = formatDuit(nominalValue);
+
+                    // Calculate the percentage based on the nominal value and the total saldo
+                    double percentage = (nominalValue / saldo) * 100;
+
+                    String tooltipText = String.format("%.1f%% (%s)", percentage, formattedNominal);
+
+                    tooltip.setText(tooltipText);
                     updateTooltipPosition(e.getScreenX(), e.getScreenY());
                     tooltip.show(data.getNode(), e.getScreenX(), e.getScreenY());
                 });
@@ -225,7 +246,7 @@ public class DashboardPage {
             pieChart.setAnimated(true);
 
             Scale pieChartScale = new Scale(1, 1);
-            pieChart.setTranslateX(-60);
+            pieChart.setTranslateX(-50);
             pieChart.setTranslateY(0);
             pieChart.getTransforms().add(pieChartScale);
 
@@ -334,11 +355,11 @@ public class DashboardPage {
             pemasukanImage.setFitHeight(30);
             pemasukanImage.setPreserveRatio(true);
 
-            // ImageView plusIcon = new ImageView("file:src/Assets/View/Dashboard/Plus
-            // Sign.png");
-            // plusIcon.setFitWidth(30);
-            // plusIcon.setFitHeight(30);
-            // plusIcon.setPreserveRatio(true);
+            // kontenHistorikeuangan
+
+            VBox kontenHistoriKeuangan = new VBox();
+            kontenHistoriKeuangan.setSpacing(10);
+            kontenHistoriKeuangan.setSpacing(10);
 
             // Membuat combo box
             ComboBox<CustomItem> comboBox = new ComboBox<>();
@@ -395,10 +416,13 @@ public class DashboardPage {
                 // Clear existing stylesheets
                 comboBox.getStylesheets().clear();
 
+                kontenHistoriKeuangan.getChildren().clear();
                 // Tambahkan gaya baru berdasarkan kategori yang dipilih
                 if ("Pemasukan".equals(selectedItem.getText())) {
+                    kontenHistoriKeuangan.getChildren().add(refreshViewHBox("Pemasukan"));
                     comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox.css").toExternalForm());
                 } else {
+                    kontenHistoriKeuangan.getChildren().add(refreshViewHBox("Pengeluaran"));
                     comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox2.css").toExternalForm());
                 }
             });
@@ -416,12 +440,7 @@ public class DashboardPage {
             // Yang perlu diambil di database adalah keterangan, nominal, tipe menggunakan
             // gambar, dan tanggal
 
-            VBox kontenHistoriKeuangan = new VBox();
-            kontenHistoriKeuangan.setSpacing(10);
-            kontenHistoriKeuangan.setSpacing(10);
-
             for (int i = 0; i < getTotalBarangyangDIbeli(); i++) {
-                System.out.println(keteranganBarangList.get(i));
                 String keterangan = keteranganBarangList.get(i);
                 double nominal = nominalBarangList.get(i);
                 String tipe = tipeBarangList.get(i);
@@ -462,7 +481,7 @@ public class DashboardPage {
                 }
 
                 HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
-                gambarKondisidanNominal.setSpacing(2);
+                gambarKondisidanNominal.setSpacing(10);
                 VBox nominalStackPane = new VBox(gambarKondisidanNominal);
                 nominalStackPane.setAlignment(Pos.CENTER);
 
@@ -523,7 +542,8 @@ public class DashboardPage {
             mainPane.setPadding(new Insets(0, 10, 0, 0));
             mainPane.setAlignment(Pos.CENTER);
 
-            HBox rightBar = new HBox();
+            RightBar rightBar = new RightBar(this.saldo, this.userId);
+            HBox Rightbar = rightBar.createRightBar(this.stage, sceneController);
 
             // Mengatur binding fitToHeight dan fitToWidth
             scrollPane.setFitToWidth(true);
@@ -531,12 +551,14 @@ public class DashboardPage {
             HBox penggabunganMainPanedenganSideBar = new HBox(sideBar, mainPane);
             penggabunganMainPanedenganSideBar.setStyle("-fx-background-color: #0B1214;");
             penggabunganMainPanedenganSideBar.setPadding(new Insets(10, 0, 0, 0));
-            HBox fullPane = new HBox(penggabunganMainPanedenganSideBar, rightBar);
+            HBox fullPane = new HBox(penggabunganMainPanedenganSideBar, Rightbar);
             // Set horizontal grow priority for mainPane
             // HBox.setHgrow(mainPaneHBox, Priority.ALWAYS);
             fullPane.setStyle("-fx-background-color: #0B1214");
 
-            Scene scene = new Scene(fullPane, this.stage.getWidth(), this.stage.getHeight());
+            root.getChildren().add(fullPane);
+
+            Scene scene = new Scene(root, this.stage.getWidth(), this.stage.getHeight());
 
             this.stage.setScene(scene);
             this.stage.show(); // Tetapkan setelah styling selesai
@@ -616,7 +638,84 @@ public class DashboardPage {
         return tanggalDiformat;
     }
 
-    // CustomItem class with Color property
+    private VBox refreshViewHBox(String Kategori) {
+        this.refreshViewDashboard = new RefreshViewDashboard();
+        this.keteranganBarangList = refreshViewDashboard.getKeteranganBarangCatatList(Kategori);
+        this.nominalBarangList = refreshViewDashboard.getNominalBarangList(Kategori);
+        this.tanggalBarangList = refreshViewDashboard.getTanggalBarangList(Kategori);
+        VBox kontenHistoriKeuanganBarangfull = new VBox();
+        kontenHistoriKeuanganBarangfull.setSpacing(10);
+        kontenHistoriKeuanganBarangfull.setSpacing(10);
+        for (int i = 0; i < refreshViewDashboard.getTotalBarang(Kategori); i++) {
+            String keterangan = keteranganBarangList.get(i);
+            double nominal = nominalBarangList.get(i);
+            String tipe = Kategori;
+            String tanggal = tanggalBarangList.get(i);
+
+            Text keteranganText = createText(keterangan, "-fx-font: 15 'Poppins Bold'; -fx-fill: #FFFFFF;",
+                    0, 0);
+
+            String tampilanKeterangan = keteranganText.getText().length() > 10
+                    ? keteranganText.getText().substring(0, 10) + "..."
+                    : keteranganText.getText();
+
+            Label labelKeterangan = new Label(tampilanKeterangan);
+            labelKeterangan.setStyle("-fx-font: 15 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
+
+            // Tambahkan tooltip yang menampilkan saldo lengkap
+            Tooltip tooltipKeterangan = new Tooltip(keteranganText.getText());
+            Tooltip.install(labelKeterangan, tooltipKeterangan);
+
+            VBox keteranganStackPane = new VBox(labelKeterangan);
+            keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
+
+            Long roundedValueNominal = Math.round(nominal);
+            Text nominalText = createText(formatDuit(roundedValueNominal),
+                    "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
+
+            ImageView kondisi = new ImageView();
+            if (tipe.equals("Pemasukan")) {
+                kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
+                kondisi.setFitHeight(35);
+                kondisi.setFitWidth(100);
+                kondisi.setPreserveRatio(true);
+            } else {
+                kondisi = new ImageView("file:src/Assets/View/Dashboard/PengeluaranKondisi.png");
+                kondisi.setFitHeight(35);
+                kondisi.setFitWidth(100);
+                kondisi.setPreserveRatio(true);
+            }
+
+            HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
+            gambarKondisidanNominal.setSpacing(10);
+            VBox nominalStackPane = new VBox(gambarKondisidanNominal);
+            nominalStackPane.setAlignment(Pos.CENTER);
+
+            Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
+                    0, 0);
+
+            VBox tanggalTextPane = new VBox(tanggalText);
+            tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
+
+            HBox kontenHistoriKeuanganBarang = new HBox();
+            kontenHistoriKeuanganBarang.getChildren().addAll(keteranganStackPane, nominalStackPane,
+                    gambarKondisidanNominal,
+                    tanggalTextPane);
+
+            kontenHistoriKeuanganBarang.setSpacing(80);
+            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 0, 10, 25));
+            kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
+            kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
+
+            kontenHistoriKeuanganBarangfull.getChildren().add(kontenHistoriKeuanganBarang);
+            keteranganStackPane.setMaxWidth(200);
+            nominalStackPane.setMaxWidth(200);
+            tanggalTextPane.setMaxWidth(200);
+        }
+        return kontenHistoriKeuanganBarangfull;
+    }
+
+    // CustomItem class untuk menyimpan data yang akan ditampilkan di ComboBox
     public static class CustomItem {
         private final String text;
         private final Color color;
@@ -743,8 +842,240 @@ class ImageLinkPane {
 
 }
 
-class rightBar {
-    public static HBox createRightBar(Stage stage, SceneController sceneController) {
-        return null;
+class VerticalProgress {
+    private ProgressBar progressBar = new ProgressBar();
+    private Group progressHolder = new Group(progressBar);
+
+    public VerticalProgress(double width, double height) {
+        progressBar.setMinSize(StackPane.USE_PREF_SIZE - 20, StackPane.USE_PREF_SIZE);
+        progressBar.setPrefSize(height, width);
+        progressBar.setMaxSize(StackPane.USE_PREF_SIZE - 20, StackPane.USE_PREF_SIZE);
+        progressBar.getTransforms().setAll(
+                new Translate(0, height),
+                new Rotate(-90, 0, 0));
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public Group getProgressHolder() {
+        return progressHolder;
+    }
+}
+
+class RightBar {
+    private static Cursor hand = Cursor.cursor("HAND");
+    private static Cursor closedHand = Cursor.cursor("CLOSED_HAND");
+    private static Cursor defaultCursor = Cursor.cursor("DEFAULT");
+    private static boolean isMousePressed = false;
+    private static boolean isWindowMax = true;
+    private static double xOffset = 0;
+    private static double yOffset = 0;
+    static StackPane root = DashboardPage.root; // stackpane root
+    private double user_saldo;
+    private int userId;
+
+    public RightBar(double saldo, int userId) {
+        this.user_saldo = saldo;
+        this.userId = userId;
+    }
+
+    public HBox createRightBar(Stage stage, SceneController sceneController) {
+        /* BAGIAN MMC (MINIMIZE, MAXIMIZE, CLOSE) */
+        // membuat closeButton
+        Button closeButton = createButton(35, 35, "X", "FF4646", 23, "Poppins", 30, "0F181B");
+
+        // membuat maximizeButton
+        Button maximizeButton = createButton(35, 35, " ", "FFFFFF", 23, "Poppins", 30, "0F181B");
+        // set graphic untuk label maximize
+        Rectangle maxIcon = new Rectangle(14, 14);
+        maxIcon.setFill(Color.TRANSPARENT);
+        maxIcon.setStroke(Color.valueOf("#0F181B"));
+        maxIcon.setStrokeWidth(4);
+        maxIcon.setTranslateX(maximizeButton.getTranslateX() + 5);
+        maximizeButton.setGraphic(maxIcon);
+
+        // membuat minimizeButton
+        Button minimizeButton = createButton(35, 35, "-", "FFFFFF", 23, "Poppins", 30, "0F181B");
+
+        // BUTTON EVENTS
+        // CLOSE BUTTON: saat dipencet maka close button akan menstop aplikasi
+        closeButton.setOnMouseClicked(closeEvent -> stage.hide());
+        // saat di hover maka cursor berbeda
+        closeButton.setOnMouseEntered(closeEvent -> {
+            closeButton.getScene().setCursor(hand);
+            updateButton(closeButton, 35, 35, "X", "6A1B1B", 23, "Poppins", 30, "0F181B");
+        });
+        closeButton.setOnMouseExited(closeEvent -> {
+            closeButton.getScene().setCursor(defaultCursor);
+            updateButton(closeButton, 35, 35, "X", "FF4646", 23, "Poppins", 30, "0F181B");
+        });
+
+        // MAXIMIZE BUTTON: saat dipencet maka akan mengecilkan windows
+        maximizeButton.setOnMouseClicked(maxEvent -> {
+            if (stage.isMaximized()) {
+                stage.setWidth(stage.getWidth() - 100);
+                stage.setHeight(stage.getHeight() - 100);
+                stage.setMaximized(false);
+                isWindowMax = false;
+                System.out.println("IsWindMax =" + isWindowMax);
+                root.setOnMousePressed(e -> {
+                    if (e.isPrimaryButtonDown() && e.getClickCount() == 2 && !isWindowMax) {
+                        root.getScene().setCursor(closedHand);
+                        isMousePressed = true;
+                        xOffset = e.getSceneX();
+                        yOffset = e.getSceneY();
+                    }
+                });
+                // saat dilepas
+                root.setOnMouseReleased(e -> {
+                    root.getScene().setCursor(defaultCursor);
+                    isMousePressed = false;
+                });
+                // saat ditarik
+                root.setOnMouseDragged(e -> {
+                    if (isMousePressed && !isWindowMax) {
+                        root.getScene().setCursor(closedHand);
+                        stage.setX(e.getScreenX() - xOffset);
+                        stage.setY(e.getScreenY() - yOffset);
+                    }
+                });
+            } else {
+                isWindowMax = true;
+                System.out.println("IsWindMax =" + isWindowMax);
+                stage.setMaximized(true);
+            }
+        });
+
+        // saat di hover maka cursor berbeda
+        maximizeButton.setOnMouseEntered(closeEvent -> {
+            maximizeButton.getScene().setCursor(hand);
+            updateButton(maximizeButton, 35, 35, "", "959595", 23, "Poppins", 30, "0F181B");
+            maxIcon.setTranslateX(maximizeButton.getTranslateX());
+            maximizeButton.setGraphic(maxIcon);
+        });
+        maximizeButton.setOnMouseExited(closeEvent -> {
+            maximizeButton.getScene().setCursor(defaultCursor);
+            updateButton(maximizeButton, 35, 35, "", "FFFFFF", 23, "Poppins", 30, "0F181B");
+            maxIcon.setTranslateX(maximizeButton.getTranslateX());
+            maximizeButton.setGraphic(maxIcon);
+        });
+
+        // MINIMIZE BUTTON: saat dipencet akan menutup sementara window
+        minimizeButton.setOnMouseClicked(maxEvent -> {
+            stage.setIconified(true);
+        });
+        // saat di hover maka cursor berbeda
+        minimizeButton.setOnMouseEntered(closeEvent -> {
+            minimizeButton.getScene().setCursor(hand);
+            updateButton(minimizeButton, 35, 35, "-", "959595", 23, "Poppins", 30, "0F181B");
+        });
+        minimizeButton.setOnMouseExited(closeEvent -> {
+            minimizeButton.getScene().setCursor(defaultCursor);
+            updateButton(minimizeButton, 35, 35, "-", "FFFFFF", 23, "Poppins", 30, "0F181B");
+        });
+
+        HBox mmcButton = new HBox(5); // 5 spacing
+        mmcButton.getChildren().addAll(minimizeButton, maximizeButton, closeButton);
+        mmcButton.setMaxWidth(150);
+        mmcButton.setAlignment(Pos.TOP_RIGHT);
+
+        // ------------------------------------------------------------------------------------------------------------//
+        StackPane penggabunganBackgroundDenganProfile = new StackPane();
+        Circle backgroundProfileCircle = new Circle(40);
+        backgroundProfileCircle.setFill(Color.valueOf("#4AD334"));
+
+        Circle profileCircle = new Circle(35);
+        profileCircle.setFill(Color.valueOf("#141F23"));
+
+        // Membuat foto profil
+        ImageView profileImage = new ImageView(new Image("file:src/Assets/View/Dashboard/Profile.png"));
+        profileImage.setFitWidth(50);
+        profileImage.setFitHeight(50);
+        profileImage.setPreserveRatio(true);
+
+        penggabunganBackgroundDenganProfile.getChildren().addAll(backgroundProfileCircle, profileCircle, profileImage);
+        penggabunganBackgroundDenganProfile.setAlignment(Pos.CENTER);
+        penggabunganBackgroundDenganProfile
+                .setStyle("-fx-background-color: #141F23; -fx-background-radius: 30 30 0 0;");
+
+        // Membuat objek VerticalProgress
+        VerticalProgress verticalProgress = new VerticalProgress(20, 100);
+
+        // Mendapatkan ProgressBar dari objek VerticalProgress
+        ProgressBar progressBar = verticalProgress.getProgressBar();
+
+        // Mengatur gaya dan progres ProgressBar
+        progressBar.setProgress(perkembanganProgresBar(this.userId));
+        progressBar.getStylesheets().add(getClass().getResource("/Utils/progresBar.css").toExternalForm());
+
+        // Mengatur lebar dan rotasi
+        progressBar.setPrefWidth(600);
+        progressBar.setMinWidth(20); // Set the desired width for the vertical ProgressBar
+
+        // Membuat StackPane dan menambahkan ProgressBar ke dalamnya
+        StackPane progressStackPane = new StackPane(verticalProgress.getProgressHolder());
+        progressStackPane.setAlignment(Pos.CENTER);
+        progressStackPane.setPadding(new Insets(0, 0, 0, 0));
+        progressStackPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 0 0 30 30;");
+
+        VBox profileCombineMMC = new VBox(mmcButton, penggabunganBackgroundDenganProfile);
+        profileCombineMMC.setFillWidth(true);
+        profileCombineMMC.setSpacing(20);
+        profileCombineMMC.setStyle("-fx-background-color: #0D1416;");
+        profileCombineMMC.setMargin(penggabunganBackgroundDenganProfile, new Insets(0, 10, 0, 10));
+
+        VBox mmcCombineLevel = new VBox(profileCombineMMC, progressStackPane);
+        mmcCombineLevel.setStyle("-fx-background-color: red;");
+        mmcCombineLevel.setSpacing(0);
+        mmcCombineLevel.setAlignment(Pos.TOP_CENTER);
+        VBox.setVgrow(progressStackPane, Priority.ALWAYS);
+        mmcCombineLevel.setMargin(progressStackPane, new Insets(0, 10, 0, 10));
+        // progressStackPane.setMaxHeight(200);
+
+        HBox allCombine = new HBox(mmcCombineLevel);
+        allCombine.setStyle("-fx-background-color: #141F23;");
+        return allCombine;
+    }
+
+    private static Button createButton(int width, int height, String text, String bgColor, int fontSize,
+            String font,
+            int radius, String textFill) {
+        Button button = new Button();
+        button.setPrefSize(width, height);
+        button.setText(text);
+        button.setStyle(
+                "-fx-background-color: #" + bgColor + ", transparent; " +
+                        "-fx-font: " + fontSize + " " + font + "; " +
+                        "-fx-text-fill: #" + textFill + ";" +
+                        "-fx-background-radius: " + radius + ";" +
+                        "-fx-padding: 0;");
+        return button;
+    }
+
+    private static void updateButton(Button btn, int width, int height, String text, String bgColor,
+            int fontSize, String font,
+            int radius, String textFill) {
+        btn.setPrefSize(width, height);
+        btn.setText(text);
+        btn.setStyle(
+                "-fx-background-color: #" + bgColor + ", transparent; " +
+                        "-fx-font: " + fontSize + " " + font + "; " +
+                        "-fx-text-fill: #" + textFill + ";" +
+                        "-fx-background-radius: " + radius + ";" +
+                        "-fx-padding: 0;");
+    }
+
+    private double perkembanganProgresBar(int userId) {
+        BatasKritis bataskritis = new BatasKritis(userId);
+        double batasKritis = bataskritis.getBatasKritis();
+        System.out.println("Batas Kritis = " + bataskritis);
+        double saldo = this.user_saldo;
+        double target = batasKritis * 2 * 4;
+        System.out.println("Target = " + target);
+        double perkembangan = saldo / target;
+        System.out.println("Perkembangan = " + perkembangan);
+        return perkembangan;
     }
 }
