@@ -84,7 +84,7 @@ public class PieChartData {
         return null;
     }
 
-    private static double totalpengeluaran() {
+    public static double totalpengeluaran() {
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
         String query = "SELECT SUM(nominal) FROM transac group by tipe_transaksi = 'pengeluaran'";
