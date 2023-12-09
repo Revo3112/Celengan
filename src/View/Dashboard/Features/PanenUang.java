@@ -76,7 +76,6 @@ public class PanenUang {
     private ScrollPane scrollPane;
     public DecimalFormat formatRupiah;
     
-
     private StackPane root = new StackPane();
 
     private ComboBox<String> combobox = new ComboBox<String>();

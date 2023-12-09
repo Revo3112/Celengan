@@ -39,7 +39,7 @@
                 String sqlInsert = String.format(
                         "INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_kategori, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %f, '%s', %d, %d, '%s', '%s', '%s')",
                         userId, jumlah, keterangan, kategoriId, tipeKategori, tipePembayaran, tanggal, tipeTanamUang);
-                String sqlUpdate = String.format("UPDATE saldo SET saldo=%f WHERE user_id=%d", saldo, userId);
+                String sqlUpdate = String.format("UPDATE saldo SET balance=%f WHERE user_id=%d", saldo, userId);
 
                 Statement statement = connection.createStatement();
                 statement.executeUpdate(sqlInsert);
