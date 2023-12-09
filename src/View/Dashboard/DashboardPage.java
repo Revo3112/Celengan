@@ -75,7 +75,7 @@ public class DashboardPage {
     private List<Double> nominalBarangList;
     private List<String> tipeBarangList;
     private List<String> tanggalBarangList;
-    public static StackPane root = new StackPane();
+    public StackPane root = new StackPane();
 
     public DashboardPage(Stage stage) {
         this.stage = stage;
@@ -638,6 +638,10 @@ public class DashboardPage {
         return tanggalDiformat;
     }
 
+    public StackPane getRoot() {
+        return this.root;
+    }
+
     private VBox refreshViewHBox(String Kategori) {
         this.refreshViewDashboard = new RefreshViewDashboard();
         this.keteranganBarangList = refreshViewDashboard.getKeteranganBarangCatatList(Kategori);
@@ -847,9 +851,9 @@ class VerticalProgress {
     private Group progressHolder = new Group(progressBar);
 
     public VerticalProgress(double width, double height) {
-        progressBar.setMinSize(StackPane.USE_PREF_SIZE - 20, StackPane.USE_PREF_SIZE);
+        progressBar.setMinSize(StackPane.USE_PREF_SIZE, StackPane.USE_PREF_SIZE - 100);
         progressBar.setPrefSize(height, width);
-        progressBar.setMaxSize(StackPane.USE_PREF_SIZE - 20, StackPane.USE_PREF_SIZE);
+        progressBar.setMaxSize(StackPane.USE_PREF_SIZE, StackPane.USE_PREF_SIZE - 100);
         progressBar.getTransforms().setAll(
                 new Translate(0, height),
                 new Rotate(-90, 0, 0));
@@ -872,7 +876,7 @@ class RightBar {
     private static boolean isWindowMax = true;
     private static double xOffset = 0;
     private static double yOffset = 0;
-    static StackPane root = DashboardPage.root; // stackpane root
+    StackPane rightbarroot = new StackPane(); // stackpane root
     private double user_saldo;
     private int userId;
 
@@ -920,23 +924,23 @@ class RightBar {
                 stage.setMaximized(false);
                 isWindowMax = false;
                 System.out.println("IsWindMax =" + isWindowMax);
-                root.setOnMousePressed(e -> {
+                rightbarroot.setOnMousePressed(e -> {
                     if (e.isPrimaryButtonDown() && e.getClickCount() == 2 && !isWindowMax) {
-                        root.getScene().setCursor(closedHand);
+                        rightbarroot.getScene().setCursor(closedHand);
                         isMousePressed = true;
                         xOffset = e.getSceneX();
                         yOffset = e.getSceneY();
                     }
                 });
                 // saat dilepas
-                root.setOnMouseReleased(e -> {
-                    root.getScene().setCursor(defaultCursor);
+                rightbarroot.setOnMouseReleased(e -> {
+                    rightbarroot.getScene().setCursor(defaultCursor);
                     isMousePressed = false;
                 });
                 // saat ditarik
-                root.setOnMouseDragged(e -> {
+                rightbarroot.setOnMouseDragged(e -> {
                     if (isMousePressed && !isWindowMax) {
-                        root.getScene().setCursor(closedHand);
+                        rightbarroot.getScene().setCursor(closedHand);
                         stage.setX(e.getScreenX() - xOffset);
                         stage.setY(e.getScreenY() - yOffset);
                     }
@@ -984,7 +988,6 @@ class RightBar {
         // ------------------------------------------------------------------------------------------------------------//
         StackPane penggabunganBackgroundDenganProfile = new StackPane();
         Circle backgroundProfileCircle = new Circle(40);
-        backgroundProfileCircle.setFill(Color.valueOf("#4AD334"));
 
         Circle profileCircle = new Circle(35);
         profileCircle.setFill(Color.valueOf("#141F23"));
@@ -999,40 +1002,56 @@ class RightBar {
         penggabunganBackgroundDenganProfile.setAlignment(Pos.CENTER);
         penggabunganBackgroundDenganProfile
                 .setStyle("-fx-background-color: #141F23; -fx-background-radius: 30 30 0 0;");
-
         // Membuat objek VerticalProgress
         VerticalProgress verticalProgress = new VerticalProgress(20, 100);
 
         // Mendapatkan ProgressBar dari objek VerticalProgress
         ProgressBar progressBar = verticalProgress.getProgressBar();
 
+        double batasKritis = mengambilBatasKritis(this.userId);
+        double target = batasKritis * 2 * 4;
+        double perkembangan = perkembanganProgresBar(this.userId);
         // Mengatur gaya dan progres ProgressBar
-        progressBar.setProgress(perkembanganProgresBar(this.userId));
-        progressBar.getStylesheets().add(getClass().getResource("/Utils/progresBar.css").toExternalForm());
+        progressBar.setProgress(perkembangan);
+
+        // Membuat kondisi ketika mencapai batas kritis dan lain lain
+        progressBar.getStylesheets().clear();
+        if (perkembangan <= batasKritis / target) {
+            progressBar.getStylesheets().add(getClass().getResource("/Utils/KritisProgresBar.css").toExternalForm());
+            backgroundProfileCircle.setFill(Color.valueOf("#FF4040"));
+        } else if (batasKritis / target <= perkembangan && perkembangan <= batasKritis * 2 / target) {
+            progressBar.getStylesheets().add(getClass().getResource("/Utils/KarantinaProgresBar.css").toExternalForm());
+            backgroundProfileCircle.setFill(Color.valueOf("#FD9C3D"));
+        } else {
+            progressBar.getStylesheets().add(getClass().getResource("/Utils/Levelprogres.css").toExternalForm());
+            backgroundProfileCircle.setFill(Color.valueOf("#7AFF64"));
+        }
 
         // Mengatur lebar dan rotasi
         progressBar.setPrefWidth(600);
-        progressBar.setMinWidth(20); // Set the desired width for the vertical ProgressBar
+        progressBar.setMinWidth(20);
 
         // Membuat StackPane dan menambahkan ProgressBar ke dalamnya
         StackPane progressStackPane = new StackPane(verticalProgress.getProgressHolder());
         progressStackPane.setAlignment(Pos.CENTER);
         progressStackPane.setPadding(new Insets(0, 0, 0, 0));
         progressStackPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 0 0 30 30;");
+        progressStackPane.setMaxHeight(620);
 
         VBox profileCombineMMC = new VBox(mmcButton, penggabunganBackgroundDenganProfile);
         profileCombineMMC.setFillWidth(true);
         profileCombineMMC.setSpacing(20);
         profileCombineMMC.setStyle("-fx-background-color: #0D1416;");
-        profileCombineMMC.setMargin(penggabunganBackgroundDenganProfile, new Insets(0, 10, 0, 10));
+        profileCombineMMC.setAlignment(Pos.BOTTOM_CENTER);
+        profileCombineMMC.setPadding(new Insets(20, 0, 0, 0));
+        VBox.setMargin(penggabunganBackgroundDenganProfile, new Insets(0, 10, 0, 10));
 
         VBox mmcCombineLevel = new VBox(profileCombineMMC, progressStackPane);
-        mmcCombineLevel.setStyle("-fx-background-color: red;");
         mmcCombineLevel.setSpacing(0);
+        mmcCombineLevel.setStyle("-fx-background-color: #0D1416;");
         mmcCombineLevel.setAlignment(Pos.TOP_CENTER);
         VBox.setVgrow(progressStackPane, Priority.ALWAYS);
-        mmcCombineLevel.setMargin(progressStackPane, new Insets(0, 10, 0, 10));
-        // progressStackPane.setMaxHeight(200);
+        VBox.setMargin(progressStackPane, new Insets(0, 10, 0, 10));
 
         HBox allCombine = new HBox(mmcCombineLevel);
         allCombine.setStyle("-fx-background-color: #141F23;");
@@ -1077,5 +1096,11 @@ class RightBar {
         double perkembangan = saldo / target;
         System.out.println("Perkembangan = " + perkembangan);
         return perkembangan;
+    }
+
+    private double mengambilBatasKritis(int userId) {
+        BatasKritis bataskritis = new BatasKritis(userId);
+        double batasKritis = bataskritis.getBatasKritis();
+        return batasKritis;
     }
 }

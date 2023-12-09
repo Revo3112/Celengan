@@ -1,0 +1,16 @@
+/* root.css */
+.progress-bar > .bar {
+    -fx-background-radius: 100;
+    -fx-background-insets: 1 1 1 1;
+    /* padding: 0.20em;
+    -fx-padding: 0.20em; */
+    -fx-pref-width: 200px; /* Set the preferred width */
+    -fx-pref-height: 20px; /* Set the preferred height */
+    -fx-background-color: #FF6060; /* Set the background color */
+}
+
+.progress-bar .track {
+    -fx-background-color: #FF4040; /* Set the track background to black */
+    -fx-background-radius: 100;
+}
+
