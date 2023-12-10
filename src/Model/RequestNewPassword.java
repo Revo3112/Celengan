@@ -9,17 +9,33 @@ import java.sql.Statement;
 public class RequestNewPassword {
     private String pinCode, salt, username;
     hashingregister hashing = new hashingregister();
+    private int user_ID;
 
-    public boolean updateNewPassword(String keyUser, String newPassword) {
+    public RequestNewPassword() {
+        LoginModel loginModel = new LoginModel();
+        this.user_ID = loginModel.getUserId();
+    }
+
+    public boolean updateNewPassword(String keyUser, String newPassword) throws Exception {
         boolean status = false;
+        String hashedPassword = "";
+        String hashedKeyUser = "";
+        String userIDSalt = getSalt(this.user_ID);
+
+        hashingregister hashingRegister = new hashingregister();
+        hashedPassword = hashingRegister.hash(newPassword, userIDSalt);
+        hashedKeyUser = hashingRegister.hash(keyUser, userIDSalt);
+        System.out.println(userIDSalt);
+
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
             Connection connection = dbc.getConnection();
             String sql = "UPDATE users SET password = '%s', last_edited=NOW() WHERE pincode='%s'";
-            sql = String.format(sql, newPassword, keyUser);
+            sql = String.format(sql, hashedPassword, hashedKeyUser);
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
             status = true;
+            System.out.println(hashedPassword);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -27,7 +43,28 @@ public class RequestNewPassword {
         return status;
     }
 
-    public boolean checkData(String inputUsername, String keyUser, String newPassword) {
+    private String getSalt(int userID) {
+        String salt = "";
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        Connection connection = dbc.getConnection();
+        try {
+            String sql = String.format("SELECT hash FROM users WHERE id=%d", userID);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            result.next();
+
+            salt = result.getString("hash");
+
+            return salt;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return salt;
+    }
+
+    public boolean checkData(String inputUsername, String keyUser, String newPassword) throws Exception {
         boolean status = false;
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();

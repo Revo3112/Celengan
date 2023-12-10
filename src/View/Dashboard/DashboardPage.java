@@ -210,13 +210,17 @@ public class DashboardPage {
 
                 data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
                     double pieValue = data.getPieValue();
-                    double nominalValue = PieChartData.totalpengeluaran() * ((pieValue / 100));
+                    double nominalValue = PieChartData.totalpengeluaran() * ((pieValue));
 
                     // Format nominalValue as currency
                     String formattedNominal = formatDuit(nominalValue);
 
                     // Calculate the percentage based on the nominal value and the total saldo
-                    double percentage = (nominalValue / saldo) * 100;
+                    double percentage = (pieValue * 100);
+
+                    if (percentage < 0) {
+                        percentage = percentage * -1;
+                    }
 
                     String tooltipText = String.format("%.1f%% (%s)", percentage, formattedNominal);
 
@@ -294,6 +298,11 @@ public class DashboardPage {
 
             long roundedValuePantauUang = Math.round(getFirstTargetHarga());
             long roundedValuePantauUang2 = Math.round(mendapatkanSaldoUntukMembeliBarang());
+            if (roundedValuePantauUang2 > roundedValuePantauUang) {
+                roundedValuePantauUang2 = roundedValuePantauUang;
+            } else if (roundedValuePantauUang2 < 0) {
+                roundedValuePantauUang2 = 0;
+            }
             Text progressTextPantauUang = new Text(
                     formatDuit(roundedValuePantauUang2) + " / " + formatDuit(roundedValuePantauUang));
             progressTextPantauUang.setStyle("-fx-font: 14 'Poppins Regular'; -fx-fill: #FFFFFF;");
@@ -703,8 +712,12 @@ public class DashboardPage {
         backgroundProfileCircle1.setFill(Color.valueOf("#FF4040"));
         Circle profileCircle1 = new Circle(35);
         profileCircle1.setFill(Color.valueOf("#141F23"));
+        ImageView profileImage1 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        profileImage1.setFitWidth(80);
+        profileImage1.setFitHeight(80);
+        profileImage1.setPreserveRatio(true);
 
-        StackPane Circle1 = new StackPane(backgroundProfileCircle1, profileCircle1);
+        StackPane Circle1 = new StackPane(backgroundProfileCircle1, profileCircle1, profileImage1);
         Circle1.setAlignment(Pos.CENTER);
 
         // Membuat teks
@@ -748,8 +761,12 @@ public class DashboardPage {
         backgroundProfileCircle2.setFill(Color.valueOf("#FD9C3D"));
         Circle profileCircle2 = new Circle(35);
         profileCircle2.setFill(Color.valueOf("#141F23"));
+        ImageView profileImage2 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        profileImage2.setFitWidth(80);
+        profileImage2.setFitHeight(80);
+        profileImage2.setPreserveRatio(true);
 
-        StackPane Circle2 = new StackPane(backgroundProfileCircle2, profileCircle2);
+        StackPane Circle2 = new StackPane(backgroundProfileCircle2, profileCircle2, profileImage2);
         Circle2.setAlignment(Pos.CENTER);
 
         // Membuat teks
@@ -793,8 +810,12 @@ public class DashboardPage {
         backgroundProfileCircle3.setFill(Color.valueOf("#7AFF64"));
         Circle profileCircle3 = new Circle(35);
         profileCircle3.setFill(Color.valueOf("#141F23"));
+        ImageView profileImage3 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        profileImage3.setFitWidth(80);
+        profileImage3.setFitHeight(80);
+        profileImage3.setPreserveRatio(true);
 
-        StackPane Circle3 = new StackPane(backgroundProfileCircle3, profileCircle3);
+        StackPane Circle3 = new StackPane(backgroundProfileCircle3, profileCircle3, profileImage3);
         Circle3.setAlignment(Pos.CENTER);
 
         // Membuat teks
@@ -1378,8 +1399,8 @@ class RightBar {
 
         // Membuat foto profil
         ImageView profileImage = new ImageView(new Image("file:src/Assets/View/Dashboard/Profile.png"));
-        profileImage.setFitWidth(50);
-        profileImage.setFitHeight(50);
+        profileImage.setFitWidth(80);
+        profileImage.setFitHeight(80);
         profileImage.setPreserveRatio(true);
 
         penggabunganBackgroundDenganProfile.getChildren().addAll(backgroundProfileCircle, profileCircle, profileImage);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import Controller.SceneController;
 import Model.*;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -94,7 +95,13 @@ public class RegistrationPage {
     double ayamErrorTargetY = ayamErrorOriginY - 250;
     double awanErrorOriginY = awanError.getTranslateY();
     double awanErrorTargetY = awanErrorOriginY - 500;
+
+    // kebutuhan error status
+    boolean hRegErrStat = false;
+
+    // list error dan tangan ayam
     List<ImageView> listChatErrorAyam;
+    List<ImageView> listTanganAyamError;
 
     // transitions
     private FadeTransition fadeTransition1;
@@ -353,67 +360,18 @@ public class RegistrationPage {
         addOption.setStyle("-fx-padding: 10 0 10 40;");
         // BUTTON LOGIN: seluruh tombol masuk dan belum punya akun?
         // button login
-        Button masukLogin = createButton(120, 50, "Lanjut", "7795FF", 22, "Poppins", 30, "141F23");
-        Rectangle masukLoginBG = new Rectangle();
+        Button lanjutRegist = createButton(120, 50, "Lanjut", "7795FF", 22, "Poppins", 30, "141F23");
+        Rectangle lanjutRegistBG = new Rectangle();
 
         // button register
-        Button registButton = createButton(280, 50, "Sudah Punya Akun?", "141F23", 22, "Poppins", 30, "7795FF");
-        Rectangle registButtonBG = new Rectangle();
+        Button loginAkunButton = createButton(280, 50, "Sudah Punya Akun?", "141F23", 22, "Poppins", 30, "7795FF");
+        Rectangle loginAkunButtonBG = new Rectangle();
 
         // menyatukan elemen login ke satu group
-        Group loginButton = new Group(masukLogin, masukLoginBG);
-        // LOGIN BUTTON EVENTS: saat di hover atau di klik
-        // login button
-        masukLogin.setOnMouseEntered(e -> {
-            masukLogin.getScene().setCursor(hand);
-            System.out.println("Username: " + inputUsername.getText());
-            System.out.println("Password: " + inputPassword.getText());
-            updateButton(masukLogin, 120, 50, "Lanjut", "495C9E", 22, "Poppins", 30, "141F23");
-        });
-        masukLogin.setOnMouseExited(e -> {
-            masukLogin.getScene().setCursor(defaultCursor);
-            updateButton(masukLogin, 120, 50, "Lanjut", "7795FF", 22, "Poppins", 30, "141F23");
-        });
-        masukLogin.setOnAction(e -> {
-            if (awanError_IN != null) {
-                awanError_IN.stop(); // Stop the animation if it's already running
-                awanError.translateYProperty().set(awanErrorOriginY); // Reset translateY to original Y position
-            }
-            System.out.println("Login button clicked!");
-            System.out.println(
-                    "Before handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
-            // hLogErrStat = handleLogin(
-            // inputUsername.getText(),
-            // inputPassword.getText(),
-            // ingatkanSaya,
-            // inputUsername,
-            // inputPassword,
-            // listAyamNetral_OUT,
-            // listChatErrorAyam,
-            // mainContent1,
-            // ayamError_IN,
-            // awanError_IN);
-            System.out.println(
-                    "After handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
-
-            awanError_IN.play();
-        });
-        // Register Button
-        registButton.setOnMouseEntered(e -> {
-            registButton.getScene().setCursor(hand);
-            updateButton(registButton, 280, 50, "Sudah Punya Akun?", "0B1113", 22, "Poppins", 30, "7795FF");
-        });
-        registButton.setOnMouseExited(e -> {
-            registButton.getScene().setCursor(defaultCursor);
-            updateButton(registButton, 280, 50, "Sudah Punya Akun?", "141F23", 22, "Poppins", 30, "7795FF");
-        });
-        registButton.setOnAction(e -> {
-            // pergi ke registration page
-            sceneController.switchToRegistration();
-        });
+        Group loginButton = new Group(lanjutRegist, lanjutRegistBG);
 
         // menyatukan elemen register ke satu group
-        Group registerButton = new Group(registButton, registButtonBG);
+        Group registerButton = new Group(loginAkunButton, loginAkunButtonBG);
         // memasukkan loginButton ke HBox
         HBox loginBtn = new HBox();
         loginBtn.getChildren().add(loginButton);
@@ -421,15 +379,15 @@ public class RegistrationPage {
         HBox registBtn = new HBox();
         registBtn.getChildren().add(registerButton);
         // menggabungkan keduanya ke VBox
-        HBox loginRegistButton = new HBox(10);
-        loginRegistButton.getChildren().addAll(loginBtn, registBtn);
-        loginRegistButton.setStyle("-fx-padding: 10 0 10 40;");
+        HBox loginloginAkunButton = new HBox(10);
+        loginloginAkunButton.getChildren().addAll(loginBtn, registBtn);
+        loginloginAkunButton.setStyle("-fx-padding: 10 0 10 40;");
 
         addOption.setVisible(false);
         // menggabungkan seluruh elements
         VBox contentElements = new VBox();
         contentElements.getChildren().addAll(usernameText, inputUsername, passwordText, inputPassword, addOption,
-                loginRegistButton);
+                loginloginAkunButton);
         contentElements.setAlignment(Pos.CENTER);
         contentElements.setMaxWidth(mainBase.getWidth());
         contentElements.setMaxHeight(200);
@@ -498,56 +456,20 @@ public class RegistrationPage {
         Button masukDaftar = createButton(120, 50, "Daftar", "7795FF", 22, "Poppins", 30, "141F23");
         Rectangle masukDaftarBG = new Rectangle();
         // button register
-        Button registButton2 = createButton(280, 50, "Sudah Punya Akun?", "141F23", 22, "Poppins", 30, "7795FF");
-        Rectangle registButtonBG2 = new Rectangle();
+        Button loginAkunButton2 = createButton(280, 50, "Sudah Punya Akun?", "141F23", 22, "Poppins", 30, "7795FF");
+        Rectangle loginAkunButtonBG2 = new Rectangle();
 
         // menyatukan elemen login ke satu group
         Group daftarButton = new Group(masukDaftar, masukDaftarBG);
         // menyatukan elemen register ke stau group
-        Group registerButton2 = new Group(registButton2, registButtonBG2);
+        Group loginButton2 = new Group(loginAkunButton2, loginAkunButtonBG2);
 
-        // LOGIN BUTTON EVENTS: saat di hover atau di klik
-        // login button
-        masukDaftar.setOnMouseEntered(e -> {
-            masukDaftar.getScene().setCursor(hand);
-            System.out.println("Username: " + inputUsername.getText());
-            System.out.println("Password: " + inputPassword.getText());
-            updateButton(masukDaftar, 120, 50, "Daftar", "495C9E", 22, "Poppins", 30, "141F23");
-        });
-        masukDaftar.setOnMouseExited(e -> {
-            masukDaftar.getScene().setCursor(defaultCursor);
-            updateButton(masukDaftar, 120, 50, "Daftar", "7795FF", 22, "Poppins", 30, "141F23");
-        });
-        masukDaftar.setOnAction(e -> {
-            if (awanError_IN != null) {
-                awanError_IN.stop(); // Stop the animation if it's already running
-                awanError.translateYProperty().set(awanErrorOriginY); // Reset translateY to original Y position
-            }
-            System.out.println("Daftar button clicked!");
-            System.out.println(
-                    "Before handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
-            // hLogErrStat = handleLogin(
-            // inputUsername.getText(),
-            // inputPassword.getText(),
-            // ingatkanSaya,
-            // inputUsername,
-            // inputPassword,
-            // listAyamNetral_OUT,
-            // listChatErrorAyam,
-            // mainContent1,
-            // ayamError_IN,
-            // awanError_IN);
-            System.out.println(
-                    "After handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
-
-            awanError_IN.play();
-        });
         // memasukkan daftarButton ke HBox
         HBox daftarBtn = new HBox();
         daftarBtn.getChildren().add(daftarButton);
         // memasukkan registerButton ke HBox
         HBox registBtn2 = new HBox();
-        registBtn2.getChildren().add(registerButton2);
+        registBtn2.getChildren().add(loginButton2);
         // menggabungkan keduanya ke VBox
         HBox daftarLoginButton = new HBox(10);
         daftarLoginButton.getChildren().addAll(daftarBtn, registBtn2);
@@ -594,6 +516,7 @@ public class RegistrationPage {
         logoCelengan2.setMaxHeight(50);
         logoCelengan2.setTranslateY(logoCelengan2.getTranslateY() + 270);
 
+        /* ANIMASI AYAM FULL */
         // AYAM: animasi ayam
         ImageView ayamBetina = createImage("/Assets/View/Login_Register/chickenRegist.png", 180, 180);
         double ayamOriginY = ayamBetina.getTranslateY();
@@ -669,51 +592,50 @@ public class RegistrationPage {
                 new KeyFrame(Duration.millis(500),
                         new KeyValue(ayamHandValidasi.translateYProperty(), ayamHandOriginY2,
                                 Interpolator.EASE_BOTH)));
-        // ANIMASI ERROR AYAM:
-        // animasi ayam error masuk
+
+        // animasi ayamError
+        ImageView ayamError = createImage(logRegPath + "chickenRegist.png", 180, 180);
+        double ayamErrorOriginY = ayamError.getTranslateY();
+        double ayamErrorTargetY = ayamErrorOriginY - 250;
+        // timeline animasi untuk hop in ayam Error
         ayamError_IN = new Timeline(
-                new KeyFrame(ayamErrorHopDur,
+                new KeyFrame(Duration.millis(600),
                         new KeyValue(ayamError.translateYProperty(), ayamErrorTargetY,
                                 Interpolator.EASE_BOTH)));
-        // animasi ayam error keluar
+        // timeline animasi untuk hop out ayam Error
         ayamError_OUT = new Timeline(
-                new KeyFrame(ayamErrorHopDur,
+                new KeyFrame(Duration.millis(600),
                         new KeyValue(ayamError.translateYProperty(), ayamErrorOriginY,
                                 Interpolator.EASE_BOTH)));
-        // animasi awan error masuk
-        awanError_IN = new Timeline(
-                new KeyFrame(Duration.millis(500),
-                        new KeyValue(awanError.translateYProperty(), awanErrorOriginY)),
-                new KeyFrame(awanErrorHopDur,
-                        new KeyValue(awanError.translateYProperty(), awanErrorTargetY,
-                                Interpolator.EASE_BOTH)));
-        // // saat selesai di reset agar tidak stack
-        // awanError_IN.setOnFinished(e -> {
-        // awanError_IN = null;
-        // });
 
         // animasi text ayam error
         listChatErrorAyam = new ArrayList<>();
-        // menambahkan error password (chat)
-        listChatErrorAyam.add(createImage(logRegPath + "passwordKosong.png", 200, 200)); // password
-                                                                                         // kosong
-        listChatErrorAyam.add(createImage(logRegPath + "passwordSalah.png", 200, 200)); // password
-                                                                                        // salah
-        // menambahkan error username (chat)
-        listChatErrorAyam.add(createImage(logRegPath + "usernameKosong.png", 200, 200)); // username
-                                                                                         // kosong
-        listChatErrorAyam.add(createImage(logRegPath + "usernameSalah.png", 200, 200)); // username
-                                                                                        // salah
-        // menambahkan error keduanya
-        listChatErrorAyam.add(createImage(logRegPath + "usernamePasswordKosong.png", 200, 200)); // username
-                                                                                                 // dan
-                                                                                                 // password
-        // kosong 4
-        listChatErrorAyam.add(createImage(logRegPath + "usernamePasswordSalah.png", 200, 200)); // username
-                                                                                                // dan
-                                                                                                // password
-                                                                                                // 5
-        // kosong
+        // menambahkan error password kosong
+        listChatErrorAyam.add(createImage(logRegPath + "passwordKosong.png", 200, 200));
+        // menambahkan error username kosong
+        listChatErrorAyam.add(createImage(logRegPath + "usernameKosong.png", 200, 200));
+        // menambahkan error password & username kosong
+        listChatErrorAyam.add(createImage(logRegPath + "usernamePasswordKosong.png", 200, 200));
+        // menambahkan error password minimal 8 karakter
+        listChatErrorAyam.add(createImage(logRegPath + "r_pass8Kar.png", 300, 300));
+        // menambahkan error password harus mengandung angka
+        listChatErrorAyam.add(createImage(logRegPath + "r_passAngka.png", 350, 350));
+        // menambahkan error username minimal 6 karakter
+        listChatErrorAyam.add(createImage(logRegPath + "r_username6Kar.png", 300, 300));
+        // menambahkan error username tidak boleh mengandung simbol
+        listChatErrorAyam.add(createImage(logRegPath + "r_usernameSimbol.png", 320, 320));
+
+        // list tangan ayam chat error
+        listTanganAyamError = new ArrayList<>();
+        // menambahkan error tangan username minimal 6 karakter
+        listTanganAyamError.add(createImage(logRegPath + "chickenHand6Karakter.png", 250, 250));
+        // menambahkan error tangan password minimal 8 karakter
+        listTanganAyamError.add(createImage(logRegPath + "chickenHand8Karakter.png", 250, 250));
+        // menambahkan error tangan password harus mengandung angka
+        listTanganAyamError.add(createImage(logRegPath + "chickenHandAngka.png", 250, 250));
+        // menambahkan error tangan username tidak boleh mengandung simbol
+        listTanganAyamError.add(createImage(logRegPath + "chickenHandSimbol.png", 250, 250));
+
         // List ayam-ayam netral IN
         listAyamNetral_IN = new ArrayList<>();
         listAyamNetral_IN.add(hopAyamBetina_IN);
@@ -724,12 +646,6 @@ public class RegistrationPage {
         listAyamNetral_OUT.add(hopAyamBetina_OUT);
         listAyamNetral_OUT.add(fadeChatAyam_OUT);
         listAyamNetral_OUT.add(ayamHand_OUT);
-        // List ayam-ayam error IN
-        listAyamError_IN = new ArrayList<>();
-        listAyamError_IN.add(ayamError_IN);
-        // List ayam-ayam error OUT
-        listAyamError_OUT = new ArrayList<>();
-        listAyamError_OUT.add(ayamError_OUT);
 
         /* MEMASUKKAN MAINCONTENT1 */
         // memasukkan seluruh elemen ke dalam stackPane mainContent1
@@ -741,41 +657,123 @@ public class RegistrationPage {
                 base2, contentElements2, logoCelengan2);
         mainContent2.setMaxSize(600, 300);
 
-        // GENERAL EVENTS: events yang mencakup semua
+        /* ALL EVENTS: kumpulan logic dan acara yang terjadi berdasarkan action/event */
+        /* MAIN CONTENT 1 */
+        // EVENT mainContent1 pane: semua yang terjadi di mainContent1
+        // saat pane mainContent1 ditekan maka akan keluar ayam betina
+        mainContent1.setOnMouseEntered(e -> {
+            if (!hRegErrStat) {
+                hopAyamBetina_IN.play();
+                fadeChatAyam_IN.play();
+            }
+        });
+        // saat pane mainContent1 dipencet maka coords x akan ditrack dan disetor ke
+        // dragStartX utk keperluan carousel
+        mainContent1.setOnMousePressed(event -> dragStartX = event.getSceneX());
+        // saat pane mainContent1 digeser dari kiri ke kanan maka akan terjadi kondisi
+        // handleDragged untuk mengganti carousel mc1 ke mc2
+        mainContent1.setOnMouseDragged(e -> {
+            handleDragged(e);
+            // memperbarui dot slider utk pages carousel yang sedang active dan passive
+            updateDotColors(dot1, dot2);
+        });
+        // EVENT lanjutRegist Button: event dimanan jika button lanjutRegist ditekan
+        // maka akan lanjut
+        lanjutRegist.setOnMouseEntered(e -> {
+            lanjutRegist.getScene().setCursor(hand);
+            System.out.println("Username: " + inputUsername.getText());
+            System.out.println("Password: " + inputPassword.getText());
+            updateButton(lanjutRegist, 120, 50, "Lanjut", "495C9E", 22, "Poppins", 30, "141F23");
+        });
+        lanjutRegist.setOnMouseExited(e -> {
+            lanjutRegist.getScene().setCursor(defaultCursor);
+            updateButton(lanjutRegist, 120, 50, "Lanjut", "7795FF", 22, "Poppins", 30, "141F23");
+        });
+        lanjutRegist.setOnAction(e -> {
+            hRegErrStat = handleRegisterMC_1(
+                    inputUsername.getText(),
+                    inputPassword.getText(),
+                    inputUsername,
+                    inputPassword,
+                    listAyamNetral_OUT,
+                    listChatErrorAyam,
+                    listTanganAyamError,
+                    mainContent1,
+                    ayamError_IN);
+            updateDotColors(dot1, dot2);
+        });
+
+        // EVENT loginAkunButton: event dimana jika button loginAkunbutton ditekan maka
+        // akan ke login
+        loginAkunButton.setOnMouseEntered(e -> {
+            loginAkunButton.getScene().setCursor(hand);
+            updateButton(loginAkunButton, 280, 50, "Sudah Punya Akun?", "0B1113", 22, "Poppins", 30, "7795FF");
+        });
+        loginAkunButton.setOnMouseExited(e -> {
+            loginAkunButton.getScene().setCursor(defaultCursor);
+            updateButton(loginAkunButton, 280, 50, "Sudah Punya Akun?", "141F23", 22, "Poppins", 30, "7795FF");
+        });
+        loginAkunButton.setOnAction(e -> {
+            // pergi ke login page
+            sceneController.switchToLogin();
+        });
+
+        // EVENT inputPassword: saat ditekan animasi tangan ayam keluar
         inputPassword.setOnKeyTyped(e -> {
             if (!hLogErrStat) {
                 ayamHand_IN.play();
             }
         });
+        // EVENT inputUsername: saat ditekan animasi tangan ayam berhenti (masuk)
         inputUsername.setOnMousePressed(e -> {
             ayamHand_OUT.play();
         });
-        /* MAIN CONTENT 1 EVENTS */
-        mainContent1.setOnMouseEntered(e -> {
-            if (!hLogErrStat) {
-                hopAyamBetina_IN.play();
-                fadeChatAyam_IN.play();
-            }
-        });
-        mainContent1.setOnMousePressed(event -> dragStartX = event.getSceneX());
-        mainContent1.setOnMouseDragged(e -> {
-            handleDragged(e);
-            updateDotColors(dot1, dot2);
-        });
-        /* MAIN CONTENT 2 EVENTS */
+
+        /* EVENT MAIN CONTENT 2 */
+        // EVENT mainContent2 pane: semua yang terjadi di mainContent2
+        // saat pane mainContent2 ditekan maka akan keluar ayam betina
         mainContent2.setOnMouseEntered(e -> {
-            if (!hLogErrStat) {
+            if (!hRegErrStat) {
                 hopAyamBetina2_IN.play();
                 ayamHand2_IN.play();
                 fadeChatAyam2_IN.play();
             }
         });
+        // saat pane mainContent2 dipencet maka coords x akan ditrack dan disetor ke
+        // dragStartX utk keperluan carousel
         mainContent2.setOnMousePressed(event -> dragStartX = event.getSceneX());
+        // saat pane mainContent2 digeser dari kiri ke kanan maka akan terjadi kondisi
+        // handleDragged untuk mengganti carousel mc1 ke mc2
         mainContent2.setOnMouseDragged(e -> {
             handleDragged(e);
+            // memperbarui dot slider utk pages carousel yang sedang active dan passive
             updateDotColors(dot2, dot1);
         });
-        /* ROOT */
+
+        // EVENT masukDaftar: jika di klik maka akan mendaftarkan akun
+        // saat di hover maka akan mengupdate warna bg button (lebih gelap) dan
+        // mengirimkan log pesan
+        masukDaftar.setOnMouseEntered(e -> {
+            masukDaftar.getScene().setCursor(hand);
+            System.out.println("Username: " + inputUsername.getText());
+            System.out.println("Password: " + inputPassword.getText());
+            updateButton(masukDaftar, 120, 50, "Daftar", "495C9E", 22, "Poppins", 30, "141F23");
+        });
+        // saat mouse tidak di area masukDaftar maka warna bg button akan sama seperti
+        // semula
+        masukDaftar.setOnMouseExited(e -> {
+            masukDaftar.getScene().setCursor(defaultCursor);
+            updateButton(masukDaftar, 120, 50, "Daftar", "7795FF", 22, "Poppins", 30, "141F23");
+        });
+        // saat masukDaftar di klik maka akan memasukkan akun
+        masukDaftar.setOnAction(e -> {
+            System.out.println("Daftar button clicked!");
+            handleRegisterMC_2(inputUsername.getText(), inputPassword.getText(), inputValidPass.getText(),
+                    inputKey.getText());
+        });
+
+        /* ROOT EVENTS */
+        // saat root ditekan maka semua animasi yang muncul akan di stop (OUT)
         root.setOnMouseClicked(e -> {
             if (e.getClickCount() == 1) {
                 hopAyamBetina_OUT.play();
@@ -783,6 +781,8 @@ public class RegistrationPage {
                 ayamHand_OUT.play();
             }
         });
+        // saat root di hover maka ayam welcome akan main selama sekali setiap
+        // pergantian pages (RegistWelcome)
         root.setOnMouseEntered(e -> {
             if (!animationPlayed) {
                 System.out.println("playing animation...");
@@ -916,68 +916,115 @@ public class RegistrationPage {
         return rect;
     }
 
-    private boolean isPasswordSecure(String password) {
-        // Atur aturan keamanan sesuai kebutuhan
-        // Contoh: Minimal 8 karakter, kombinasi huruf besar, huruf kecil, angka, dan
-        // karakter khusus
-        return password.length() >= 8 &&
-                password.matches(".*[A-Z].*") &&
-                password.matches(".*[a-z].*") &&
-                password.matches(".*\\d.*") &&
-                password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>/?].*");
+    // method pengecekan main content 1
+    private boolean handleRegisterMC_1(String username, String password, TextField inputUsername,
+            PasswordField inputPassword, List<Timeline> outAnim, List<ImageView> chatError, List<ImageView> tanganError,
+            StackPane mainPane, Timeline animIn) {
+
+        // reset semua animasi
+        for (Timeline playAnimOut : outAnim) {
+            playAnimOut.play();
+        }
+        // membuat status error
+        boolean errStat = false;
+
+        // me-reset keduanya error style
+        removeErrorStyle(inputUsername, inputPassword, 3);
+
+        // Clear existing chatError nodes
+        mainPane.getChildren().removeAll(chatError);
+        mainPane.getChildren().removeAll(tanganError);
+
+        if (username.isEmpty() && password.isEmpty()) {
+            errStat = true;
+            System.out.println("USERNAME & PASSWORD EMPTY!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(2));
+            applyErrorStyle(inputUsername, inputPassword, 3);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(2));
+        } else if (username.isEmpty()) {
+            errStat = true;
+            System.out.println("USERNAME EMPTY!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(1));
+            applyErrorStyle(inputUsername, inputPassword, 1);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(1));
+        } else if (password.isEmpty()) {
+            errStat = true;
+            System.out.println("PASSWORD EMPTY!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(0));
+            applyErrorStyle(inputUsername, inputPassword, 2);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(0));
+        } else if (password.length() < 8) {
+            errStat = true;
+            System.out.println("PASSWORD < 8 KARAKTER!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(3));
+            applyErrorStyle(inputUsername, inputPassword, 2);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(3));
+            mainPane.getChildren().add(5, tanganError.get(1));
+            ayamTanganErrorTimeline_IN(tanganError.get(1));
+        } else if (username.length() < 6) {
+            errStat = true;
+            System.out.println("USERNAME < 6 KARAKTER!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(5));
+            applyErrorStyle(inputUsername, inputPassword, 1);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(5));
+            mainPane.getChildren().add(5, tanganError.get(0));
+            ayamTanganErrorTimeline_IN(tanganError.get(0));
+        } else if (!isContainDigit(password)) {
+            errStat = true;
+            System.out.println("PASSWORD TIDAK MENGANDUNG ANGKA!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(4));
+            applyErrorStyle(inputUsername, inputPassword, 2);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(4));
+            mainPane.getChildren().add(5, tanganError.get(2));
+            ayamTanganErrorTimeline_IN(tanganError.get(2));
+        } else if (!isUsernameSymbol(username)) {
+            errStat = true;
+            System.out.println("USERNAME MENGANDUNG SIMBOL!");
+            // reset all chat animations
+            chatErrorTimelineAll_OUT(chatError);
+            // add chat error utk usernamePasswordEmpty!
+            mainPane.getChildren().add(chatError.get(6));
+            applyErrorStyle(inputUsername, inputPassword, 1);
+            animIn.play();
+            chatErrorTimeline_IN(chatError.get(6));
+            mainPane.getChildren().add(5, tanganError.get(3));
+            ayamTanganErrorTimeline_IN(tanganError.get(3));
+        } else {
+            errStat = true;
+            fadeTransition1.play();
+            fadeTransition2.play();
+            root.getChildren().remove(mainContent1);
+            root.getChildren().add(mainContent2);
+            hopAyamBetina2_IN.play();
+            ayamHand2_IN.play();
+            fadeChatAyam2_IN.play();
+        }
+        return errStat;
     }
-
-    // private void handleregister(String username, String password, String
-    // validatepassword, String pincode) {
-    // SceneController sceneController = new SceneController(this.stage);
-    // LoginModel login = new LoginModel();
-    // String validate = validatepassword;
-
-    // if (username.isEmpty() && password.isEmpty() && validate.isEmpty() &&
-    // pincode.isEmpty()) {
-    // // applyErrorStyle(fieldUsername, fieldPassword, fieldvalidatepassword,
-    // // fieldpincode);
-    // AlertHelper.alert("Username dan password tidak boleh kosong.");
-    // } else if (username.isEmpty()) {
-    // // applyErrorStyle(fieldUsername);
-    // AlertHelper.alert("Username tidak boleh kosong.");
-    // } else if (password.isEmpty()) {
-    // // applyErrorStyle(fieldPassword);
-    // AlertHelper.alert("Password tidak boleh kosong.");
-    // } else if (pincode.isEmpty()) {
-    // // applyErrorStyle(fieldpincode);
-    // AlertHelper.alert("Pin Code tidak boleh kosong.");
-    // } else if (validate.isEmpty()) {
-    // // applyErrorStyle(fieldvalidatepassword);
-    // AlertHelper.alert("Konfirmasi password tidak boleh kosong.");
-    // } else {
-    // if (password.equals(validate)) {
-    // if (isPasswordSecure(password)) {
-    // System.out.println("Password Match");
-
-    // if (login.registerAccount(username, password, pincode)) {
-    // sceneController.switchToLogin();
-    // } else {
-    // AlertHelper.alert("Gagal mendaftarkan akun.");
-    // }
-    // } else {
-    // String massage = "Password tidak memenuhi kriteria keamanan.\n" +
-    // "Kriteria:\n" +
-    // "- Minimal 8 karakter\n" +
-    // "- Mengandung setidaknya satu huruf besar (A-Z)\n" +
-    // "- Mengandung setidaknya satu huruf kecil (a-z)\n" +
-    // "- Mengandung setidaknya satu angka (0-9)\n" +
-    // "- Mengandung setidaknya satu karakter khusus
-    // (!@#$%^&*()_+\\-=\\[\\]{};':\",.<>/?])";
-    // // applyErrorStyle(fieldPassword);
-    // AlertHelper.alert(massage);
-    // }
-    // } else {
-    // // applyErrorStyle(fieldPassword, fieldvalidatepassword);
-    // AlertHelper.alert("Password tidak sesuai.");
-    // }
-    // }
-    // }
 
     // Membuat metode untuk menerapkan error style
     private void applyErrorStyle(TextField textField, PasswordField passwordField, int switcher) { // Menampung berbagai
@@ -1011,5 +1058,81 @@ public class RegistrationPage {
             passwordField.setStyle(
                     passwordField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
         }
+    }
+
+    // memainkan timeline untuk chat error
+    private void chatErrorTimeline_IN(ImageView chatError) {
+        chatError.setTranslateY(-360);
+        chatError.setTranslateX(-210);
+        chatError.setOpacity(0);
+        // timeline animasi untuk chat ayam fade in
+        Timeline fadeChatError_IN = new Timeline(
+                new KeyFrame(Duration.millis(700),
+                        new KeyValue(chatError.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(400),
+                        new KeyValue(chatError.translateYProperty(), -280,
+                                Interpolator.EASE_BOTH)));
+        if (fadeChatError_IN != null) {
+            fadeChatError_IN.stop(); // Stop the animation if it's already running
+            chatError.translateYProperty().set(-360); // Reset translateY to original Y
+            chatError.opacityProperty().set(0); // Reset translateY to original Y
+            // position
+        }
+        fadeChatError_IN.setOnFinished(event -> {
+            // Handle any additional actions after the fade-in animation is finished
+        });
+
+        // Stop the animation if it's already running
+        if (fadeChatError_IN != null && fadeChatError_IN.getStatus() == Animation.Status.RUNNING) {
+            fadeChatError_IN.stop();
+        }
+        fadeChatError_IN.play();
+    }
+
+    private void ayamTanganErrorTimeline_IN(ImageView ayamTanganError) {
+        ayamTanganError.setTranslateX(150);
+        // timeline animasi untuk chat ayam fade in
+        Timeline ayamTanganError_IN = new Timeline(
+                new KeyFrame(Duration.millis(400),
+                        new KeyValue(ayamTanganError.translateYProperty(), -230,
+                                Interpolator.EASE_BOTH)));
+        if (ayamTanganError_IN != null) {
+            ayamTanganError_IN.stop(); // Stop the animation if it's already running
+            ayamTanganError.translateYProperty().set(0); // Reset translateY to original Y
+                                                         // position
+        }
+        ayamTanganError_IN.play();
+    }
+
+    // memainkan dan mereset semua animasi yang ada
+    private void chatErrorTimelineAll_OUT(List<ImageView> chatError) {
+        for (ImageView errorChat : chatError) {
+            Timeline fadeChatError_OUT = new Timeline(
+                    new KeyFrame(Duration.millis(400),
+                            new KeyValue(errorChat.opacityProperty(), 0)));
+            fadeChatError_OUT.play();
+        }
+    }
+
+    // method pengecekan main content 2
+    private void handleRegisterMC_2(String username, String password, String validatePassword, String pincode) {
+        SceneController sceneController = new SceneController(this.stage);
+        LoginModel login = new LoginModel();
+
+        if (login.registerAccount(username, password, pincode)) {
+            sceneController.switchToLogin();
+        } else {
+            // password dan username salah
+        }
+    }
+
+    // method untuk mengecek apakah ada digit
+    private boolean isContainDigit(String s) {
+        return s != null && s.chars().anyMatch(Character::isDigit);
+    }
+
+    // method untuk mengecek apakah username mengadung simbol unik
+    private boolean isUsernameSymbol(String s) {
+        return s.matches("[a-zA-Z0-9]+");
     }
 }

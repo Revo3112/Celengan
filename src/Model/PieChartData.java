@@ -31,14 +31,14 @@ public class PieChartData {
                     while (result.next()) {
                         int kategori_id = result.getInt("kategori_id");
                         int tipe_kategori = result.getInt("tipe_kategori");
-                        double total_nominal = result.getDouble("total_nominal");
-
+                        double total_nominal_kategori = result.getDouble("total_nominal");
                         if (tipe_kategori == 0) {
                             pieChartData.add(new PieChart.Data(getKategoriNameUser(kategori_id),
-                                    total_nominal / totalpengeluaran() * 100));
+                                    total_nominal_kategori / totalpengeluaran()));
+                            // Harga barang per kategori / total harga
                         } else {
                             pieChartData.add(new PieChart.Data(getKategoriNameByDefault(kategori_id),
-                                    total_nominal / totalpengeluaran() * 100));
+                                    total_nominal_kategori / totalpengeluaran()));
                         }
                     }
                 }
@@ -87,8 +87,9 @@ public class PieChartData {
     public static double totalpengeluaran() {
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
-        String query = "SELECT SUM(nominal) FROM transac group by tipe_transaksi = 'pengeluaran'";
+        String query = "SELECT SUM(nominal) FROM transac where user_id = ? and tipe_transaksi = 'pengeluaran';";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, user_id);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getDouble(1);
