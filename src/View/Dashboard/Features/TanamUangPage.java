@@ -114,7 +114,7 @@ public class TanamUangPage {
         textPane.setPadding(new Insets(0, 0, 20, 10));
 
         // Menambahkan gambar
-        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Content.png"));
+        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/LogoTanamUang.png"));
         contentImageView.setFitWidth(400);
         contentImageView.setFitHeight(300);
 
@@ -241,7 +241,7 @@ public class TanamUangPage {
             double paneHeight = this.stage.getHeight() - 200;
 
             StackPane backgroundMainPane = new StackPane();
-            backgroundMainPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8);");
+            backgroundMainPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 20");
 
             StackPane editMainPane = new StackPane();
             editMainPane.setMaxSize(paneWidth - 400, paneHeight - 200);
@@ -275,40 +275,46 @@ public class TanamUangPage {
 
             Hyperlink tambahHyperlink = new Hyperlink();
             tambahHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Tambah.png")));
-
-            StackPane tambahPane = new StackPane(); // agar tidak duplicate
-            StackPane backgroundTambahPane = new StackPane();
-
+            
             tambahHyperlink.setOnMouseClicked(f -> {
-                tambahPane.setMaxSize(editMainPane.getMaxWidth() - 400, editMainPane.getMaxHeight() - 200);
-                tambahPane.setStyle("-fx-background-color: #E48F45; -fx-background-radius: 20;");
+                StackPane tambahPane = new StackPane();
+                StackPane backgroundTambahPane = new StackPane();
+                tambahPane.setMaxSize(contentPane.getMaxWidth() - 200, contentPane.getMaxHeight() - 200);
+                tambahPane.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
 
-                backgroundTambahPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8)");
+                backgroundTambahPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8);");
 
-                Text titleTambah = createText("Tambah Kategori", "-fx-font: bold 18 Poppins", "#000000");
+                Text titleTambah = createText("Tambah Kategori", "-fx-font: bold 18 Poppins", "#FFFFFF");
+                Hyperlink tambahBackHyperlink = new Hyperlink();
+                tambahBackHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Back.png")));
+
+                tambahBackHyperlink.setOnMouseClicked(g -> {
+                    refreshView(scrollPane, scrollPaneContent, mainPane);
+                    editMainPane.getChildren().remove(tambahPane);
+                    editMainPane.getChildren().remove(backgroundTambahPane);
+                });
+
+                HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
+                hboxTitleTambah.setSpacing(20);
                 
                 Label labelTambah = new Label("Nama:");
-                labelTambah.setStyle("-fx-font: 14 'Poppins Regular';");
+                labelTambah.setStyle("-fx-font: 14 'Poppins Regular'; -fx-text-fill: #FFFFFF");
                 labelTambah.setTextFill(Color.valueOf("#000000"));
                 TextField fieldTambah = new TextField();
                 Button buttonTambah = new Button("Tambah");
                 Button buttonBatal = new Button("Batal");
 
                 buttonBatal.setOnMouseClicked(g -> {
-                    if (editMainPane.getParent() != null) {
-                        editMainPane.getChildren().remove(tambahPane);
-                        editMainPane.getChildren().remove(backgroundTambahPane);
-                    }
+                    editMainPane.getChildren().remove(tambahPane);
+                    editMainPane.getChildren().remove(backgroundTambahPane);
                 });
 
                 buttonTambah.setOnMouseClicked(g -> {
                     if (TanamUangModel.tambahKategori(fieldTambah.getText(), tipeTanamUang)) {
                         refreshView(scrollPane, scrollPaneContent, editMainPane);
 
-                        if (editMainPane.getParent() != null) {
-                            editMainPane.getChildren().remove(tambahPane);
-                            editMainPane.getChildren().remove(backgroundTambahPane);
-                        }
+                        editMainPane.getChildren().remove(tambahPane);
+                        editMainPane.getChildren().remove(backgroundTambahPane);
 
                         AlertHelper.info("Kategori " + fieldTambah.getText() + " berhasil ditambahkan!");
                     } else {
@@ -323,15 +329,13 @@ public class TanamUangPage {
                 hboxButtonTambah.setSpacing(20);
                 hboxButtonTambah.setAlignment(Pos.CENTER);
 
-                VBox vboxTambah = new VBox(titleTambah, hboxFormTambah, hboxButtonTambah);
+                VBox vboxTambah = new VBox(hboxTitleTambah, hboxFormTambah, hboxButtonTambah);
                 vboxTambah.setMaxSize(tambahPane.getMaxWidth() - 50, tambahPane.getMaxHeight() - 80);
                 vboxTambah.setSpacing(20);
                 
                 tambahPane.getChildren().add(vboxTambah);
 
-                if (!editMainPane.getChildren().contains(tambahPane)) {
-                    editMainPane.getChildren().addAll(backgroundTambahPane, tambahPane);
-                }
+                editMainPane.getChildren().addAll(backgroundTambahPane, tambahPane);
             });
 
             scrollPane.setContent(scrollPaneContent);
@@ -612,21 +616,32 @@ public class TanamUangPage {
             int index = i;
             boolean isKategoriDefault = TanamUangModel.getIsKategoriDefault(namaKategori.getText());
 
-            StackPane paneHapus = new StackPane();
-            StackPane backgroundPaneHapus = new StackPane();
-
             deleteHyperlink.setOnMouseClicked(e -> {
-                paneHapus.setMaxSize(mainPane.getWidth() - 400, mainPane.getHeight() - 200);
-                paneHapus.setStyle("-fx-background-radius: 20; -fx-background-color: #505e63");
+                StackPane paneHapus = new StackPane();
+                StackPane backgroundPaneHapus = new StackPane();
 
-                backgroundPaneHapus.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 30px;");
+                paneHapus.setMaxSize(mainPane.getWidth() - 400, mainPane.getHeight() - 400);
+                paneHapus.setStyle("-fx-background-radius: 20; -fx-background-color: #141F23");
+                backgroundPaneHapus.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8);");
+                
+                Text titleHapus = createText("Hapus Kategori", "-fx-font: 24 'Poppins Bold';", "#FFFFFF");
+                Hyperlink deleteBackHyperlink = new Hyperlink();
+                deleteBackHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Back.png")));
 
-                Text titleHapus = createText("Hapus Kategori", "-fx-font: 24 'Poppins Bold';", "#000000");
-                Text titleYakinHapus = createText("Yakin ingin menghapus kategori ", "-fx-font: 18 'Poppins Medium';", "#FFFFFF");
+                deleteBackHyperlink.setOnMouseClicked(f -> {
+                    refreshView(scrollPane, scrollPaneContent, mainPane);
+                    mainPane.getChildren().remove(paneHapus);
+                    mainPane.getChildren().remove(backgroundPaneHapus);
+                });
+
+                Text titleYakinHapus = createText("Apakah Anda yakin ingin menghapus kategori ", "-fx-font: 18 'Poppins Medium';", "#FFFFFF");
                 Text titleNamaKategoriHapus = createText(listKategori[index], "-fx-font: bold 18 Poppins;", "#ff424c");
                 Text titleTandaTanya = createText("?", "-fx-font: 18 'Poppins Medium';", "#FFFFFF");
 
-                HBox hboxTitleHapus = new HBox(titleYakinHapus, titleNamaKategoriHapus, titleTandaTanya);
+                HBox hboxTitleHapus = new HBox(deleteBackHyperlink, titleHapus);
+                hboxTitleHapus.setSpacing(20);
+
+                HBox hboxSubTitleHapus = new HBox(titleYakinHapus, titleNamaKategoriHapus, titleTandaTanya);
 
                 Button buttonHapus = new Button("Hapus");
                 Button buttonHapusBatal = new Button("Batal");
@@ -670,10 +685,10 @@ public class TanamUangPage {
                 hboxButtonHapus.setSpacing(20);
                 hboxButtonHapus.setAlignment(Pos.CENTER);
 
-                VBox itemContentHapus = new VBox(titleHapus, hboxTitleHapus, hboxButtonHapus);
+                VBox itemContentHapus = new VBox(hboxTitleHapus, hboxSubTitleHapus, hboxButtonHapus);
                 itemContentHapus.setSpacing(20);
                 itemContentHapus.setMaxSize(paneHapus.getMaxWidth() - 100, paneHapus.getMaxHeight() - 30);
-                VBox.setMargin(hboxTitleHapus, new Insets(0, 0, 20, 0));
+                itemContentHapus.setPadding(new Insets(10, 0, 0, 10));
 
                 paneHapus.getChildren().add(itemContentHapus);
 
@@ -683,15 +698,13 @@ public class TanamUangPage {
 
             });
 
-            StackPane paneEdit = new StackPane(); // agar tidak duplicate
-            StackPane backgroundPaneEdit = new StackPane();
-
             editHyperlink.setOnMouseClicked(e -> {
-                
-                paneEdit.setMaxSize(mainPane.getWidth() - 200, mainPane.getHeight() - 200);
+                StackPane paneEdit = new StackPane();
+                StackPane backgroundPaneEdit = new StackPane();
+                paneEdit.setMaxSize(400, 200);
                 paneEdit.setStyle("-fx-background-radius: 20; -fx-background-color: #141F23");
 
-                backgroundPaneEdit.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 30px;");
+                backgroundPaneEdit.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8);");
                 Hyperlink editBackHyperlink = new Hyperlink();
                 editBackHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Back.png")));
 
@@ -703,13 +716,14 @@ public class TanamUangPage {
 
                 Text titleEdit = createText("Ubah Kategori", "-fx-font: 20 Poppins;", "#FFFFFF");
                 Label labelEditNamaKategori = new Label("Nama:");
-                labelEditNamaKategori.setStyle("-fx-font: 16 'Poppins Regular'");
+                labelEditNamaKategori.setStyle("-fx-font: 16 'Poppins Medium'");
                 labelEditNamaKategori.setTextFill(Color.valueOf("#FFFFFF"));
                 TextField fieldEditNamaKategori = new TextField(listKategori[index]);
                 fieldEditNamaKategori.setStyle(
-                    "-fx-background-radius: 20px; -fx-background-color: #0D1416; " +
-                    "-fx-border-color: red; -fx-border-radius: 20px; " + 
-                    "-fx-bord"
+                    "-fx-background-radius: 20px; -fx-background-color: #0D1416;" +
+                    "-fx-border-color: #213339;" +
+                    "-fx-border-radius: 20px; " +
+                    "-fx-text-fill: #FFFFFF"
                 );
                 Button editButtonSimpanKategori = new Button("Simpan");
                 Button editButtonBatalKategori = new Button("Batal");
@@ -763,20 +777,21 @@ public class TanamUangPage {
                     }
                 });
 
+                
+                HBox editTitleHBox = new HBox(editBackHyperlink, titleEdit);
+                editTitleHBox.setSpacing(20);
+                
                 HBox editHBox = new HBox(labelEditNamaKategori, fieldEditNamaKategori);
                 editHBox.setSpacing(20);
-                // editHBox.setAlignment(Pos.CENTER);
+                editHBox.setStyle("-fx-background-color: #ff0015"); // red
+                editHBox.setAlignment(Pos.CENTER);
 
-                HBox editTitleHBox = new HBox(editBackHyperlink, titleEdit);
-                Region regionEditButton = new Region();
-
-                HBox editButtonHBox = new HBox(regionEditButton, editButtonBatalKategori, editButtonSimpanKategori);
-                HBox.setHgrow(regionEditButton, Priority.ALWAYS);
+                HBox editButtonHBox = new HBox(editButtonBatalKategori, editButtonSimpanKategori);
                 editButtonHBox.setSpacing(20);
-                // editButtonHBox.setAlignment(Pos.CENTER);
+                editButtonHBox.setAlignment(Pos.CENTER);
 
                 VBox editVBox = new VBox(editTitleHBox, editHBox, editButtonHBox);
-                editVBox.setMaxSize(paneEdit.getMaxWidth() - 20, paneEdit.getHeight() - 20);
+                editVBox.setMaxSize(paneEdit.getMaxWidth() - 50, paneEdit.getMaxHeight() - 50);
                 editVBox.setSpacing(20);
                 editVBox.setAlignment(Pos.CENTER);
 

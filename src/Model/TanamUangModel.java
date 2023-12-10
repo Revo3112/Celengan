@@ -87,7 +87,6 @@
 
         private static boolean isKategoriDefault(String namaKategori) {
             String[] listKategoriDefault = getKategoriDefault();
-
             for (int i = 0; i < listKategoriDefault.length; i++) {
                 if (listKategoriDefault[i].equals(namaKategori)) {
                     return true;
