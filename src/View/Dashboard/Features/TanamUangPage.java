@@ -99,7 +99,7 @@ public class TanamUangPage {
     // Menampilkan halaman dashboard
     public void start(String[] listKategoriPemasukan, String[] listKategoriPengeluaran) {
         // Membuat side bar
-        VBox sideBar = ImageLinkPane.createImageLinkVBox(this.stage, sceneController);
+        VBox sideBar = ImageLinkPaneTanam.createImageLinkVBox(this.stage, sceneController);
         // sideBar.setTranslateX(-stage.getWidth() / 2 + 40);
         sideBar.setAlignment(Pos.CENTER_RIGHT);
         VBox.setVgrow(sideBar, Priority.ALWAYS);
@@ -255,7 +255,6 @@ public class TanamUangPage {
             
             HBox topBar = new HBox();
             // topBar.setStyle("-fx-background-color: #3081D0;");
-
 
             ScrollPane scrollPane = new ScrollPane();
             scrollPane.setFitToWidth(true);
@@ -921,7 +920,7 @@ public class TanamUangPage {
     }
 }
 
-class ImageLinkPane {
+class ImageLinkPaneTanam {
     public static VBox createImageLinkVBox(Stage stage, SceneController sceneController) {
         // Gunakan ImageView untuk semua pilihan di Sidebar
         ImageView logoImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
