@@ -36,7 +36,9 @@ import javafx.util.Duration;
 // membuat class LoginPage
 public class LoginPage {
     private Stage stage; // Deklarasi property stage
+    SceneController sceneController; // sceneController utk pages switching
 
+    // cursors
     private Cursor hand = Cursor.cursor("HAND");
     private Cursor closedHand = Cursor.cursor("CLOSED_HAND");
     private Cursor defaultCursor = Cursor.cursor("DEFAULT");
@@ -46,11 +48,48 @@ public class LoginPage {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    // error status
+    boolean hLogErrStat = false;
+
+    // panes
+    StackPane mainContent;
+
+    // timelines
+    Timeline hopAyamBetina_IN; // ayam netral melompat ke dalam
+    Timeline hopAyamBetina_OUT; // ayam netral keluar (selesai)
+    Timeline ayamError_IN; // ayam error melompat ke dalam
+    Timeline ayamError_OUT; // ayam error keluar (selesai)
+    Timeline awanError_IN; // ayam error masuk
+    Timeline ayamHand_IN; // tangan ayam untuk password ke dalam
+    Timeline ayamHand_OUT; // tangan ayam untuk password ke luar
+    Timeline fadeChatAyam_IN; // chat ayam netral ke dalam
+    Timeline fadeChatAyam_OUT; // chat ayam netral keluar (selesai)
+
+    // Lists timeline
+    List<Timeline> listAyamNetral_IN;
+    List<Timeline> listAyamNetral_OUT;
+    List<Timeline> listAyamError_IN;
+    List<Timeline> listAyamError_OUT;
+
+    // deklarasi path asset error
+    String logRegPath = "/Assets/View/Login_Register/";
+    // animasi ayam error/deklarasi image
+    ImageView ayamError = createImage(logRegPath + "ayamMarah.png", 180, 180);
+    ImageView awanError = createImage(logRegPath + "awan.png", 350, 350);
+    Duration ayamErrorHopDur = Duration.millis(600);
+    Duration awanErrorHopDur = Duration.millis(2300);
+    double ayamErrorOriginY = ayamError.getTranslateY();
+    double ayamErrorTargetY = ayamErrorOriginY - 250;
+    double awanErrorOriginY = awanError.getTranslateY();
+    double awanErrorTargetY = awanErrorOriginY - 500;
+    List<ImageView> listChatErrorAyam;
+
     StackPane root = new StackPane(); // stackpane root
 
     // Melakukan inisiasi class LoginPage dengan parameter stage
     public LoginPage(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
+        sceneController = new SceneController(stage);
 
         // Set the application icon
         Image icon = new Image("Assets/View/Splash_Screen/images/logo/celengan_image_logo.png");
@@ -182,6 +221,22 @@ public class LoginPage {
                         "-fx-border-width: 3px;" +
                         "-fx-border-radius: 90;");
         // logic dropdownButton
+        dropDownBtn.setOnAction(e -> {
+            String selectedItem = dropDownBtn.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                // Perform the switch after the fade out animation completes
+                switch (selectedItem) {
+                    case "Register Page":
+                        sceneController.switchToRegistration();
+                        break;
+                    case "Request New Password":
+                        sceneController.switchToRequestNewPassword();
+                        break;
+                    default:
+                        // Handle other cases if needed
+                }
+            }
+        });
 
         // BUTTON ORGANIZER
         // memasukkan button ke dalam HBox
@@ -253,6 +308,10 @@ public class LoginPage {
         lupaPassword.setStyle(
                 "-fx-text-fill: #FF7474;" +
                         "-fx-font: 14 Poppins;");
+        // kondisi hyperlink
+        lupaPassword.setOnAction(e -> {
+            sceneController.switchToRequestNewPassword();
+        });
         CheckBox ingatkanSaya = new CheckBox("Ingatkan Saya");
         ingatkanSaya.setStyle(
                 "-fx-text-fill: #AD7AFF;" +
@@ -286,13 +345,28 @@ public class LoginPage {
             updateButton(masukLogin, 120, 50, "Masuk", "AB77FF", 22, "Poppins", 30, "141F23");
         });
         masukLogin.setOnAction(e -> {
+            if (awanError_IN != null) {
+                awanError_IN.stop(); // Stop the animation if it's already running
+                awanError.translateYProperty().set(awanErrorOriginY); // Reset translateY to original Y position
+            }
             System.out.println("Login button clicked!");
             System.out.println(
                     "Before handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
-            handleLogin(inputUsername.getText(), inputPassword.getText(), ingatkanSaya, inputUsername, inputPassword);
+            hLogErrStat = handleLogin(
+                    inputUsername.getText(),
+                    inputPassword.getText(),
+                    ingatkanSaya,
+                    inputUsername,
+                    inputPassword,
+                    listAyamNetral_OUT,
+                    listChatErrorAyam,
+                    mainContent,
+                    ayamError_IN,
+                    awanError_IN);
             System.out.println(
                     "After handleLogin: Stage Width = " + stage.getWidth() + ", Height = " + stage.getHeight());
 
+            awanError_IN.play();
         });
         // Register Button
         registButton.setOnMouseEntered(e -> {
@@ -304,8 +378,8 @@ public class LoginPage {
             updateButton(registButton, 280, 50, "Belum Punya Akun?", "141F23", 22, "Poppins", 30, "AB77FF");
         });
         registButton.setOnAction(e -> {
-            // change this
-            System.out.println("Register button clicked!");
+            // pergi ke registration page
+            sceneController.switchToRegistration();
         });
 
         // menyatukan elemen register ke satu group
@@ -347,11 +421,11 @@ public class LoginPage {
         ImageView ayamBetina = createImage("/Assets/View/Login_Register/ayamBetina.png", 180, 180);
         double ayamOriginY = ayamBetina.getTranslateY();
         // timeline animasi untuk hop in ayam betina
-        Timeline hopAyamBetina_IN = new Timeline(
+        hopAyamBetina_IN = new Timeline(
                 new KeyFrame(Duration.millis(600),
                         new KeyValue(ayamBetina.translateYProperty(), ayamOriginY - 250, Interpolator.EASE_BOTH)));
         // timeline animasi untuk hop out ayam betina
-        Timeline hopAyamBetina_OUT = new Timeline(
+        hopAyamBetina_OUT = new Timeline(
                 new KeyFrame(Duration.millis(600),
                         new KeyValue(ayamBetina.translateYProperty(), ayamOriginY, Interpolator.EASE_BOTH)));
         // CHAT AYAM: animasi chat ayam
@@ -360,57 +434,93 @@ public class LoginPage {
         chatAyam.setTranslateX(chatAyam.getTranslateX() - 210);
         chatAyam.setOpacity(0);
         // timeline animasi untuk chat ayam fade in
-        Timeline fadeChatAyam_IN = new Timeline(
+        fadeChatAyam_IN = new Timeline(
                 new KeyFrame(Duration.millis(700),
                         new KeyValue(chatAyam.opacityProperty(), 1)));
         // timeline animasi untuk chat ayam fade out
-        Timeline fadeChatAyam_OUT = new Timeline(
+        fadeChatAyam_OUT = new Timeline(
                 new KeyFrame(Duration.millis(300),
                         new KeyValue(chatAyam.opacityProperty(), 0)));
         // TANGAN AYAM: animasi tangan ayam saat password field diketik
         ImageView ayamHand = createImage("/Assets/View/Login_Register/ayamHand.png", 170, 170);
         double ayamHandOriginY = ayamHand.getTranslateY();
-        Timeline ayamHand_IN = new Timeline(
+        ayamHand_IN = new Timeline(
                 new KeyFrame(Duration.millis(400),
                         new KeyValue(ayamHand.translateYProperty(), ayamHandOriginY - 220, Interpolator.EASE_BOTH)));
-        Timeline ayamHand_OUT = new Timeline(
+        ayamHand_OUT = new Timeline(
                 new KeyFrame(Duration.millis(500),
                         new KeyValue(ayamHand.translateYProperty(), ayamHandOriginY, Interpolator.EASE_BOTH)));
         // ANIMASI ERROR AYAM:
-        // deklarasi path asset error
-        String logRegPath = "/Assets/View/Login_Register/";
-        // animasi ayam error
-        ImageView ayamError = createImage(logRegPath + "ayamMarah.png", 180, 180);
-        Timeline ayamError_IN = new Timeline();
+        // animasi ayam error masuk
+        ayamError_IN = new Timeline(
+                new KeyFrame(ayamErrorHopDur,
+                        new KeyValue(ayamError.translateYProperty(), ayamErrorTargetY, Interpolator.EASE_BOTH)));
+        // animasi ayam error keluar
+        ayamError_OUT = new Timeline(
+                new KeyFrame(ayamErrorHopDur,
+                        new KeyValue(ayamError.translateYProperty(), ayamErrorOriginY, Interpolator.EASE_BOTH)));
+        // animasi awan error masuk
+        awanError_IN = new Timeline(
+                new KeyFrame(Duration.millis(500),
+                        new KeyValue(awanError.translateYProperty(), awanErrorOriginY)),
+                new KeyFrame(awanErrorHopDur,
+                        new KeyValue(awanError.translateYProperty(), awanErrorTargetY, Interpolator.EASE_BOTH)));
+        // // saat selesai di reset agar tidak stack
+        // awanError_IN.setOnFinished(e -> {
+        // awanError_IN = null;
+        // });
+
         // animasi text ayam error
-        List<ImageView> chatErrorAyam = new ArrayList<>();
+        listChatErrorAyam = new ArrayList<>();
         // menambahkan error password (chat)
-        chatErrorAyam.add(createImage(logRegPath + "passwordKosong.png", 250, 250)); // password kosong
-        chatErrorAyam.add(createImage(logRegPath + "passwordSalah.png", 250, 250)); // password salah
+        listChatErrorAyam.add(createImage(logRegPath + "passwordKosong.png", 200, 200)); // password kosong
+        listChatErrorAyam.add(createImage(logRegPath + "passwordSalah.png", 200, 200)); // password salah
         // menambahkan error username (chat)
-        chatErrorAyam.add(createImage(logRegPath + "usernameKosong.png", 250, 250)); // username kosong
-        chatErrorAyam.add(createImage(logRegPath + "usernameSalah.png", 250, 250)); // username salah
+        listChatErrorAyam.add(createImage(logRegPath + "usernameKosong.png", 200, 200)); // username kosong
+        listChatErrorAyam.add(createImage(logRegPath + "usernameSalah.png", 200, 200)); // username salah
         // menambahkan error keduanya
-        chatErrorAyam.add(createImage(logRegPath + "usernamePasswordKosong.png", 250, 250)); // username dan password
-                                                                                             // kosong
-        chatErrorAyam.add(createImage(logRegPath + "usernamePasswordSalah.png", 250, 250)); // username dan password
-                                                                                            // kosong
+        listChatErrorAyam.add(createImage(logRegPath + "usernamePasswordKosong.png", 200, 200)); // username dan
+                                                                                                 // password
+        // kosong 4
+        listChatErrorAyam.add(createImage(logRegPath + "usernamePasswordSalah.png", 200, 200)); // username dan password
+                                                                                                // 5
+        // kosong
+        // List ayam-ayam netral IN
+        listAyamNetral_IN = new ArrayList<>();
+        listAyamNetral_IN.add(hopAyamBetina_IN);
+        listAyamNetral_IN.add(fadeChatAyam_IN);
+        listAyamNetral_IN.add(ayamHand_IN);
+        // List ayam-ayam netral OUT
+        listAyamNetral_OUT = new ArrayList<>();
+        listAyamNetral_OUT.add(hopAyamBetina_OUT);
+        listAyamNetral_OUT.add(fadeChatAyam_OUT);
+        listAyamNetral_OUT.add(ayamHand_OUT);
+        // List ayam-ayam error IN
+        listAyamError_IN = new ArrayList<>();
+        listAyamError_IN.add(ayamError_IN);
+        // List ayam-ayam error OUT
+        listAyamError_OUT = new ArrayList<>();
+        listAyamError_OUT.add(ayamError_OUT);
 
         // memasukkan seluruh elemen ke dalam stackPane mainContent
-        StackPane mainContent = new StackPane(chatAyam, ayamBetina, ayamHand, base, contentElements,
-                logoCelengan);
+        mainContent = new StackPane(chatAyam, ayamBetina, ayamHand, ayamError, awanError, base,
+                contentElements, logoCelengan);
         mainContent.setMaxSize(600, 300);
         // mainContent.setStyle("-fx-background-color: red");
         // GENERAL EVENTS: events yang mencakup semua
         inputPassword.setOnKeyTyped(e -> {
-            ayamHand_IN.play();
+            if (!hLogErrStat) {
+                ayamHand_IN.play();
+            }
         });
         inputUsername.setOnMousePressed(e -> {
             ayamHand_OUT.play();
         });
         mainContent.setOnMouseEntered(e -> {
-            hopAyamBetina_IN.play();
-            fadeChatAyam_IN.play();
+            if (!hLogErrStat) {
+                hopAyamBetina_IN.play();
+                fadeChatAyam_IN.play();
+            }
         });
         root.setOnMouseClicked(e -> {
             if (e.getClickCount() == 1) {
@@ -425,17 +535,16 @@ public class LoginPage {
         root.setStyle("-fx-background-color: #141F23;");
 
         // Membuat Scene dengan latar belakang transparent
-        Scene scene = new Scene(this.root, this.stage.getWidth(), this.stage.getHeight()); // Memasukkan root node ke dalam scene
-        System.out.println("Width: " + stage.getWidth());
-        System.out.println("Height " + stage.getHeight());
+        Scene scene = new Scene(root, this.stage.getWidth(), this.stage.getHeight());
         scene.getStylesheets()
                 .addAll("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
         // Memberikan judul pada stage
-        // stage.initStyle(StageStyle.TRANSPARENT);
+        // if (this.stage.getStyle() != StageStyle.UNDECORATED) {
+        // this.stage.initStyle(StageStyle.UNDECORATED);
+        // }
         stage.setMaximized(true);
         stage.setScene(scene); // menetapkan scene dari sebuah stage
         stage.show(); // menampilkan stage
-
         /* END OF UI/UX */
     }
 
@@ -503,16 +612,25 @@ public class LoginPage {
     }
 
     // Metode untuk melakukan pengecekan ke database dan kondisi
-    private void handleLogin(String username, String password, CheckBox checkBox, TextField usernameField,
-            PasswordField passwordField) {
+    public boolean handleLogin(String username, String password, CheckBox checkBox, TextField usernameField,
+            PasswordField passwordField, List<Timeline> animOut, List<ImageView> chatError, StackPane mainPane,
+            Timeline... animIn) {
         LoginModel login = new LoginModel(); // Membuat objek login
         SceneController sceneController = new SceneController(this.stage); // Membuat objek sceneController
 
-        // Mengatur kondisi login antara username dan password baik itu menuju database
-        // atau mengecek kondisi
+        // check error status
+        boolean statusErr = false;
+
+        // me-reset animasi lainnya
+        for (Timeline playAnimOut : animOut) {
+            playAnimOut.play();
+        }
 
         // me-reset keduanya error style
         removeErrorStyle(usernameField, passwordField, 3);
+
+        // Clear existing chatError nodes
+        mainPane.getChildren().removeAll(chatError);
 
         if (login.isValidated(username, password, checkBox.isSelected())) {
             if (login.penentuApakahSudahAdaSaldo()) {
@@ -521,20 +639,47 @@ public class LoginPage {
                 sceneController.switchToBuatSaldoDanModeKritis(); // Merubah scene menuju BuatSaldoDanModeKritis
             }
         } else if (username.isEmpty() && password.isEmpty()) {
+            chatErrorTimelineAll_OUT(chatError); // me-rese semua chat
+            System.out.println("Chat before: " + mainPane.getChildren().contains(chatError.get(4)));
+            mainPane.getChildren().add(chatError.get(4)); // menambahkan chat error
+            System.out.println("Chat after: " + mainPane.getChildren().contains(chatError.get(4)));
             // Memanggil metode untuk mengimplementasikan error style
+            statusErr = true;
             applyErrorStyle(usernameField, passwordField, 3);
+            animIn[0].play(); // start timeline 1
+            animIn[1].play(); // start timeline 2
+            chatErrorTimeline_IN(chatError.get(4));
         } else if (username.isEmpty()) {
+            chatErrorTimelineAll_OUT(chatError); // me-rese semua chat
+            mainPane.getChildren().add(chatError.get(2)); // menambahkan chat error
             // Memanggil metode untuk mengimplementasikan error style
+            statusErr = true;
             applyErrorStyle(usernameField, passwordField, 1);
             removeErrorStyle(usernameField, passwordField, 2); // remove error style for password
+            animIn[0].play(); // start timeline 1
+            animIn[1].play(); // start timeline 2
+            chatErrorTimeline_IN(chatError.get(2));
         } else if (password.isEmpty()) {
+            chatErrorTimelineAll_OUT(chatError); // me-rese semua chat
+            mainPane.getChildren().add(chatError.get(0)); // menambahkan chat error
             // Memanggil metode untuk mengimplementasikan error style
+            statusErr = true;
             applyErrorStyle(usernameField, passwordField, 2);
             removeErrorStyle(usernameField, passwordField, 1); // remove error style for username
+            animIn[0].play(); // start timeline 1
+            animIn[1].play(); // start timeline 2
+            chatErrorTimeline_IN(chatError.get(0));
         } else {
+            chatErrorTimelineAll_OUT(chatError); // me-rese semua chat
+            mainPane.getChildren().add(chatError.get(5));
             // keduanya empty
+            statusErr = true;
             applyErrorStyle(usernameField, passwordField, 3);
+            animIn[0].play(); // start timeline 1
+            animIn[1].play(); // start timeline 2
+            chatErrorTimeline_IN(chatError.get(5));
         }
+        return statusErr;
     }
 
     // Membuat metode untuk menerapkan error style
@@ -568,6 +713,28 @@ public class LoginPage {
                     textField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
             passwordField.setStyle(
                     passwordField.getStyle() + "-fx-border-color: red; -fx-border-width: 0; -fx-border-radius: 30;");
+        }
+    }
+
+    // memainkan timeline untuk chat error
+    private void chatErrorTimeline_IN(ImageView chatError) {
+        chatError.setTranslateY(chatError.getTranslateY() - 280);
+        chatError.setTranslateX(chatError.getTranslateX() - 210);
+        chatError.setOpacity(0);
+        // timeline animasi untuk chat ayam fade in
+        Timeline fadeChatError_IN = new Timeline(
+                new KeyFrame(Duration.millis(700),
+                        new KeyValue(chatError.opacityProperty(), 1)));
+        fadeChatError_IN.play();
+    }
+
+    // memainkan dan mereset semua animasi yang ada
+    private void chatErrorTimelineAll_OUT(List<ImageView> chatError) {
+        for (ImageView errorChat : chatError) {
+            Timeline fadeChatError_OUT = new Timeline(
+                    new KeyFrame(Duration.millis(400),
+                            new KeyValue(errorChat.opacityProperty(), 0)));
+            fadeChatError_OUT.play();
         }
     }
 }

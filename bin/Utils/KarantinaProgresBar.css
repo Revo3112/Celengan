@@ -6,11 +6,11 @@
     -fx-padding: 0.20em; */
     -fx-pref-width: 200px; /* Set the preferred width */
     -fx-pref-height: 20px; /* Set the preferred height */
-    -fx-background-color: #FEB872; /* Set the background color */
+    -fx-background-color: #FD9C3D; /* Set the background color */
 }
 
 .progress-bar .track {
-    -fx-background-color: #FD9C3D; /* Set the track background to black */
+    -fx-background-color: #FC820B; /* Set the track background to black */
     -fx-background-radius: 100;
 }
 
