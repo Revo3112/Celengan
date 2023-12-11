@@ -491,7 +491,12 @@ public class DashboardPage {
                 Text nominalText = createText(formatDuit(roundedValueNominal),
                         "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
 
+                StackPane nominalStackPane = new StackPane(nominalText);
+                nominalStackPane.setAlignment(Pos.CENTER_RIGHT);
+                nominalStackPane.setPadding(new Insets(0, 0, 0, 60));
+
                 ImageView kondisi = new ImageView();
+
                 if (tipe.equals("pemasukan")) {
                     kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
                     kondisi.setFitHeight(35);
@@ -503,30 +508,31 @@ public class DashboardPage {
                     kondisi.setFitWidth(100);
                     kondisi.setPreserveRatio(true);
                 }
+                StackPane gambarKondisi = new StackPane(kondisi);
+                gambarKondisi.setAlignment(Pos.CENTER_LEFT);
+                gambarKondisi.setPadding(new Insets(0, 0, 0, 60));
 
-                HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
-                gambarKondisidanNominal.setSpacing(10);
-                VBox nominalStackPane = new VBox(gambarKondisidanNominal);
-                nominalStackPane.setAlignment(Pos.CENTER);
+                HBox gambarKondisidanNominal = new HBox(nominalStackPane, gambarKondisi);
+                gambarKondisidanNominal.setSpacing(5);
+                gambarKondisidanNominal.setAlignment(Pos.CENTER);
+                HBox.setHgrow(gambarKondisidanNominal, Priority.ALWAYS);
 
                 Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
                         0, 0);
 
-                VBox tanggalTextPane = new VBox(tanggalText);
+                StackPane tanggalTextPane = new StackPane(tanggalText);
                 tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
 
                 HBox kontenHistoriKeuanganBarang = new HBox(keteranganStackPane, nominalStackPane,
                         gambarKondisidanNominal,
                         tanggalTextPane);
-                kontenHistoriKeuanganBarang.setSpacing(80);
-                kontenHistoriKeuanganBarang.setPadding(new Insets(10, 0, 10, 25));
+
+                kontenHistoriKeuanganBarang.setSpacing(50);
+                kontenHistoriKeuanganBarang.setPadding(new Insets(10, 25, 10, 40));
                 kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
                 kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
 
                 kontenHistoriKeuangan.getChildren().add(kontenHistoriKeuanganBarang);
-                keteranganStackPane.setMaxWidth(200);
-                nominalStackPane.setMaxWidth(200);
-                tanggalTextPane.setMaxWidth(200);
             }
 
             // Membuat konten bagian bawah untuk main pane
@@ -1059,6 +1065,10 @@ public class DashboardPage {
             Text nominalText = createText(formatDuit(roundedValueNominal),
                     "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
 
+            StackPane nominalStackPane = new StackPane(nominalText);
+            nominalStackPane.setAlignment(Pos.CENTER_RIGHT);
+            nominalStackPane.setPadding(new Insets(0, 0, 0, 60));
+
             ImageView kondisi = new ImageView();
             if (tipe.equals("Pemasukan")) {
                 kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
@@ -1072,31 +1082,31 @@ public class DashboardPage {
                 kondisi.setPreserveRatio(true);
             }
 
-            HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
+            StackPane gambarKondisi = new StackPane(kondisi);
+            gambarKondisi.setAlignment(Pos.CENTER_LEFT);
+            gambarKondisi.setPadding(new Insets(0, 0, 0, 60));
+
+            HBox gambarKondisidanNominal = new HBox(nominalText, gambarKondisi);
             gambarKondisidanNominal.setSpacing(10);
-            VBox nominalStackPane = new VBox(gambarKondisidanNominal);
-            nominalStackPane.setAlignment(Pos.CENTER);
+            gambarKondisidanNominal.setAlignment(Pos.CENTER);
+            HBox.setHgrow(gambarKondisidanNominal, Priority.ALWAYS);
 
             Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
                     0, 0);
 
-            VBox tanggalTextPane = new VBox(tanggalText);
+            StackPane tanggalTextPane = new StackPane(tanggalText);
             tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
 
-            HBox kontenHistoriKeuanganBarang = new HBox();
-            kontenHistoriKeuanganBarang.getChildren().addAll(keteranganStackPane, nominalStackPane,
+            HBox kontenHistoriKeuanganBarang = new HBox(keteranganStackPane, nominalStackPane,
                     gambarKondisidanNominal,
                     tanggalTextPane);
 
-            kontenHistoriKeuanganBarang.setSpacing(80);
-            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 0, 10, 25));
+            kontenHistoriKeuanganBarang.setSpacing(50);
+            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 25, 10, 40));
             kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
             kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
 
             kontenHistoriKeuanganBarangfull.getChildren().add(kontenHistoriKeuanganBarang);
-            keteranganStackPane.setMaxWidth(200);
-            nominalStackPane.setMaxWidth(200);
-            tanggalTextPane.setMaxWidth(200);
         }
         return kontenHistoriKeuanganBarangfull;
     }
@@ -1189,14 +1199,13 @@ public class DashboardPage {
             tanamUangHyperlink.setOnMouseClicked(e -> sceneController.switchToTanamUang());
             pantauUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPantauUang());
             panenUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPanenUang());
-            logOutHyperlink.setOnMouseClicked(e -> sceneController.switchToLogin());
+            logOutHyperlink.setOnMouseClicked(e -> {
+                LoginModel loginModel = new LoginModel();
+                if (loginModel.mengaturRememberMeMenjadiFalse()) {
+                    sceneController.switchToLogin();
+                }
+            });
             modeUserHyperlink.setOnMouseClicked(e -> dashboardPage.popUpUntukModeUser());
-
-            // Rectangle region = new Rectangle(220, 85);
-            // region.setStyle("-fx-background-radius: 30 0 0 30;");
-            // region.setTranslateY(-20);
-            // region.setFill(Color.valueOf("#141F23"));
-            // // homeHyperlink.setTranslateX(10);
 
             StackPane aktifGroup = new StackPane(homeHyperlink);
             aktifGroup.setAlignment(Pos.CENTER);

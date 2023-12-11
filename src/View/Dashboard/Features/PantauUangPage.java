@@ -406,6 +406,7 @@ public class PantauUangPage {
         mainPane.getChildren().add(scrollPane);
         mainPane.setStyle("-fx-background-color: #141F23;-fx-background-radius: 30px;");
         mainPane.setMaxHeight(this.stage.getHeight() - 20);
+
         mainPane.setMinWidth(this.stage.getWidth() - 370);
         mainPane.setPadding(new Insets(0, 10, 0, 0));
         mainPane.setAlignment(Pos.CENTER);
@@ -1094,7 +1095,12 @@ public class PantauUangPage {
             tanamUangHyperlink.setOnMouseClicked(e -> sceneController.switchToTanamUang());
             pantauUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPantauUang());
             panenUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPanenUang());
-            logOutHyperlink.setOnMouseClicked(e -> sceneController.switchToLogin());
+            logOutHyperlink.setOnMouseClicked(e -> {
+                LoginModel loginModel = new LoginModel();
+                if (loginModel.mengaturRememberMeMenjadiFalse()) {
+                    sceneController.switchToLogin();
+                }
+            });
             modeUserHyperlink.setOnMouseClicked(e -> pantauUangPage.popUpUntukModeUser());
 
             StackPane aktifGroup = new StackPane(pantauUangHyperlink);
