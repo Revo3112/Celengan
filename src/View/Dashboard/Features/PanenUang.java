@@ -76,17 +76,13 @@ public class PanenUang {
     // private TextField nominalTarget;
     // private TextField keteranganBarang;
     private static TampilkanSemuaTarget model = new TampilkanSemuaTarget();
-    private static List<String> namaTargetList = model.getNamaTargetList();
-    private static List<Double> nominalTargetList = model.getNominalTargetList();
-    private static List<String> keteranganBarangList = model.getKeteranganBarangList();
+    private static List<String> namaTargetList;
+    private static List<Double> nominalTargetList;
+    private static List<String> keteranganBarangList;
     private SceneController sceneController; // Tambahkan property SceneController\
     private double saldo;
     private int userId;
     private Tooltip tooltip = new Tooltip();
-    private RefreshViewDashboard refreshViewDashboard;
-    private List<Double> nominalBarangList;
-    private List<String> tipeBarangList;
-    private List<String> tanggalBarangList;
     public StackPane root = new StackPane();
     private VBox scrollContentBox;
     StackPane mainPane = new StackPane();
@@ -99,6 +95,9 @@ public class PanenUang {
         this.saldo = getSaldo();
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
+        this.namaTargetList = model.getNamaTargetList();
+        this.nominalTargetList = model.getNominalTargetList();
+        this.keteranganBarangList = model.getKeteranganBarangList();
     }
 
     // Menampilkan halaman dashboard
@@ -122,8 +121,8 @@ public class PanenUang {
         textPane.setPadding(new Insets(0, 0, 10, 10));
 
         // Menambahkan gambar
-        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Content.png"));
-        contentImageView.setFitWidth(400);
+        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Panen_Uang/PanenUang.png"));
+        contentImageView.setFitWidth(350);
         contentImageView.setFitHeight(300);
         contentImageView.setPreserveRatio(true);
 
@@ -376,7 +375,7 @@ public class PanenUang {
         }
 
         // Membuat layout VBox untuk konten tengah bagian tengah
-        VBox kontenTengahTengah = new VBox();
+        VBox kontenTengahTengah = new VBox(scrollContentBox);
 
         Image icon = new Image("file:src/Assets/View/Login_Register/icons8-plus-50.png");
         ImageView iconView = new ImageView(icon);
@@ -401,15 +400,9 @@ public class PanenUang {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(kontenVBox);
         scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
         scrollPane.setMaxHeight(this.stage.getHeight() - 100);
-        scrollPane.setMaxWidth(this.stage.getWidth() - 100);
         scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
-
-        kontenTengahTengah.getChildren().addAll(scrollContentBox);
-        kontenTengahTengah.setMaxSize(this.stage.getWidth() - 200, this.stage.getHeight() - 100);
-        kontenTengahTengah.setStyle("-fx-background-color: #141F23; -fx-background-radius: 20;");
-        kontenTengahTengah.setPadding(new Insets(10, 10, 10, 10));
-        kontenTengahTengah.setAlignment(javafx.geometry.Pos.CENTER);
 
         String scrollbarStyle = "-fx-background-color: #141F23;";
         scrollbarStyle += "-fx-background-color: #0B1214;";
@@ -425,7 +418,7 @@ public class PanenUang {
         mainPane.getChildren().add(scrollPane);
         mainPane.setStyle("-fx-background-color: #141F23;-fx-background-radius: 30px;");
         mainPane.setMaxHeight(this.stage.getHeight() - 20);
-        mainPane.setMaxWidth(this.stage.getWidth() + 400);
+        mainPane.setMinWidth(this.stage.getWidth() - 370);
         mainPane.setPadding(new Insets(0, 10, 0, 0));
         mainPane.setAlignment(Pos.CENTER);
 
@@ -435,7 +428,7 @@ public class PanenUang {
         // Popup untuk kotak input
         StackPane kotakInput = new StackPane();
         kotakInput.getChildren().addAll(kontenKotakInput);
-        kotakInput.setMaxSize(mainPane.getMaxWidth() - 1250, mainPane.getMaxHeight() - 400);
+        kotakInput.setMaxSize(530, 400);
         kotakInput.setStyle("-fx-background-color: #263940; -fx-background-radius: 20;");
 
         // Mengatur ukuran konten kotak input
@@ -474,16 +467,18 @@ public class PanenUang {
             refreshView();
         });
 
-        RightBar rightBar = new RightBar(this.saldo, this.userId);
+        RightBarPantauUang rightBar = new RightBarPantauUang(this.saldo, this.userId);
         HBox Rightbar = rightBar.createRightBar(this.stage, sceneController);
-
+        Rightbar.setAlignment(Pos.CENTER_RIGHT);
         // Mengatur binding fitToHeight dan fitToWidth
-        scrollPane.setFitToWidth(true);
 
         HBox penggabunganMainPanedenganSideBar = new HBox(sideBar, mainPane);
         penggabunganMainPanedenganSideBar.setStyle("-fx-background-color: #0B1214;");
         penggabunganMainPanedenganSideBar.setPadding(new Insets(10, 0, 0, 0));
+
         HBox fullPane = new HBox(penggabunganMainPanedenganSideBar, Rightbar);
+        // Set horizontal grow priority for mainPane
+        HBox.setHgrow(penggabunganMainPanedenganSideBar, Priority.ALWAYS);
         fullPane.setStyle("-fx-background-color: #0B1214");
 
         root.getChildren().add(fullPane);
@@ -689,83 +684,6 @@ public class PanenUang {
 
     }
 
-    private VBox refreshViewHBox(String Kategori) {
-        this.refreshViewDashboard = new RefreshViewDashboard();
-        this.keteranganBarangList = refreshViewDashboard.getKeteranganBarangCatatList(Kategori);
-        this.nominalBarangList = refreshViewDashboard.getNominalBarangList(Kategori);
-        this.tanggalBarangList = refreshViewDashboard.getTanggalBarangList(Kategori);
-        VBox kontenHistoriKeuanganBarangfull = new VBox();
-        kontenHistoriKeuanganBarangfull.setSpacing(10);
-        kontenHistoriKeuanganBarangfull.setSpacing(10);
-        for (int i = 0; i < refreshViewDashboard.getTotalBarang(Kategori); i++) {
-            String keterangan = keteranganBarangList.get(i);
-            double nominal = nominalBarangList.get(i);
-            String tipe = Kategori;
-            String tanggal = tanggalBarangList.get(i);
-
-            Text keteranganText = createText(keterangan, "-fx-font: 15 'Poppins Bold'; -fx-fill: #FFFFFF;",
-                    0, 0);
-
-            String tampilanKeterangan = keteranganText.getText().length() > 10
-                    ? keteranganText.getText().substring(0, 10) + "..."
-                    : keteranganText.getText();
-
-            Label labelKeterangan = new Label(tampilanKeterangan);
-            labelKeterangan.setStyle("-fx-font: 15 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
-
-            // Tambahkan tooltip yang menampilkan saldo lengkap
-            Tooltip tooltipKeterangan = new Tooltip(keteranganText.getText());
-            Tooltip.install(labelKeterangan, tooltipKeterangan);
-
-            VBox keteranganStackPane = new VBox(labelKeterangan);
-            keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
-
-            Long roundedValueNominal = Math.round(nominal);
-            Text nominalText = createText(formatDuit(roundedValueNominal),
-                    "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
-
-            ImageView kondisi = new ImageView();
-            if (tipe.equals("Pemasukan")) {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
-                kondisi.setFitHeight(35);
-                kondisi.setFitWidth(100);
-                kondisi.setPreserveRatio(true);
-            } else {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PengeluaranKondisi.png");
-                kondisi.setFitHeight(35);
-                kondisi.setFitWidth(100);
-                kondisi.setPreserveRatio(true);
-            }
-
-            HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
-            gambarKondisidanNominal.setSpacing(10);
-            VBox nominalStackPane = new VBox(gambarKondisidanNominal);
-            nominalStackPane.setAlignment(Pos.CENTER);
-
-            Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
-                    0, 0);
-
-            VBox tanggalTextPane = new VBox(tanggalText);
-            tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
-
-            HBox kontenHistoriKeuanganBarang = new HBox();
-            kontenHistoriKeuanganBarang.getChildren().addAll(keteranganStackPane, nominalStackPane,
-                    gambarKondisidanNominal,
-                    tanggalTextPane);
-
-            kontenHistoriKeuanganBarang.setSpacing(80);
-            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 0, 10, 25));
-            kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
-            kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
-
-            kontenHistoriKeuanganBarangfull.getChildren().add(kontenHistoriKeuanganBarang);
-            keteranganStackPane.setMaxWidth(200);
-            nominalStackPane.setMaxWidth(200);
-            tanggalTextPane.setMaxWidth(200);
-        }
-        return kontenHistoriKeuanganBarangfull;
-    }
-
     public void popUpUntukModeUser() {
         RightBarPantauUang rightBar = new RightBarPantauUang(this.saldo, this.userId);
         StackPane modeUserPane = new StackPane(); // agar tidak duplicate
@@ -817,8 +735,12 @@ public class PanenUang {
         backgroundProfileCircle1.setFill(Color.valueOf("#FF4040"));
         Circle profileCircle1 = new Circle(35);
         profileCircle1.setFill(Color.valueOf("#141F23"));
+        ImageView profileImage1 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        profileImage1.setFitWidth(80);
+        profileImage1.setFitHeight(80);
+        profileImage1.setPreserveRatio(true);
 
-        StackPane Circle1 = new StackPane(backgroundProfileCircle1, profileCircle1);
+        StackPane Circle1 = new StackPane(backgroundProfileCircle1, profileCircle1, profileImage1);
         Circle1.setAlignment(Pos.CENTER);
 
         // Membuat teks
@@ -862,8 +784,12 @@ public class PanenUang {
         backgroundProfileCircle2.setFill(Color.valueOf("#FD9C3D"));
         Circle profileCircle2 = new Circle(35);
         profileCircle2.setFill(Color.valueOf("#141F23"));
+        ImageView profileImage2 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        profileImage2.setFitWidth(80);
+        profileImage2.setFitHeight(80);
+        profileImage2.setPreserveRatio(true);
 
-        StackPane Circle2 = new StackPane(backgroundProfileCircle2, profileCircle2);
+        StackPane Circle2 = new StackPane(backgroundProfileCircle2, profileCircle2, profileImage2);
         Circle2.setAlignment(Pos.CENTER);
 
         // Membuat teks
@@ -907,8 +833,12 @@ public class PanenUang {
         backgroundProfileCircle3.setFill(Color.valueOf("#7AFF64"));
         Circle profileCircle3 = new Circle(35);
         profileCircle3.setFill(Color.valueOf("#141F23"));
+        ImageView profileImage3 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        profileImage3.setFitWidth(80);
+        profileImage3.setFitHeight(80);
+        profileImage3.setPreserveRatio(true);
 
-        StackPane Circle3 = new StackPane(backgroundProfileCircle3, profileCircle3);
+        StackPane Circle3 = new StackPane(backgroundProfileCircle3, profileCircle3, profileImage3);
         Circle3.setAlignment(Pos.CENTER);
 
         // Membuat teks
@@ -1204,7 +1134,12 @@ public class PanenUang {
             tanamUangHyperlink.setOnMouseClicked(e -> sceneController.switchToTanamUang());
             pantauUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPantauUang());
             panenUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPanenUang());
-            logOutHyperlink.setOnMouseClicked(e -> sceneController.switchToLogin());
+            logOutHyperlink.setOnMouseClicked(e -> {
+                LoginModel loginModel = new LoginModel();
+                if (loginModel.mengaturRememberMeMenjadiFalse()) {
+                    sceneController.switchToLogin();
+                }
+            });
             modeUserHyperlink.setOnMouseClicked(e -> PanenUangPage.popUpUntukModeUser());
 
             StackPane aktifGroup = new StackPane(panenUangHyperlink);

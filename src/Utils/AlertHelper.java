@@ -1,7 +1,6 @@
 package Utils;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 // Pembuatan class AlertHelper untuk dapat digunakan berkali-kali
 public class AlertHelper {

@@ -1,0 +1,10 @@
+.chart-pie-label-line {
+    -fx-stroke: #ffffff;
+    -fx-fill: #ffffff;
+}
+
+.chart-pie-label {
+    -fx-fill: #ffffff;
+    -fx-font: 10 Poppins;
+    -fx-font-weight: medium;
+} 

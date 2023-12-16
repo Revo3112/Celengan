@@ -1,7 +1,5 @@
 package Controller;
 
-import Model.DatabaseCheckService;
-import Model.RequestNewPassword;
 import View.Dashboard.DashboardPage;
 import View.Dashboard.Features.PanenUang;
 import View.Dashboard.Features.PantauUangPage;
@@ -11,10 +9,7 @@ import View.Login_Register.PenentuSaldo;
 import View.Login_Register.RegistrationPage;
 import View.Login_Register.RequestNewPass;
 import View.Splash_Screen.SplashScreen;
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import Model.TanamUangModel;
 
 // class SceneController digunakan untuk mengatur perpindahan scene

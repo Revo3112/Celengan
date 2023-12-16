@@ -10,7 +10,8 @@
 }
 
 .progress-bar .track {
-    -fx-background-color: #82C863; /* Set the track background to black */
+    -fx-background-color: #2D464F; /* Set the track background to black */
     -fx-background-radius: 100;
+    -fx-background-border: #141C1F;
 }
 

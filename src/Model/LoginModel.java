@@ -1,6 +1,5 @@
 package Model;
 
-import Utils.AlertHelper;
 import Utils.DBConnection;
 import Utils.hashingregister;
 
@@ -295,6 +294,28 @@ public class LoginModel {
                     System.out.println("Ada saldo");
                     return true;
                 }
+            }
+        } catch (SQLException e) { // Menangkap error SQLException
+            System.out.println("Query Failed: " + e.getMessage()); // Menampikan error SQLException
+        }
+        return false;
+    }
+
+    public boolean mengaturRememberMeMenjadiFalse() {
+        try {
+            DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
+            // dengan nilai dari method getDatabaseConnection().
+            // Berguna untuk mendapat koneksi ke database
+            Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method
+                                                         // getConnection() dari object dbc
+            // Menambah datapada tabel users
+            String sql = String.format("UPDATE users SET remember_me=? WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement(sql); // Membuat statement
+            statement.setBoolean(1, false);
+            statement.setInt(2, getUserId());
+            int result = statement.executeUpdate(); // Execute query
+            if (result > 0) {
+                return true;
             }
         } catch (SQLException e) { // Menangkap error SQLException
             System.out.println("Query Failed: " + e.getMessage()); // Menampikan error SQLException
