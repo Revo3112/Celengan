@@ -10,7 +10,7 @@ public class BatasKritis {
     private static int userId;
 
     public BatasKritis(int userId) {
-        this.userId = userId;
+        BatasKritis.userId = userId;
     }
 
     // Mengambil data batas kritis dari database

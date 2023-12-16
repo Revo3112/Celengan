@@ -76,17 +76,13 @@ public class PanenUang {
     // private TextField nominalTarget;
     // private TextField keteranganBarang;
     private static TampilkanSemuaTarget model = new TampilkanSemuaTarget();
-    private static List<String> namaTargetList = model.getNamaTargetList();
-    private static List<Double> nominalTargetList = model.getNominalTargetList();
-    private static List<String> keteranganBarangList = model.getKeteranganBarangList();
+    private static List<String> namaTargetList;
+    private static List<Double> nominalTargetList;
+    private static List<String> keteranganBarangList;
     private SceneController sceneController; // Tambahkan property SceneController\
     private double saldo;
     private int userId;
     private Tooltip tooltip = new Tooltip();
-    private RefreshViewDashboard refreshViewDashboard;
-    private List<Double> nominalBarangList;
-    private List<String> tipeBarangList;
-    private List<String> tanggalBarangList;
     public StackPane root = new StackPane();
     private VBox scrollContentBox;
     StackPane mainPane = new StackPane();
@@ -99,6 +95,9 @@ public class PanenUang {
         this.saldo = getSaldo();
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
+        this.namaTargetList = model.getNamaTargetList();
+        this.nominalTargetList = model.getNominalTargetList();
+        this.keteranganBarangList = model.getKeteranganBarangList();
     }
 
     // Menampilkan halaman dashboard
@@ -683,83 +682,6 @@ public class PanenUang {
             scrollContentBox.getChildren().add(kontenItemBox); // Add VBox to scrollContentBox
         }
 
-    }
-
-    private VBox refreshViewHBox(String Kategori) {
-        this.refreshViewDashboard = new RefreshViewDashboard();
-        this.keteranganBarangList = refreshViewDashboard.getKeteranganBarangCatatList(Kategori);
-        this.nominalBarangList = refreshViewDashboard.getNominalBarangList(Kategori);
-        this.tanggalBarangList = refreshViewDashboard.getTanggalBarangList(Kategori);
-        VBox kontenHistoriKeuanganBarangfull = new VBox();
-        kontenHistoriKeuanganBarangfull.setSpacing(10);
-        kontenHistoriKeuanganBarangfull.setSpacing(10);
-        for (int i = 0; i < refreshViewDashboard.getTotalBarang(Kategori); i++) {
-            String keterangan = keteranganBarangList.get(i);
-            double nominal = nominalBarangList.get(i);
-            String tipe = Kategori;
-            String tanggal = tanggalBarangList.get(i);
-
-            Text keteranganText = createText(keterangan, "-fx-font: 15 'Poppins Bold'; -fx-fill: #FFFFFF;",
-                    0, 0);
-
-            String tampilanKeterangan = keteranganText.getText().length() > 10
-                    ? keteranganText.getText().substring(0, 10) + "..."
-                    : keteranganText.getText();
-
-            Label labelKeterangan = new Label(tampilanKeterangan);
-            labelKeterangan.setStyle("-fx-font: 15 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
-
-            // Tambahkan tooltip yang menampilkan saldo lengkap
-            Tooltip tooltipKeterangan = new Tooltip(keteranganText.getText());
-            Tooltip.install(labelKeterangan, tooltipKeterangan);
-
-            VBox keteranganStackPane = new VBox(labelKeterangan);
-            keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
-
-            Long roundedValueNominal = Math.round(nominal);
-            Text nominalText = createText(formatDuit(roundedValueNominal),
-                    "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
-
-            ImageView kondisi = new ImageView();
-            if (tipe.equals("Pemasukan")) {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
-                kondisi.setFitHeight(35);
-                kondisi.setFitWidth(100);
-                kondisi.setPreserveRatio(true);
-            } else {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PengeluaranKondisi.png");
-                kondisi.setFitHeight(35);
-                kondisi.setFitWidth(100);
-                kondisi.setPreserveRatio(true);
-            }
-
-            HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
-            gambarKondisidanNominal.setSpacing(10);
-            VBox nominalStackPane = new VBox(gambarKondisidanNominal);
-            nominalStackPane.setAlignment(Pos.CENTER);
-
-            Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
-                    0, 0);
-
-            VBox tanggalTextPane = new VBox(tanggalText);
-            tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
-
-            HBox kontenHistoriKeuanganBarang = new HBox();
-            kontenHistoriKeuanganBarang.getChildren().addAll(keteranganStackPane, nominalStackPane,
-                    gambarKondisidanNominal,
-                    tanggalTextPane);
-
-            kontenHistoriKeuanganBarang.setSpacing(80);
-            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 0, 10, 25));
-            kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
-            kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
-
-            kontenHistoriKeuanganBarangfull.getChildren().add(kontenHistoriKeuanganBarang);
-            keteranganStackPane.setMaxWidth(200);
-            nominalStackPane.setMaxWidth(200);
-            tanggalTextPane.setMaxWidth(200);
-        }
-        return kontenHistoriKeuanganBarangfull;
     }
 
     public void popUpUntukModeUser() {

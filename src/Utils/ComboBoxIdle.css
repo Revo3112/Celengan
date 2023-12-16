@@ -36,7 +36,7 @@
 }
 
 .combo-box-base {
-    -fx-background-color: #466671;
+    -fx-background-color: #ffffff;
     -fx-background-radius: 200;
     -fx-padding: 0;
 }
@@ -44,7 +44,7 @@
 
 .combo-box-base:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: #466671;
+    -fx-background-color: #ffffff;
     -fx-background-radius: 200;
 }
 
