@@ -546,7 +546,7 @@ public class DashboardPage {
             scrollPane.setFitToHeight(true);
             scrollPane.setFitToWidth(true);
             scrollPane.setMaxHeight(this.stage.getHeight() - 100);
-            scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
+        scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
 
             String scrollbarStyle = "-fx-background-color: #141F23;";
             scrollbarStyle += "-fx-background-color: #0B1214;";

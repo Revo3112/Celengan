@@ -1,0 +1,45 @@
+* {
+    -fx-primary-color: #0D1416;
+    -fx-secondary-color: #213339; 
+}
+
+
+.date-picker {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-color: #213339;
+    -fx-border-width: 2px;
+    /* -fx-pref-width: 150px; */
+}
+
+/* Background Logo Tanggal */
+.date-picker .arrow-button {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 0px 5px 5px 0px;
+    -fx-border-color: #213339;
+    -fx-border-width: 2px;
+}
+/* Logo Tanggal */
+.date-picker .arrow-button .arrow {
+	-fx-background-color: #5E8C9B;
+    -fx-pref-width: 12px;
+}
+
+/* TextField DatePicker */
+.date-picker > .text-field {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 10px 0 0 10px;
+    -fx-border-radius: 5px 0 0 5px;  
+    -fx-border-color: #213339;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: 'Poppins Medium';
+    -fx-font-size: 16px;
+}
+
+.date-picker-popup  {
+    -fx-background-color: -fx-primary-color;
+    -fx-border-color: #213339;
+    -fx-border-width: 2px;
+}

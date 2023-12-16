@@ -1,0 +1,39 @@
+/* .radio-button {
+    -fx-background-color: #0D1416;
+    -fx-border-color: #213339;
+} */
+
+.radio-button .radio {
+    -fx-border-width: 3px;
+    -fx-border-color: #213339;
+    -fx-background-color: #0D1416;
+    -fx-border-radius: 15px;
+    -fx-padding: 3px;
+}
+
+.radio-button {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: 'Poppins Medium';
+    -fx-font-size: 16;
+}
+
+.radio-button .radio:selected {
+    -fx-background-color: #D9D9D9;
+    -fx-background-image: null;
+}
+.radio-button -radio:armed {
+    -fx-background-color: #D9D9D9;
+    -fx-background-image: null;
+}
+.radio-button -radio:determinate {
+    -fx-background-color: #D9D9D9;
+    -fx-background-image: null;
+}
+.radio-button -radio:indeterminate {
+    -fx-background-color: #D9D9D9;
+    -fx-background-image: null;
+}
+.radio-button .dot {
+    -fx-background-radius: 15px;
+    -fx-padding: 8px;
+}
