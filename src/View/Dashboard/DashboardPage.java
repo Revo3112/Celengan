@@ -73,6 +73,8 @@ public class DashboardPage {
     private List<Double> nominalBarangList;
     private List<String> tipeBarangList;
     private List<String> tanggalBarangList;
+    private static Cursor hand = Cursor.cursor("HAND");
+    private static Cursor defaultCursor = Cursor.cursor("DEFAULT");
     public StackPane root = new StackPane();
     StackPane mainPane = new StackPane();
 
@@ -569,7 +571,7 @@ public class DashboardPage {
             scrollPane.setFitToHeight(true);
             scrollPane.setFitToWidth(true);
             scrollPane.setMaxHeight(this.stage.getHeight() - 100);
-        scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
+            scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
 
             String scrollbarStyle = "-fx-background-color: #141F23;";
             scrollbarStyle += "-fx-background-color: #0B1214;";
@@ -708,17 +710,27 @@ public class DashboardPage {
 
         backgroundPaneModeUserPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 30px;");
 
-        Hyperlink editBackHyperlink = new Hyperlink();
-        editBackHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Back.png")));
+        Button closeButton = createButton(28, 28, "X", "FF4646", 15, "Poppins", 30, "0F181B");
+        // BUTTON EVENTS
+        // saat di hover maka cursor berbeda
+        closeButton.setOnMouseEntered(closeEvent -> {
+            closeButton.getScene().setCursor(hand);
+            updateButton(closeButton, 28, 28, "X", "6A1B1B", 15, "Poppins", 40, "0F181B");
+        });
+        closeButton.setOnMouseExited(closeEvent -> {
+            closeButton.getScene().setCursor(defaultCursor);
+            updateButton(closeButton, 28, 28, "X", "FF4646", 15, "Poppins", 40, "0F181B");
+        });
 
-        StackPane konteneditBack = new StackPane(editBackHyperlink);
-        konteneditBack.setAlignment(Pos.CENTER);
-        konteneditBack.setPadding(new Insets(20, 0, 0, 10));
+        StackPane konteneditBack = new StackPane(closeButton);
+        konteneditBack.setAlignment(Pos.TOP_RIGHT);
+        konteneditBack.setPadding(new Insets(0, 20, 0, 0));
         StackPane konteneditTitle = new StackPane(titleEdit);
-        konteneditTitle.setAlignment(Pos.CENTER_RIGHT);
+        konteneditTitle.setAlignment(Pos.CENTER);
         konteneditTitle.setPadding(new Insets(20, 0, 0, 26));
 
-        HBox editTitleHBox = new HBox(konteneditBack, konteneditTitle);
+        HBox editTitleHBox = new HBox(konteneditTitle, konteneditBack);
+        HBox.setHgrow(konteneditTitle, Priority.ALWAYS);
         StackPane kontenKondisi = new StackPane(kondisi);
         kontenKondisi.setAlignment(Pos.CENTER);
         kontenKondisi.setStyle("-fx-background-radius: 20; -fx-background-color: #141F23");
@@ -753,16 +765,15 @@ public class DashboardPage {
         Label labelKeteranganKritis = new Label(keteranganTeksKritis);
         labelKeteranganKritis.setStyle("-fx-font: 15 'Poppins'; -fx-text-fill: #ffffff;");
 
-        // Membuat tooltip
-        Tooltip tooltipKritis = new Tooltip(teksKritis.getText());
-        tooltipKritis.setAutoHide(false);
-
         // Membuat StackPane
         StackPane teksKritisPane = new StackPane(labelKeteranganKritis);
         teksKritisPane.setAlignment(Pos.CENTER);
         teksKritisPane.setStyle("-fx-background-radius: 20; -fx-background-color: #141F23");
         teksKritisPane.setMinWidth(120);
         teksKritisPane.setMaxHeight(100);
+
+        // Membuat tooltip
+        Tooltip tooltipKritis = createCustomTooltip(teksKritis.getText());
 
         // Membuat VBox
         VBox kontenKritis = new VBox(Circle1, teksKritisPane);
@@ -775,8 +786,13 @@ public class DashboardPage {
         kontenKritis.setOnMouseEntered(event -> {
             tooltipKritis.show(kontenKritis, event.getScreenX(), event.getScreenY());
         });
+
         kontenKritis.setOnMouseExited(event -> {
             tooltipKritis.hide();
+        });
+
+        kontenKritis.setOnMouseMoved(event -> {
+            updateTooltipPosition(tooltipKritis, event.getScreenX(), event.getScreenY());
         });
 
         // Konten tengah tengah karantina
@@ -802,16 +818,14 @@ public class DashboardPage {
         Label labelKeteranganKarantina = new Label(keteranganTeksKarantina);
         labelKeteranganKarantina.setStyle("-fx-font: 15 'Poppins'; -fx-text-fill: #ffffff;");
 
-        // Membuat tooltip
-        Tooltip tooltipKarantina = new Tooltip(teksKarantina.getText());
-        tooltipKarantina.setAutoHide(false);
-
         // Membuat StackPane
         StackPane teksKarantinaPane = new StackPane(labelKeteranganKarantina);
         teksKarantinaPane.setAlignment(Pos.CENTER);
         teksKarantinaPane.setStyle("-fx-background-radius: 20; -fx-background-color: #141F23");
         teksKarantinaPane.setMinWidth(140);
         teksKarantinaPane.setMaxHeight(100);
+
+        Tooltip tooltipKarantina = createCustomTooltip(teksKarantina.getText());
 
         // Membuat VBox
         VBox kontenKarantina = new VBox(Circle2, teksKarantinaPane);
@@ -824,8 +838,13 @@ public class DashboardPage {
         kontenKarantina.setOnMouseEntered(event -> {
             tooltipKarantina.show(kontenKarantina, event.getScreenX(), event.getScreenY());
         });
+
         kontenKarantina.setOnMouseExited(event -> {
             tooltipKarantina.hide();
+        });
+
+        kontenKarantina.setOnMouseMoved(event -> {
+            updateTooltipPosition(tooltipKarantina, event.getScreenX(), event.getScreenY());
         });
 
         // Konten kanan tengah sehat
@@ -851,16 +870,14 @@ public class DashboardPage {
         Label labelKeteranganSehat = new Label(keteranganTeksSehat);
         labelKeteranganSehat.setStyle("-fx-font: 15 'Poppins'; -fx-text-fill: #ffffff;");
 
-        // Membuat tooltip
-        Tooltip tooltipSehat = new Tooltip(teksSehat.getText());
-        tooltipSehat.setAutoHide(false);
-
         // Membuat StackPane
         StackPane teksSehatPane = new StackPane(labelKeteranganSehat);
         teksSehatPane.setAlignment(Pos.CENTER);
         teksSehatPane.setStyle("-fx-background-radius: 20; -fx-background-color: #141F23");
         teksSehatPane.setMinWidth(120);
         teksSehatPane.setMaxHeight(100);
+
+        Tooltip tooltipSehat = createCustomTooltip(teksSehat.getText());
 
         // Membuat VBox
         VBox kontenSehat = new VBox(Circle3, teksSehatPane);
@@ -873,8 +890,13 @@ public class DashboardPage {
         kontenSehat.setOnMouseEntered(event -> {
             tooltipSehat.show(kontenSehat, event.getScreenX(), event.getScreenY());
         });
+
         kontenSehat.setOnMouseExited(event -> {
             tooltipSehat.hide();
+        });
+
+        kontenSehat.setOnMouseMoved(event -> {
+            updateTooltipPosition(tooltipSehat, event.getScreenX(), event.getScreenY());
         });
 
         /*
@@ -893,7 +915,7 @@ public class DashboardPage {
 
         // Pembuatan konten kiri
 
-        Text titleKontenKiri = createText("Atur Bata Kritis,", "-fx-font: 25 'Poppins Regular'; -fx-fill: #FFFFFF;", 0,
+        Text titleKontenKiri = createText("Atur Batas Kritis,", "-fx-font: 25 'Poppins Regular'; -fx-fill: #FFFFFF;", 0,
                 0);
 
         StackPane kontenKiriAtas = new StackPane(titleKontenKiri);
@@ -1031,10 +1053,50 @@ public class DashboardPage {
 
         this.mainPane.getChildren().add(backgroundPaneModeUserPane);
 
-        editBackHyperlink.setOnMouseClicked(e -> {
+        closeButton.setOnMouseClicked(e -> {
             this.mainPane.getChildren().remove(backgroundPaneModeUserPane);
         });
 
+    }
+
+    private static void updateButton(Button btn, int width, int height, String text, String bgColor,
+            int fontSize, String font,
+            int radius, String textFill) {
+        btn.setPrefSize(width, height);
+        btn.setText(text);
+        btn.setStyle(
+                "-fx-background-color: #" + bgColor + ", transparent; " +
+                        "-fx-font: " + fontSize + " " + font + "; " +
+                        "-fx-text-fill: #" + textFill + ";" +
+                        "-fx-background-radius: " + radius + ";" +
+                        "-fx-padding: 0;");
+    }
+
+    private static Button createButton(int width, int height, String text, String bgColor, int fontSize,
+            String font,
+            int radius, String textFill) {
+        Button button = new Button();
+        button.setPrefSize(width, height);
+        button.setText(text);
+        button.setStyle(
+                "-fx-background-color: #" + bgColor + ", transparent; " +
+                        "-fx-font: " + fontSize + " " + font + "; " +
+                        "-fx-text-fill: #" + textFill + ";" +
+                        "-fx-background-radius: " + radius + ";" +
+                        "-fx-padding: 0;");
+        return button;
+    }
+
+    private void updateTooltipPosition(Tooltip tooltip, double x, double y) {
+        tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
+        tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
+    }
+
+    private Tooltip createCustomTooltip(String content) {
+        Tooltip tooltip = new Tooltip(content);
+        tooltip.setStyle("-fx-font: 15 'Poppins'; -fx-background-color: #141F23;");
+        tooltip.setAutoHide(false);
+        return tooltip;
     }
 
     private boolean updateKritis(double inputKritis) {
@@ -1224,7 +1286,9 @@ public class DashboardPage {
             // Membuat masing masing Text dan Image pada side bar dengan menggunakan HBOX
 
             Text homePageText = createText("Home", "-fx-font: 20 'Poppins'; -fx-fill: #ffffff;", 0, 0);
-            HBox homePageHBox = new HBox(homePageImageView, homePageText);
+            StackPane homePageTextPane = new StackPane(homePageText);
+            homePageTextPane.setAlignment(Pos.CENTER_LEFT);
+            HBox homePageHBox = new HBox(homePageImageView, homePageTextPane);
             homePageHBox.setSpacing(10);
             homePageHBox.setAlignment(Pos.CENTER_LEFT);
 
