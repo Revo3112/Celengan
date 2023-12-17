@@ -3,6 +3,7 @@ package View.Login_Register;
 import Controller.SceneController;
 import Model.RequestNewPassword;
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -187,16 +188,57 @@ public class RequestNewPass {
         dropDownBtn.setOnAction(e -> {
             String selectedItem = dropDownBtn.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
-                // Perform the switch after the fade out animation completes
-                switch (selectedItem) {
-                    case "Login Page":
-                        sceneController.switchToLogin();
-                        break;
-                    case "Register Page":
-                        sceneController.switchToRegistration();
-                        break;
-                    default:
-                        // Handle other cases if needed
+                if ("Register Page".equals(selectedItem) || "Login Page".equals(selectedItem)) {
+                    // membuat rectangle base loading
+                    Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
+                            Color.valueOf("#101C22"));
+                    // asset gif
+                    ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
+                    kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
+
+                    Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
+                    loadingText.setTranslateY(loadingText.getTranslateY() + 70);
+
+                    Text tipsText = createText("Penting untuk jaga keuangan dan kesehatanmu!", 20,
+                            "Poppins; -fx-font-weight: 500;", "ffffff");
+                    tipsText.setTranslateY(loadingText.getTranslateY() + 60);
+
+                    Rectangle border = new Rectangle(400, 400);
+                    border.setFill(Color.TRANSPARENT);
+                    border.setStroke(Color.valueOf("#101C22"));
+                    border.setStrokeWidth(5);
+                    border.setTranslateY(kukooAnim.getTranslateY());
+
+                    StackPane loadingAnimation = new StackPane();
+                    loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
+
+                    root.getChildren().add(loadingAnimation);
+
+                    FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
+                    fadeIn.setFromValue(0.0);
+                    fadeIn.setToValue(1.0);
+
+                    Timeline timeline = new Timeline(
+                            new KeyFrame(Duration.seconds(2), event -> {
+                                // Code to execute after approximately 2 seconds
+                                switch (selectedItem) {
+                                    case "Register Page":
+                                        sceneController.switchToRegistration();
+                                        break;
+                                    case "Login Page":
+                                        sceneController.switchToLogin();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }));
+                    timeline.setCycleCount(1); // Set to 1 for a single loop
+
+                    fadeIn.setOnFinished(event -> {
+                        timeline.play();
+                    });
+
+                    fadeIn.play();
                 }
             }
         });

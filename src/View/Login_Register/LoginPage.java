@@ -5,6 +5,8 @@ import java.util.List;
 
 import Controller.SceneController;
 import Model.*;
+import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -224,16 +226,57 @@ public class LoginPage {
         dropDownBtn.setOnAction(e -> {
             String selectedItem = dropDownBtn.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
-                // Perform the switch after the fade out animation completes
-                switch (selectedItem) {
-                    case "Register Page":
-                        sceneController.switchToRegistration();
-                        break;
-                    case "Request New Password":
-                        sceneController.switchToRequestNewPassword();
-                        break;
-                    default:
-                        // Handle other cases if needed
+                if ("Register Page".equals(selectedItem) || "Request New Password".equals(selectedItem)) {
+                    // membuat rectangle base loading
+                    Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
+                            Color.valueOf("#101C22"));
+                    // asset gif
+                    ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
+                    kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
+
+                    Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
+                    loadingText.setTranslateY(loadingText.getTranslateY() + 70);
+
+                    Text tipsText = createText("Nabung Celengan setiap hari membuatmu punya tabungan darurat!", 20,
+                            "Poppins; -fx-font-weight: 500;", "ffffff");
+                    tipsText.setTranslateY(loadingText.getTranslateY() + 60);
+
+                    Rectangle border = new Rectangle(400, 400);
+                    border.setFill(Color.TRANSPARENT);
+                    border.setStroke(Color.valueOf("#101C22"));
+                    border.setStrokeWidth(5);
+                    border.setTranslateY(kukooAnim.getTranslateY());
+
+                    StackPane loadingAnimation = new StackPane();
+                    loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
+
+                    root.getChildren().add(loadingAnimation);
+
+                    FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
+                    fadeIn.setFromValue(0.0);
+                    fadeIn.setToValue(1.0);
+
+                    Timeline timeline = new Timeline(
+                            new KeyFrame(Duration.seconds(2), event -> {
+                                // Code to execute after approximately 2 seconds
+                                switch (selectedItem) {
+                                    case "Register Page":
+                                        sceneController.switchToRegistration();
+                                        break;
+                                    case "Request New Password":
+                                        sceneController.switchToRequestNewPassword();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }));
+                    timeline.setCycleCount(1); // Set to 1 for a single loop
+
+                    fadeIn.setOnFinished(event -> {
+                        timeline.play();
+                    });
+
+                    fadeIn.play();
                 }
             }
         });
@@ -534,17 +577,44 @@ public class LoginPage {
         root.getChildren().addAll(topSection, mainContent);
         root.setStyle("-fx-background-color: #141F23;");
 
-        // Membuat Scene dengan latar belakang transparent
         Scene scene = new Scene(root, this.stage.getWidth(), this.stage.getHeight());
+
+        // membuat rectangle base loading
+        Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(), Color.valueOf("#101C22"));
+        // asset gif
+        ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
+        kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
+
+        Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
+        loadingText.setTranslateY(loadingText.getTranslateY() + 70);
+
+        Text tipsText = createText("Nabung Celengan setiap hari membuatmu punya tabungan darurat!", 20,
+                "Poppins; -fx-font-weight: 500;", "ffffff");
+        tipsText.setTranslateY(loadingText.getTranslateY() + 60);
+
+        Rectangle border = new Rectangle(400, 400);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.valueOf("#101C22"));
+        border.setStrokeWidth(5);
+        border.setTranslateY(kukooAnim.getTranslateY());
+
+        StackPane loadingAnimation = new StackPane();
+        loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
+
+        // agar clickable
+        loadingAnimation.setMouseTransparent(true);
+        root.getChildren().add(loadingAnimation);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(3100), loadingAnimation);
+        fadeIn.setFromValue(1.0);
+        fadeIn.setToValue(0.0);
+        fadeIn.play();
+
+        stage.setScene(scene); // menetapkan scene dari sebuah stage
+        // Membuat Scene dengan latar belakang transparent
         scene.getStylesheets()
                 .addAll("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
-        // Memberikan judul pada stage
-        // if (this.stage.getStyle() != StageStyle.UNDECORATED) {
-        // this.stage.initStyle(StageStyle.UNDECORATED);
-        // }
         stage.setMaximized(true);
-        stage.setScene(scene); // menetapkan scene dari sebuah stage
-        stage.show(); // menampilkan stage
         /* END OF UI/UX */
     }
 
@@ -718,13 +788,30 @@ public class LoginPage {
 
     // memainkan timeline untuk chat error
     private void chatErrorTimeline_IN(ImageView chatError) {
-        chatError.setTranslateY(chatError.getTranslateY() - 280);
-        chatError.setTranslateX(chatError.getTranslateX() - 210);
+        chatError.setTranslateY(-360);
+        chatError.setTranslateX(-210);
         chatError.setOpacity(0);
         // timeline animasi untuk chat ayam fade in
         Timeline fadeChatError_IN = new Timeline(
                 new KeyFrame(Duration.millis(700),
-                        new KeyValue(chatError.opacityProperty(), 1)));
+                        new KeyValue(chatError.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(400),
+                        new KeyValue(chatError.translateYProperty(), -280,
+                                Interpolator.EASE_BOTH)));
+        if (fadeChatError_IN != null) {
+            fadeChatError_IN.stop(); // Stop the animation if it's already running
+            chatError.translateYProperty().set(-360); // Reset translateY to original Y
+            chatError.opacityProperty().set(0); // Reset translateY to original Y
+            // position
+        }
+        fadeChatError_IN.setOnFinished(event -> {
+            // Handle any additional actions after the fade-in animation is finished
+        });
+
+        // Stop the animation if it's already running
+        if (fadeChatError_IN != null && fadeChatError_IN.getStatus() == Animation.Status.RUNNING) {
+            fadeChatError_IN.stop();
+        }
         fadeChatError_IN.play();
     }
 
