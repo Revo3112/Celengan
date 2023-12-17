@@ -115,15 +115,28 @@ public class PantauUangPage {
         // Membuat teks welcome
         Text welcome = createText("Selamat Datang di Pantau Uang,\n",
                 "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
-        Text name = createText(this.username, "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 10);
+        Text name = createText(this.username, "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 0);
+
+        StackPane namPane = new StackPane(name);
+        namPane.setAlignment(Pos.BOTTOM_LEFT);
+        namPane.setPadding(new Insets(40, 0, 0, 0));
+
+        StackPane welcomePane = new StackPane(welcome);
+        welcomePane.setAlignment(Pos.TOP_LEFT);
+        welcomePane.setPadding(new Insets(0, 0, 0, 0));
+
+        VBox kontenTeks = new VBox(welcomePane, namPane);
+        kontenTeks.setSpacing(2);
+        kontenTeks.setPadding(new Insets(0, 0, 10, 10));
+        kontenTeks.setAlignment(Pos.CENTER_LEFT);
 
         // StackPane untuk menampung teks
-        StackPane textPane = new StackPane(welcome, name);
+        StackPane textPane = new StackPane(kontenTeks);
         textPane.setAlignment(Pos.CENTER_LEFT);
         textPane.setPadding(new Insets(0, 0, 10, 10));
 
         // Menambahkan gambar
-        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Pantau_Uang/Content.png"));
+        ImageView contentImageView = new ImageView(new Image("/Assets/View/Pantau_Uang/Content.png"));
         contentImageView.setFitWidth(350);
         contentImageView.setFitHeight(250);
         contentImageView.setPreserveRatio(true);
@@ -217,7 +230,7 @@ public class PantauUangPage {
         comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBoxIdle.css").toExternalForm());
 
         // Membuat tombol restart default
-        ImageView restartDefault = new ImageView(new Image("file:src/Assets/View/Pantau_Uang/restart.png"));
+        ImageView restartDefault = new ImageView(new Image("/Assets/View/Pantau_Uang/restart.png"));
         restartDefault.setFitHeight(20);
         restartDefault.setFitWidth(20);
         restartDefault.setPreserveRatio(true);
@@ -244,7 +257,7 @@ public class PantauUangPage {
          * Pembuatan konten untuk menampilkan hasil query data pantau uang
          */
         if (getTotalBarangyangDIbeli() == 0) {
-            ImageView ayamSedih = new ImageView("file:src/Assets/View/Pantau_Uang/ayamsedih.png");
+            ImageView ayamSedih = new ImageView("/Assets/View/Pantau_Uang/ayamsedih.png");
             ayamSedih.setFitHeight(400);
             ayamSedih.setFitWidth(400);
             ayamSedih.setPreserveRatio(true);
@@ -312,12 +325,12 @@ public class PantauUangPage {
 
                 ImageView kondisi = new ImageView();
                 if (tipe.equals("pemasukan")) {
-                    kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
+                    kondisi = new ImageView("/Assets/View/Dashboard/PemasukanKondisi.png");
                     kondisi.setFitHeight(35);
                     kondisi.setFitWidth(100);
                     kondisi.setPreserveRatio(true);
                 } else {
-                    kondisi = new ImageView("file:src/Assets/View/Dashboard/PengeluaranKondisi.png");
+                    kondisi = new ImageView("/Assets/View/Dashboard/PengeluaranKondisi.png");
                     kondisi.setFitHeight(35);
                     kondisi.setFitWidth(100);
                     kondisi.setPreserveRatio(true);
@@ -509,12 +522,12 @@ public class PantauUangPage {
 
             ImageView kondisi = new ImageView();
             if (tipe.equals("Pemasukan")) {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
+                kondisi = new ImageView("/Assets/View/Dashboard/PemasukanKondisi.png");
                 kondisi.setFitHeight(35);
                 kondisi.setFitWidth(100);
                 kondisi.setPreserveRatio(true);
             } else {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PengeluaranKondisi.png");
+                kondisi = new ImageView("/Assets/View/Dashboard/PengeluaranKondisi.png");
                 kondisi.setFitHeight(35);
                 kondisi.setFitWidth(100);
                 kondisi.setPreserveRatio(true);
@@ -711,7 +724,7 @@ public class PantauUangPage {
         backgroundProfileCircle1.setFill(Color.valueOf("#FF4040"));
         Circle profileCircle1 = new Circle(35);
         profileCircle1.setFill(Color.valueOf("#141F23"));
-        ImageView profileImage1 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        ImageView profileImage1 = new ImageView(new Image("/Assets/View/Dashboard/profile.png"));
         profileImage1.setFitWidth(80);
         profileImage1.setFitHeight(80);
         profileImage1.setPreserveRatio(true);
@@ -764,7 +777,7 @@ public class PantauUangPage {
         backgroundProfileCircle2.setFill(Color.valueOf("#FD9C3D"));
         Circle profileCircle2 = new Circle(35);
         profileCircle2.setFill(Color.valueOf("#141F23"));
-        ImageView profileImage2 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        ImageView profileImage2 = new ImageView(new Image("/Assets/View/Dashboard/profile.png"));
         profileImage2.setFitWidth(80);
         profileImage2.setFitHeight(80);
         profileImage2.setPreserveRatio(true);
@@ -816,7 +829,7 @@ public class PantauUangPage {
         backgroundProfileCircle3.setFill(Color.valueOf("#7AFF64"));
         Circle profileCircle3 = new Circle(35);
         profileCircle3.setFill(Color.valueOf("#141F23"));
-        ImageView profileImage3 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        ImageView profileImage3 = new ImageView(new Image("/Assets/View/Dashboard/profile.png"));
         profileImage3.setFitWidth(80);
         profileImage3.setFitHeight(80);
         profileImage3.setPreserveRatio(true);
@@ -947,7 +960,7 @@ public class PantauUangPage {
             }
         });
 
-        ImageView saveImage = new ImageView("file:src/Assets/View/Dashboard/Simpan.png");
+        ImageView saveImage = new ImageView("/Assets/View/Dashboard/Simpan.png");
         saveImage.setFitWidth(200);
         saveImage.setFitHeight(60);
         saveImage.setPreserveRatio(true);
@@ -1115,19 +1128,19 @@ public class PantauUangPage {
 
         public VBox createImageLinkVBox(Stage stage, SceneController sceneController) {
             // Gunakan ImageView untuk semua pilihan di Sidebar
-            ImageView logoImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
+            ImageView logoImageView = new ImageView(new Image("/Assets/View/Dashboard/Logo.png"));
             logoImageView.setFitWidth(240);
             logoImageView.setFitHeight(70);
             logoImageView.setPreserveRatio(true);
 
-            ImageView homePageImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
-            ImageView tanamUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Tanam Uang.png"));
-            ImageView pantauUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Pantau Uang.png"));
-            ImageView panenUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Panen Uang.png"));
-            ImageView modeUser = new ImageView("file:src/Assets/View/Dashboard/Mode User.png");
+            ImageView homePageImageView = new ImageView(new Image("/Assets/View/Dashboard/HomePage.png"));
+            ImageView tanamUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Tanam Uang.png"));
+            ImageView pantauUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Pantau Uang.png"));
+            ImageView panenUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Panen Uang.png"));
+            ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
             ImageView MulaiMencatatSekarang = new ImageView(
-                    "file:src/Assets/View/Dashboard/MulaiMencatatSekarang!.png");
-            ImageView logOut = new ImageView("file:src/Assets/View/Dashboard/Log Out.png");
+                    "/Assets/View/Dashboard/MulaiMencatatSekarang!.png");
+            ImageView logOut = new ImageView("/Assets/View/Dashboard/Log Out.png");
 
             // Menyesuaikan ukuran ImageView
             homePageImageView.setFitWidth(30);
@@ -1441,7 +1454,7 @@ class RightBarPantauUang {
         profileCircle.setFill(Color.valueOf("#141F23"));
 
         // Membuat foto profil
-        ImageView profileImage = new ImageView(new Image("file:src/Assets/View/Dashboard/Profile.png"));
+        ImageView profileImage = new ImageView(new Image("/Assets/View/Dashboard/Profile.png"));
         profileImage.setFitWidth(80);
         profileImage.setFitHeight(80);
         profileImage.setPreserveRatio(true);

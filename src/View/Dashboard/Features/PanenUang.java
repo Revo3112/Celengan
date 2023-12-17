@@ -127,7 +127,7 @@ public class PanenUang {
         textPane.setPadding(new Insets(0, 0, 10, 10));
 
         // Menambahkan gambar
-        ImageView contentImageView = new ImageView(new Image("file:src/Assets/View/Panen_Uang/PanenUang.png"));
+        ImageView contentImageView = new ImageView(new Image("/Assets/View/Panen_Uang/PanenUang.png"));
         contentImageView.setFitWidth(350);
         contentImageView.setFitHeight(300);
         contentImageView.setPreserveRatio(true);
@@ -154,7 +154,7 @@ public class PanenUang {
 
         // Menambah target
         Hyperlink tambahTargetHyperlink = new Hyperlink();
-        tambahTargetHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Tambah.png")));
+        tambahTargetHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Tambah.png")));
 
         HBox kontenTengahAtas = new HBox(titleKontenTengah, tambahTargetHyperlink);
         // kontenTengahAtas.setPadding(new Insets(0, 0, 0, 20)); // Memberi padding di
@@ -168,7 +168,7 @@ public class PanenUang {
         titleKotakInput.setStyle("-fx-font: 24 'Poppins Bold'; -fx-fill: #FFFFFF");
         // titleKotakInput.setFill(Color.valueOf("#FFFFFF"));
         Hyperlink backHyperlink = new Hyperlink();
-        backHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Back.png")));
+        backHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
         HBox hboxTitleKotakInput = new HBox(backHyperlink, titleKotakInput);
         hboxTitleKotakInput.setSpacing(20);
 
@@ -204,7 +204,7 @@ public class PanenUang {
 
         Button buttonBatalTarget = new Button("Batal"); // Tombol untuk membatalkan penambahan target
         Hyperlink tambahHyperlink = new Hyperlink();
-        ImageView imageTambah = new ImageView(new Image("file:src/Assets/View/Dashboard/TambahPanen.png"));
+        ImageView imageTambah = new ImageView(new Image("/Assets/View/Dashboard/TambahPanen.png"));
         imageTambah.setFitWidth(100);
         imageTambah.setFitHeight(80);
         imageTambah.setPreserveRatio(true);
@@ -230,7 +230,7 @@ public class PanenUang {
         buttonKotakInput.setAlignment(Pos.CENTER);
         buttonKotakInput.setSpacing(20);
 
-        Image iconSilang = new Image("file:src/Assets/View/Login_Register/icons8-cross-mark-48.png");
+        Image iconSilang = new Image("/Assets/View/Login_Register/icons8-cross-mark-48.png");
         ImageView iconSilangView = new ImageView(iconSilang);
 
         // Supaya ada efek koma ketika user memasukan input kedalam field nominal target
@@ -348,7 +348,7 @@ public class PanenUang {
 
             // Icon untuk menghapus item
             Hyperlink deleteHyperlink = new Hyperlink();
-            deleteHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Delete.png")));
+            deleteHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Delete.png")));
             deleteHyperlink.setOnAction(e -> {
                 HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
                 if (hapusTargetModel.start()) {
@@ -383,7 +383,7 @@ public class PanenUang {
         // Membuat layout VBox untuk konten tengah bagian tengah
         VBox kontenTengahTengah = new VBox(scrollContentBox);
 
-        Image icon = new Image("file:src/Assets/View/Login_Register/icons8-plus-50.png");
+        Image icon = new Image("/Assets/View/Login_Register/icons8-plus-50.png");
         ImageView iconView = new ImageView(icon);
         iconView.toFront();
 
@@ -656,7 +656,7 @@ public class PanenUang {
 
             // Icon untuk menghapus item
             Hyperlink deleteHyperlink = new Hyperlink();
-            deleteHyperlink.setGraphic(new ImageView(new Image("file:src/Assets/View/Dashboard/Delete.png")));
+            deleteHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Delete.png")));
             deleteHyperlink.setOnAction(e -> {
                 HapusTarget hapusTargetModel = new HapusTarget(namaTarget);
                 if (hapusTargetModel.start()) {
@@ -751,7 +751,7 @@ public class PanenUang {
         backgroundProfileCircle1.setFill(Color.valueOf("#FF4040"));
         Circle profileCircle1 = new Circle(35);
         profileCircle1.setFill(Color.valueOf("#141F23"));
-        ImageView profileImage1 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        ImageView profileImage1 = new ImageView(new Image("/Assets/View/Dashboard/profile.png"));
         profileImage1.setFitWidth(80);
         profileImage1.setFitHeight(80);
         profileImage1.setPreserveRatio(true);
@@ -804,7 +804,7 @@ public class PanenUang {
         backgroundProfileCircle2.setFill(Color.valueOf("#FD9C3D"));
         Circle profileCircle2 = new Circle(35);
         profileCircle2.setFill(Color.valueOf("#141F23"));
-        ImageView profileImage2 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        ImageView profileImage2 = new ImageView(new Image("/Assets/View/Dashboard/profile.png"));
         profileImage2.setFitWidth(80);
         profileImage2.setFitHeight(80);
         profileImage2.setPreserveRatio(true);
@@ -856,7 +856,7 @@ public class PanenUang {
         backgroundProfileCircle3.setFill(Color.valueOf("#7AFF64"));
         Circle profileCircle3 = new Circle(35);
         profileCircle3.setFill(Color.valueOf("#141F23"));
-        ImageView profileImage3 = new ImageView(new Image("file:src/Assets/View/Dashboard/profile.png"));
+        ImageView profileImage3 = new ImageView(new Image("/Assets/View/Dashboard/profile.png"));
         profileImage3.setFitWidth(80);
         profileImage3.setFitHeight(80);
         profileImage3.setPreserveRatio(true);
@@ -987,7 +987,7 @@ public class PanenUang {
             }
         });
 
-        ImageView saveImage = new ImageView("file:src/Assets/View/Dashboard/Simpan.png");
+        ImageView saveImage = new ImageView("/Assets/View/Dashboard/Simpan.png");
         saveImage.setFitWidth(200);
         saveImage.setFitHeight(60);
         saveImage.setPreserveRatio(true);
@@ -1155,19 +1155,19 @@ public class PanenUang {
 
         public VBox createImageLinkVBox(Stage stage, SceneController sceneController) {
             // Gunakan ImageView untuk semua pilihan di Sidebar
-            ImageView logoImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Logo.png"));
+            ImageView logoImageView = new ImageView(new Image("/Assets/View/Dashboard/Logo.png"));
             logoImageView.setFitWidth(240);
             logoImageView.setFitHeight(70);
             logoImageView.setPreserveRatio(true);
 
-            ImageView homePageImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/HomePage.png"));
-            ImageView tanamUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Tanam Uang.png"));
-            ImageView pantauUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Pantau Uang.png"));
-            ImageView panenUangImageView = new ImageView(new Image("file:src/Assets/View/Dashboard/Panen Uang.png"));
-            ImageView modeUser = new ImageView("file:src/Assets/View/Dashboard/Mode User.png");
+            ImageView homePageImageView = new ImageView(new Image("/Assets/View/Dashboard/HomePage.png"));
+            ImageView tanamUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Tanam Uang.png"));
+            ImageView pantauUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Pantau Uang.png"));
+            ImageView panenUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Panen Uang.png"));
+            ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
             ImageView MulaiMencatatSekarang = new ImageView(
-                    "file:src/Assets/View/Dashboard/MulaiMencatatSekarang!.png");
-            ImageView logOut = new ImageView("file:src/Assets/View/Dashboard/Log Out.png");
+                    "/Assets/View/Dashboard/MulaiMencatatSekarang!.png");
+            ImageView logOut = new ImageView("/Assets/View/Dashboard/Log Out.png");
 
             // Menyesuaikan ukuran ImageView
             homePageImageView.setFitWidth(30);
@@ -1481,7 +1481,7 @@ class RightBarPanenUang {
         profileCircle.setFill(Color.valueOf("#141F23"));
 
         // Membuat foto profil
-        ImageView profileImage = new ImageView(new Image("file:src/Assets/View/Dashboard/Profile.png"));
+        ImageView profileImage = new ImageView(new Image("/Assets/View/Dashboard/Profile.png"));
         profileImage.setFitWidth(50);
         profileImage.setFitHeight(50);
         profileImage.setPreserveRatio(true);
