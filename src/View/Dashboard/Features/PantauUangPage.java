@@ -113,21 +113,21 @@ public class PantauUangPage {
         VBox.setVgrow(sideBar, Priority.ALWAYS);
 
         // Membuat teks welcome
-        Text welcome = createText("Selamat Datang di Pantau Uang,\n",
+        Text welcome = createText("Selamat Datang di Pantau Uang,",
                 "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
         Text name = createText(this.username, "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 0);
 
         StackPane namPane = new StackPane(name);
-        namPane.setAlignment(Pos.BOTTOM_LEFT);
-        namPane.setPadding(new Insets(40, 0, 0, 0));
+        namPane.setAlignment(Pos.TOP_LEFT);
+        namPane.setPadding(new Insets(0, 0, 30, 0));
 
         StackPane welcomePane = new StackPane(welcome);
-        welcomePane.setAlignment(Pos.TOP_LEFT);
-        welcomePane.setPadding(new Insets(0, 0, 0, 0));
+        welcomePane.setAlignment(Pos.BOTTOM_LEFT);
+        welcomePane.setPadding(new Insets(60, 0, 0, 0));
 
         VBox kontenTeks = new VBox(welcomePane, namPane);
         kontenTeks.setSpacing(2);
-        kontenTeks.setPadding(new Insets(0, 0, 10, 10));
+        kontenTeks.setPadding(new Insets(0, 0, 0, 10));
         kontenTeks.setAlignment(Pos.CENTER_LEFT);
 
         // StackPane untuk menampung teks
