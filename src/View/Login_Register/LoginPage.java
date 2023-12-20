@@ -30,7 +30,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -86,13 +89,18 @@ public class LoginPage {
     double awanErrorTargetY = awanErrorOriginY - 500;
     List<ImageView> listChatErrorAyam;
 
+    // user id
+    private int user_id;
+
     StackPane root = new StackPane(); // stackpane root
 
     // Melakukan inisiasi class LoginPage dengan parameter stage
     public LoginPage(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
         sceneController = new SceneController(stage);
-
+        // user id from login model
+        LoginModel user = new LoginModel();
+        this.user_id = user.getUserId();
         // Set the application icon
         Image icon = new Image("Assets/View/Splash_Screen/images/logo/celengan_image_logo.png");
         this.stage.getIcons().add(icon); // Menambahkan icon ke dalam stage
@@ -605,7 +613,7 @@ public class LoginPage {
         loadingAnimation.setMouseTransparent(true);
         root.getChildren().add(loadingAnimation);
 
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(3100), loadingAnimation);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(2000), loadingAnimation);
         fadeIn.setFromValue(1.0);
         fadeIn.setToValue(0.0);
         fadeIn.play();
@@ -616,6 +624,57 @@ public class LoginPage {
                 .addAll("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
         stage.setMaximized(true);
         /* END OF UI/UX */
+    }
+
+    /* SALDO DAN MODE KRITIS */
+    private void handleInputSaldodanMode(int saldo, int modeKritis) {
+        InputSaldodanMode inputSaldodanMode = new InputSaldodanMode(saldo, modeKritis, this.user_id);
+        if (inputSaldodanMode.setSaldo()) {
+            SceneController sceneController = new SceneController(this.stage);
+            // membuat rectangle base loading
+            Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
+                    Color.valueOf("#101C22"));
+            // asset gif
+            ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
+            kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
+
+            Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
+            loadingText.setTranslateY(loadingText.getTranslateY() + 70);
+
+            Text tipsText = createText("Nabung Celengan setiap hari membuatmu punya tabungan darurat!", 20,
+                    "Poppins; -fx-font-weight: 500;", "ffffff");
+            tipsText.setTranslateY(loadingText.getTranslateY() + 60);
+
+            Rectangle border = new Rectangle(400, 400);
+            border.setFill(Color.TRANSPARENT);
+            border.setStroke(Color.valueOf("#101C22"));
+            border.setStrokeWidth(5);
+            border.setTranslateY(kukooAnim.getTranslateY());
+
+            StackPane loadingAnimation = new StackPane();
+            loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
+
+            root.getChildren().add(loadingAnimation);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.seconds(2), event -> {
+                        sceneController.switchToDashboard();
+                    }));
+            timeline.setCycleCount(1); // Set to 1 for a single loop
+
+            fadeIn.setOnFinished(event -> {
+                timeline.play();
+            });
+
+            fadeIn.play();
+
+        } else {
+            System.out.println("Gagal");
+        }
     }
 
     /* BUTTON METHODS */
@@ -706,7 +765,113 @@ public class LoginPage {
             if (login.penentuApakahSudahAdaSaldo()) {
                 sceneController.switchToDashboard(); // Merubah scene menuju dashboard
             } else {
-                sceneController.switchToBuatSaldoDanModeKritis(); // Merubah scene menuju BuatSaldoDanModeKritis
+                // membuat dark background overlay
+                Rectangle bgOverlay = new Rectangle(this.stage.getWidth(), this.stage.getHeight(), Color.BLACK);
+
+                // membuat bg saldoModeInput
+                Rectangle saldoModeInputBG = new Rectangle(800, 500, Color.valueOf("#AD7AFF"));
+                saldoModeInputBG.setArcWidth(40);
+                saldoModeInputBG.setArcHeight(40);
+
+                // text keterangan
+                Text headerText = createText("Tunggu Dulu!", 48, "Poppins; -fx-padding: 10 0 0 0;", "000000");
+                // text deskripsi
+                Text descText = new Text(
+                        "Sebelum masuk ke halaman dashboard, kamu\nperlu untuk memasukkan saldo awal dari batas\nkritismu terlebih dahulu!");
+                descText.setTextAlignment(TextAlignment.CENTER);
+                descText.setFont(Font.font("Poppins Regular", FontWeight.NORMAL, 20));
+                descText.setFill(Color.valueOf("000000"));
+
+                // text saldo awal
+                Text saldoAwalText = createText("Saldo Awal", 25, "Poppins", "000000");
+                ImageView saldoIcon = createImage(logRegPath + "wallet.png", 35, 35);
+                // satukan ke hbox
+                HBox saldoElement = new HBox(5);
+                saldoElement.getChildren().addAll(saldoIcon, saldoAwalText);
+                saldoElement.setAlignment(Pos.CENTER);
+
+                // membuat field untuk input saldo
+                TextField fieldSaldo = new TextField();
+                fieldSaldo.setMaxWidth(saldoModeInputBG.getWidth() - 400);
+                fieldSaldo.setMaxHeight(120);
+                fieldSaldo.setStyle(
+                        "-fx-background-radius: 30;" +
+                                "-fx-background-color: #35136C;" +
+                                "-fx-font: 23 Poppins;" +
+                                "-fx-border-color: #8A43FF;" +
+                                "-fx-border-width: 3;" +
+                                "-fx-border-radius: 30;" +
+                                "-fx-text-fill: white;");
+
+                // text batas kritis
+                Text batasKritisText = createText("Batas Kritis", 25, "Poppins", "000000");
+                ImageView batasIcon = createImage(logRegPath + "batas.png", 35, 35);
+                // satukan ke hbox
+                HBox batasKritisElement = new HBox(5);
+                batasKritisElement.getChildren().addAll(batasIcon, batasKritisText);
+                batasKritisElement.setAlignment(Pos.CENTER);
+
+                // membuat field untuk input batas kritis
+                TextField fieldModeKritis = new TextField();
+                fieldModeKritis.setMaxWidth(saldoModeInputBG.getWidth() - 400);
+                fieldModeKritis.setMaxHeight(120);
+                fieldModeKritis.setStyle(
+                        "-fx-background-radius: 30;" +
+                                "-fx-background-color: #35136C;" +
+                                "-fx-font: 23 Poppins;" +
+                                "-fx-border-color: #8A43FF;" +
+                                "-fx-border-width: 3;" +
+                                "-fx-border-radius: 30;" +
+                                "-fx-text-fill: white;");
+
+                // button simpan
+                Button simpanButton = createButton(150, 60, "Simpan",
+                        "AD7AFF", 25, "Poppins", 90, "000000");
+                simpanButton.setStyle(simpanButton.getStyle()
+                        + "-fx-border-color: #000000; -fx-border-width: 3;-fx-border-radius: 30;");
+
+                // wrap in vbox
+                VBox saldoModePane = new VBox(10);
+                saldoModePane.getChildren().addAll(headerText, descText, saldoElement,
+                        fieldSaldo, batasKritisElement,
+                        fieldModeKritis, simpanButton);
+                saldoModePane.setAlignment(Pos.CENTER);
+
+                // membuat field pane input
+                StackPane saldoModeInputPane = new StackPane();
+                saldoModeInputPane.getChildren().addAll(saldoModeInputBG, saldoModePane);
+                saldoModeInputPane.setMaxWidth(saldoModeInputBG.getWidth());
+                saldoModeInputPane.setMaxHeight(saldoModeInputBG.getHeight());
+
+                // menambahkan elements
+                StackPane penentuSaldoPane = new StackPane(bgOverlay, saldoModeInputPane);
+
+                root.getChildren().add(penentuSaldoPane);
+
+                // button events
+                simpanButton.setOnAction(e -> {
+                    int saldo = Integer.parseInt(fieldSaldo.getText());
+                    int modeKritis = Integer.parseInt(fieldModeKritis.getText());
+                    handleInputSaldodanMode(saldo, modeKritis);
+                });
+
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), bgOverlay);
+                fadeIn.setFromValue(0);
+                fadeIn.setToValue(0.7);
+                fadeIn.play();
+
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(300), bgOverlay);
+                fadeOut.setFromValue(0.7);
+                fadeOut.setToValue(0);
+
+                bgOverlay.setOnMousePressed(e -> {
+                    fadeOut.play();
+                    fadeOut.setOnFinished(e2 -> {
+                        root.getChildren().remove(penentuSaldoPane);
+                    });
+                });
+
+                // handleInputSaldodanMode(saldo, modeKritis);
             }
         } else if (username.isEmpty() && password.isEmpty()) {
             chatErrorTimelineAll_OUT(chatError); // me-rese semua chat

@@ -869,7 +869,7 @@ public class RegistrationPage {
         loadingAnimation.setMouseTransparent(true);
         root.getChildren().add(loadingAnimation);
 
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(3100), loadingAnimation);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(2000), loadingAnimation);
         fadeIn.setFromValue(1.0);
         fadeIn.setToValue(0.0);
         fadeIn.play();

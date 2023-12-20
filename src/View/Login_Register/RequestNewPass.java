@@ -432,16 +432,44 @@ public class RequestNewPass {
         root.getChildren().addAll(topSection, mainContent);
         root.setStyle("-fx-background-color: #141F23;");
 
-        // Membuat Scene dengan latar belakang transparent
         Scene scene = new Scene(root, this.stage.getWidth(), this.stage.getHeight());
+
+        // membuat rectangle base loading
+        Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(), Color.valueOf("#101C22"));
+        // asset gif
+        ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
+        kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
+
+        Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
+        loadingText.setTranslateY(loadingText.getTranslateY() + 70);
+
+        Text tipsText = createText("Sedikit demi sedikit, lama - lama menjadi bukit!", 20,
+                "Poppins; -fx-font-weight: 500;", "ffffff");
+        tipsText.setTranslateY(loadingText.getTranslateY() + 60);
+
+        Rectangle border = new Rectangle(400, 400);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.valueOf("#101C22"));
+        border.setStrokeWidth(5);
+        border.setTranslateY(kukooAnim.getTranslateY());
+
+        StackPane loadingAnimation = new StackPane();
+        loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
+
+        // agar clickable
+        loadingAnimation.setMouseTransparent(true);
+        root.getChildren().add(loadingAnimation);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(2000), loadingAnimation);
+        fadeIn.setFromValue(1.0);
+        fadeIn.setToValue(0.0);
+        fadeIn.play();
+
+        stage.setScene(scene); // menetapkan scene dari sebuah stage
+        // Membuat Scene dengan latar belakang transparent
         scene.getStylesheets()
                 .addAll("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap");
-        // Memberikan judul pada stage
-        //
-
         stage.setMaximized(true);
-        stage.setScene(scene); // menetapkan scene dari sebuah stage
-        stage.show(); // menampilkan stage
         /* END OF UI/UX */
     }
 
