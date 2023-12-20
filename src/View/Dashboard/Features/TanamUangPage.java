@@ -34,6 +34,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -120,18 +121,19 @@ public class TanamUangPage {
 
         // Menambahkan gambar
         ImageView contentImageView = new ImageView(new Image("/Assets/View/Dashboard/LogoTanamUang.png"));
-        contentImageView.setFitWidth(400);
+        contentImageView.setFitWidth(300);
         contentImageView.setFitHeight(300);
 
         // StackPane untuk menampung gambar
         StackPane contentImagePane = new StackPane(contentImageView);
         contentImagePane.setAlignment(Pos.CENTER_RIGHT);
-        contentImagePane.setPadding(new Insets(0, 0, 0, 0));
+        // contentImagePane.setPadding(new Insets(0, 0, 0, 0));
 
         // Konten bagian atas untuk main pane
-        HBox kontenAtasPane = new HBox(textPane, contentImagePane);
-        kontenAtasPane.setSpacing(100);
-        // HBox.setHgrow(textPane, Priority.ALWAYS);
+        Region regionTopBar = new Region();
+        HBox kontenAtasPane = new HBox(textPane, regionTopBar, contentImagePane);
+        // kontenAtasPane.setSpacing(100);
+        HBox.setHgrow(regionTopBar, Priority.ALWAYS);
         textPane.setTranslateX(20);
 
         // ------------------------------------------------------------------------------------------------------------//
@@ -283,7 +285,7 @@ public class TanamUangPage {
 
             VBox contentPane = new VBox();
             contentPane.setStyle("-fx-background-radius: 20");
-            contentPane.setMaxSize(editMainPane.getMaxWidth() - 80, editMainPane.getMaxHeight() - 20);
+            contentPane.setMaxSize(editMainPane.getMaxWidth() - 50, editMainPane.getMaxHeight() - 20);
             contentPane.setSpacing(20);
 
             HBox topBar = new HBox();
@@ -303,7 +305,21 @@ public class TanamUangPage {
             Hyperlink backHyperlink = new Hyperlink();
             backHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
 
-            backHyperlink.setOnMouseClicked(f -> {
+            Button closeButtonKategori = createButton(28, 28, "X", "FF4646", 15, "Poppins", 30, "0F181B");
+
+            // BUTTON EVENTS
+            // saat di hover maka cursor berbeda
+            closeButtonKategori.setOnMouseEntered(closeEvent -> {
+                closeButtonKategori.getScene().setCursor(hand);
+                updateButton(closeButtonKategori, 28, 28, "X", "6A1B1B", 15, "Poppins", 40, "0F181B");
+            });
+            closeButtonKategori.setOnMouseExited(closeEvent -> {
+                closeButtonKategori.getScene().setCursor(defaultCursor);
+                updateButton(closeButtonKategori, 28, 28, "X", "FF4646", 15, "Poppins", 40, "0F181B");
+            });
+
+
+            closeButtonKategori.setOnMouseClicked(f -> {
                 this.combobox.setItems(
                         FXCollections.observableArrayList(TanamUangModel.getKategoriTanamUang(this.tipeTanamUang)));
                 mainPane.getChildren().remove(editMainPane);
@@ -325,36 +341,21 @@ public class TanamUangPage {
                 Hyperlink tambahBackHyperlink = new Hyperlink();
                 tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
 
-                Button closeButtonTambahKategori = createButton(28, 28, "X", "FF4646", 15, "Poppins", 30, "0F181B");
-
-                // BUTTON EVENTS
-                // saat di hover maka cursor berbeda
-                closeButtonTambahKategori.setOnMouseEntered(closeEvent -> {
-                    closeButtonTambahKategori.getScene().setCursor(hand);
-                    updateButton(closeButtonTambahKategori, 28, 28, "X", "6A1B1B", 15, "Poppins", 40, "0F181B");
-                });
-                closeButtonTambahKategori.setOnMouseExited(closeEvent -> {
-                    closeButtonTambahKategori.getScene().setCursor(defaultCursor);
-                    updateButton(closeButtonTambahKategori, 28, 28, "X", "FF4646", 15, "Poppins", 40, "0F181B");
-                });
-
                 Hyperlink hyperlinkSimpanTambahKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12,
                         30, 30);
 
                 StackPane stackHyperlinkSimpan = new StackPane(hyperlinkSimpanTambahKategori);
 
-                closeButtonTambahKategori.setOnMouseClicked(g -> {
+                tambahBackHyperlink.setOnMouseClicked(g -> {
                     refreshView(scrollPane, scrollPaneContent, mainPane);
                     editMainPane.getChildren().remove(tambahPane);
                     editMainPane.getChildren().remove(backgroundTambahPane);
                 });
 
                 // HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
-                HBox subHBoxTitleTambah = new HBox(titleTambah);
-                HBox hboxTitleTambah = new HBox(subHBoxTitleTambah, closeButtonTambahKategori);
+                HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
                 hboxTitleTambah.setSpacing(20);
-                hboxTitleTambah.setPadding(new Insets(0, 10, 0, 10));
-                HBox.setHgrow(subHBoxTitleTambah, Priority.ALWAYS);
+                hboxTitleTambah.setAlignment(Pos.CENTER_LEFT);
 
                 Label labelTambah = new Label("Nama:");
                 labelTambah.setStyle("-fx-font: 16 'Poppins Medium'");
@@ -404,7 +405,11 @@ public class TanamUangPage {
             scrollPane.setStyle(scrollbarStyle);
             scrollPane.getStylesheets().add(getClass().getResource("/Utils/ScrollBar.css").toExternalForm());
 
-            topBar.getChildren().addAll(backHyperlink, titleKategoriPengeluaran, tambahHyperlink);
+            HBox hboxTambahHyperlink = new HBox(tambahHyperlink);
+            topBar.getChildren().addAll(titleKategoriPengeluaran, hboxTambahHyperlink, closeButtonKategori);
+            topBar.setPadding(new Insets(0, 10, 0, 10));
+            HBox.setHgrow(hboxTambahHyperlink, Priority.ALWAYS);
+
             contentPane.getChildren().addAll(topBar, scrollPane);
             editMainPane.getChildren().add(contentPane);
             mainPane.getChildren().addAll(backgroundMainPane, editMainPane);
