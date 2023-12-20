@@ -165,7 +165,7 @@ public class TanamUangPage {
         vboxKiriTengah.setAlignment(Pos.CENTER_LEFT);
         vboxKiriTengah.setPadding(new Insets(0, 0, 0, 20));
 
-        ImageView UbahSaldo = new ImageView(new Image("/Assets/View/Dashboard/UbahSaldo .png"));
+        ImageView UbahSaldo = new ImageView(new Image("/Assets/View/Dashboard/UbahSaldo.png"));
         UbahSaldo.setFitWidth(220);
         UbahSaldo.setFitHeight(35);
         UbahSaldo.setPreserveRatio(true);
@@ -503,7 +503,7 @@ public class TanamUangPage {
                     } else {
                         clearSelectionTanamUang("Pemasukan telah tercatat");
                     }
-
+                    kontenHistoriKeuangan.getChildren().clear();
                     kontenHistoriKeuangan.getChildren().add(kontenHistoriKeuangan());
                 } else {
                     AlertHelper.alert("Mohon isi data Anda.");
