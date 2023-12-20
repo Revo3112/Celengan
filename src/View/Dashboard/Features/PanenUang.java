@@ -171,11 +171,13 @@ public class PanenUang {
         backHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
         HBox hboxTitleKotakInput = new HBox(backHyperlink, titleKotakInput);
         hboxTitleKotakInput.setSpacing(20);
+        HBox.setMargin(hboxTitleKotakInput, new Insets(20, 0, 0, 0));
 
         // Nama Target
-        Label labelNamaTarget = new Label("Nama Target:");
+        Label labelNamaTarget = new Label("Nama Target");
         labelNamaTarget.setStyle("-fx-font: 16px 'Poppins SemiBold'; -fx-text-fill: #FFFFFF;");
         TextField fieldNamaTarget = new TextField();
+        fieldNamaTarget.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
         // Memecah hbox field supaya sejajar
         HBox hboxLabelNamaTarget = new HBox(labelNamaTarget);
         HBox hboxNamaTarget = new HBox(hboxLabelNamaTarget, fieldNamaTarget);
@@ -183,9 +185,10 @@ public class PanenUang {
         hboxNamaTarget.setSpacing(20);
 
         // Nominal Target
-        Label labelNominalTarget = new Label("Nominal:");
+        Label labelNominalTarget = new Label("Nominal");
         labelNominalTarget.setStyle("-fx-font: 16px 'Poppins SemiBold'; -fx-text-fill: #FFFFFF;");
         TextField fieldNominalTarget = new TextField();
+        fieldNominalTarget.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
         // Memecah hbox field supaya sejajar
         HBox hboxLabelNominalTarget = new HBox(labelNominalTarget);
         HBox hboxNominalTarget = new HBox(hboxLabelNominalTarget, fieldNominalTarget);
@@ -193,21 +196,27 @@ public class PanenUang {
         hboxNominalTarget.setSpacing(20);
 
         // Keterangan Target
-        Label labelKeteranganTarget = new Label("Keterangan:");
+        Label labelKeteranganTarget = new Label("Keterangan");
         labelKeteranganTarget.setStyle("-fx-font: 16px 'Poppins SemiBold'; -fx-text-fill: #FFFFFF;");
         TextField fieldKeteranganTarget = new TextField();
+        fieldKeteranganTarget.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
         // Memecah hbox field supaya sejajar
         HBox hboxLabelKeteranganTarget = new HBox(labelKeteranganTarget);
         HBox hboxKeteranganTarget = new HBox(hboxLabelKeteranganTarget, fieldKeteranganTarget);
         HBox.setHgrow(hboxLabelKeteranganTarget, Priority.ALWAYS);
         hboxKeteranganTarget.setSpacing(20);
 
+        VBox vboxKontenPopUpKanan = new VBox(fieldNamaTarget, fieldNominalTarget, fieldKeteranganTarget);
+        vboxKontenPopUpKanan.setSpacing(20);
+        VBox vboxKontenPopUpKiri = new VBox(labelNamaTarget, labelNominalTarget, labelKeteranganTarget);
+        vboxKontenPopUpKiri.setSpacing(40);
+
         Button buttonBatalTarget = new Button("Batal"); // Tombol untuk membatalkan penambahan target
-        Hyperlink tambahHyperlink = new Hyperlink();
         ImageView imageTambah = new ImageView(new Image("/Assets/View/Dashboard/TambahPanen.png"));
         imageTambah.setFitWidth(100);
         imageTambah.setFitHeight(80);
         imageTambah.setPreserveRatio(true);
+        Hyperlink tambahHyperlink = new Hyperlink();
         tambahHyperlink.setGraphic(imageTambah);
 
         // Button buttonTambahTarget = new Button("Tambah"); // Tombol untuk menambahkan
@@ -223,12 +232,15 @@ public class PanenUang {
         });
 
         // VBox untuk konten form kotak input
-        VBox kontenFormKotakInput = new VBox(hboxNamaTarget, hboxNominalTarget, hboxKeteranganTarget);
+        // VBox kontenFormKotakInput = new VBox(hboxNamaTarget, hboxNominalTarget,
+        // hboxKeteranganTarget);
 
         // VBox untuk button kotak input
         HBox buttonKotakInput = new HBox(tambahHyperlink);
         buttonKotakInput.setAlignment(Pos.CENTER);
-        buttonKotakInput.setSpacing(20);
+        buttonKotakInput.setPadding(new Insets(0, 0, 40, 0));
+
+        // buttonKotakInput.setStyle("-fx-background-color: #FFFFFF");
 
         Image iconSilang = new Image("/Assets/View/Login_Register/icons8-cross-mark-48.png");
         ImageView iconSilangView = new ImageView(iconSilang);
@@ -428,17 +440,23 @@ public class PanenUang {
         mainPane.setPadding(new Insets(0, 10, 0, 0));
         mainPane.setAlignment(Pos.CENTER);
 
+        HBox kontenFormKotakInput = new HBox(vboxKontenPopUpKiri, vboxKontenPopUpKanan);
+        kontenFormKotakInput.setSpacing(40);
+        kontenFormKotakInput.setMinSize(400, 200);
+        // kontenFormKotakInput.setStyle("-fx-background-color: #FFFFFF;");
+        kontenFormKotakInput.setAlignment(Pos.CENTER);
+
         // Vbox untuk konten kotak input
         VBox kontenKotakInput = new VBox(hboxTitleKotakInput, kontenFormKotakInput, buttonKotakInput);
 
         // Popup untuk kotak input
         StackPane kotakInput = new StackPane();
         kotakInput.getChildren().addAll(kontenKotakInput);
-        kotakInput.setMaxSize(530, 400);
+        kotakInput.setMaxSize(500, 250);
         kotakInput.setStyle("-fx-background-color: #263940; -fx-background-radius: 20;");
 
         // Mengatur ukuran konten kotak input
-        kontenKotakInput.setMaxSize(kotakInput.getMaxWidth() - 50, kotakInput.getMaxHeight() - 20);
+        kontenKotakInput.setMaxSize(kotakInput.getMaxWidth() - 100, kotakInput.getMaxHeight() - 100);
         kontenKotakInput.setSpacing(40);
         kontenKotakInput.setAlignment(Pos.CENTER);
 

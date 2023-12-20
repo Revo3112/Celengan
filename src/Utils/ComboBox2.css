@@ -30,9 +30,8 @@
     -fx-background-color: none;
     -fx-background-color: #FB5050;
     -fx-background-radius: 200;
-    -fx-font: 20px;
-    -fx-font-family: "Poppins Bold";
-    -fx-text-align: center;
+    -fx-font-family: "Poppins Regular";
+    -fx-text-font: 15px;
 }
 
 
@@ -44,13 +43,13 @@
     -fx-background-color: #FB5050;
     -fx-background-radius: 200;
     -fx-padding: 0;
-    -fx-text-font: 20px "Poppins Bold";
+    -fx-font-family: "Poppins Regular";
 }
 
 
 .combo-box-base:hover {
     -fx-color: -fx-hover-base;
-    -fx-background-color: FB5050;
+    -fx-background-color: #FB5050;
     -fx-background-radius: 200;
 }
 
@@ -59,10 +58,6 @@
 {
     -fx-background-color: #ffffff;
 }
-
-/* .income, .combo-box-base:focused {
-    -fx-background-color: #68FB50;
-} */
 
 
 
@@ -85,7 +80,3 @@
     -fx-background-radius: 200;
 }
   
-/* Tambahkan aturan CSS untuk Pengeluaran dan Pemasukan */
-/* Mengatur warna teks untuk ComboBox pertama */
-
-/* Mengatur warna teks untuk ComboBox kedua */

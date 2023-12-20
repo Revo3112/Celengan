@@ -226,13 +226,13 @@ public class PantauUangPage {
                 comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBox2.css").toExternalForm());
             }
         });
-
+        comboBox.setPromptText("Pilih Kategori");
         comboBox.getStylesheets().add(getClass().getResource("/Utils/ComboBoxIdle.css").toExternalForm());
 
         // Membuat tombol restart default
         ImageView restartDefault = new ImageView(new Image("/Assets/View/Pantau_Uang/restart.png"));
-        restartDefault.setFitHeight(20);
-        restartDefault.setFitWidth(20);
+        restartDefault.setFitHeight(30);
+        restartDefault.setFitWidth(30);
         restartDefault.setPreserveRatio(true);
 
         Button restartDefaultButton = new Button();

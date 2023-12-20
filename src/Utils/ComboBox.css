@@ -30,9 +30,8 @@
     -fx-background-color: none;
     -fx-background-color: #68FB50;
     -fx-background-radius: 200;
-    -fx-font: 20px;
-    -fx-font-family: "Poppins Bold";
-    -fx-text-align: center;
+    -fx-font-family: "Poppins Regular";
+    -fx-text-font: 15px;
 }
 
 
@@ -46,7 +45,7 @@
     -fx-background-color: #68FB50;
     -fx-background-radius: 200;
     -fx-padding: 0;
-    -fx-text-font: 20px "Poppins Bold";
+    -fx-font-family: "Poppins Regular";
 }
 
 
@@ -85,6 +84,7 @@
 .combo-box .item:selected {
     color: white;
     -fx-background-radius: 200;
+    -fx-text-font: 15px;
 }
   
 /* Tambahkan aturan CSS untuk Pengeluaran dan Pemasukan */

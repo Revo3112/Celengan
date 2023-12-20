@@ -309,8 +309,27 @@ public class DashboardPage {
 
             Text PantauUang = createText(getTarget(), "-fx-font: 30 'Poppins Bold'; -fx-fill: #FFFFFF;", 0, 0);
 
-            VBox kontenPantauUangTextBVBox = new VBox(PantauUang);
+            StackPane kontenPantauUangTextBVBoxPane = new StackPane(PantauUang);
+            kontenPantauUangTextBVBoxPane.setAlignment(Pos.CENTER_LEFT);
+            kontenPantauUangTextBVBoxPane.setPadding(new Insets(0, 0, 0, 20));
+
+            VBox kontenPantauUangTextBVBox = new VBox(kontenPantauUangTextBVBoxPane);
             kontenPantauUangTextBVBox.setAlignment(Pos.CENTER);
+
+            // Nanti mau ditambahkan IconTarget
+            ImageView IconTarget = new ImageView(new Image("/Assets/View/Dashboard/TargetIcon.png"));
+            IconTarget.setFitWidth(25);
+            IconTarget.setFitHeight(25);
+            IconTarget.setPreserveRatio(true);
+
+            StackPane IconTargetPane = new StackPane(IconTarget);
+            IconTargetPane.setAlignment(Pos.CENTER_LEFT);
+            IconTargetPane.setPadding(new Insets(0, 0, 0, 20));
+
+            HBox kontenPantauUangTextHBox = new HBox(IconTargetPane, kontenPantauUangTextBVBox);
+            kontenPantauUangTextHBox.setAlignment(Pos.CENTER);
+            kontenPantauUangTextHBox.setSpacing(5);
+            HBox.setHgrow(kontenPantauUangTextBVBox, Priority.ALWAYS);
 
             long roundedValuePantauUang = Math.round(getFirstTargetHarga());
             long roundedValuePantauUang2 = Math.round(mendapatkanSaldoUntukMembeliBarang());
@@ -354,7 +373,7 @@ public class DashboardPage {
             mainKontenPanenUangVBox.setAlignment(Pos.BOTTOM_CENTER);
             mainKontenPanenUangVBox.setPadding(new Insets(10, 0, 0, 0));
 
-            VBox kontenPantauUang = new VBox(kontenPantauUangTextBVBox, taksUang, progressUang,
+            VBox kontenPantauUang = new VBox(kontenPantauUangTextHBox, taksUang, progressUang,
                     mainKontenPanenUangVBox);
             kontenPantauUang.setSpacing(10);
             kontenPantauUang.setPadding(new Insets(10, 0, 0, 0));
@@ -410,8 +429,6 @@ public class DashboardPage {
 
             comboBox.setConverter(new CustomItemConverter());
             comboBox.setPromptText("Pilih kategori");
-            comboBox.setStyle(
-                    "-fx-font: 15 'Poppins Regular'; -fx-text-fill: #ffffff;");
             comboBox.setCellFactory(new Callback<>() {
                 @Override
                 public ListCell<CustomItem> call(javafx.scene.control.ListView<CustomItem> param) {
