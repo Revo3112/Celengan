@@ -94,12 +94,27 @@ public class TanamUangPage {
         sideBar.setAlignment(Pos.CENTER);
         sideBar.setMinWidth(242);
         VBox.setVgrow(sideBar, Priority.ALWAYS);
+
         // Membuat teks welcome
-        Text welcome = createText("Catat Keuanganmu\n", "-fx-font: 35 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
-        Text name = createText("Dengan Lengkap!", "-fx-font: 35 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 10);
+        Text welcome = createText("Catat Keuanganmu,",
+                "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
+        Text name = createText("Dengan Lengkap!", "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 0);
+
+        StackPane namPane = new StackPane(name);
+        namPane.setAlignment(Pos.TOP_LEFT);
+        namPane.setPadding(new Insets(0, 0, 30, 0));
+
+        StackPane welcomePane = new StackPane(welcome);
+        welcomePane.setAlignment(Pos.BOTTOM_LEFT);
+        welcomePane.setPadding(new Insets(60, 0, 0, 0));
+
+        VBox kontenTeks = new VBox(welcomePane, namPane);
+        kontenTeks.setSpacing(2);
+        kontenTeks.setPadding(new Insets(0, 0, 0, 10));
+        kontenTeks.setAlignment(Pos.CENTER_LEFT);
 
         // StackPane untuk menampung teks
-        StackPane textPane = new StackPane(welcome, name);
+        StackPane textPane = new StackPane(kontenTeks);
         textPane.setAlignment(Pos.CENTER_LEFT);
         textPane.setPadding(new Insets(0, 0, 20, 10));
 
@@ -310,7 +325,8 @@ public class TanamUangPage {
                 Hyperlink tambahBackHyperlink = new Hyperlink();
                 tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
 
-                Hyperlink hyperlinkSimpanTambahKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12, 30, 30);
+                Hyperlink hyperlinkSimpanTambahKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12,
+                        30, 30);
 
                 StackPane stackHyperlinkSimpan = new StackPane(hyperlinkSimpanTambahKategori);
 
@@ -334,16 +350,15 @@ public class TanamUangPage {
                     if (!fieldTambah.getText().equals("")) {
                         if (TanamUangModel.tambahKategori(fieldTambah.getText(), tipeTanamUang)) {
                             refreshView(scrollPane, scrollPaneContent, editMainPane);
-    
+
                             editMainPane.getChildren().remove(tambahPane);
                             editMainPane.getChildren().remove(backgroundTambahPane);
-    
+
                             AlertHelper.info("Kategori " + fieldTambah.getText() + " berhasil ditambahkan!");
                         } else {
                             AlertHelper.alert("Kategori gagal ditambahkan!");
                         }
-                    }
-                    else {
+                    } else {
                         AlertHelper.alert("Mohon isi nama kategori.");
                     }
                 });
@@ -655,12 +670,14 @@ public class TanamUangPage {
         this.stage.show(); // Tetapkan setelah styling selesai
     }
 
-    private Hyperlink createButtonKategori(String imageName, double imageWidth, double imageHeight, double rectWidth, double rectHeight, double rectArcWidth, double rectArcHeight) {
+    private Hyperlink createButtonKategori(String imageName, double imageWidth, double imageHeight, double rectWidth,
+            double rectHeight, double rectArcWidth, double rectArcHeight) {
         ImageView imageSimpan = new ImageView(new Image("/Assets/View/Dashboard/" + imageName));
         imageSimpan.setFitWidth(imageWidth);
         imageSimpan.setFitHeight(imageHeight);
         imageSimpan.setPreserveRatio(true);
-        Rectangle hoverSimpan = new Rectangle(imageSimpan.getFitWidth() - rectWidth, imageSimpan.getFitHeight() - rectHeight);
+        Rectangle hoverSimpan = new Rectangle(imageSimpan.getFitWidth() - rectWidth,
+                imageSimpan.getFitHeight() - rectHeight);
         hoverSimpan.setFill(new Color(0, 0, 0, 0.5));
         hoverSimpan.setArcWidth(rectArcWidth);
         hoverSimpan.setArcHeight(rectArcHeight);
@@ -776,7 +793,8 @@ public class TanamUangPage {
                 imageHapusKategori.setFitWidth(200);
                 imageHapusKategori.setFitHeight(50);
                 imageHapusKategori.setPreserveRatio(true);
-                Rectangle hoverHapusKategori = new Rectangle(imageHapusKategori.getFitWidth() - 105, imageHapusKategori.getFitHeight() - 15);
+                Rectangle hoverHapusKategori = new Rectangle(imageHapusKategori.getFitWidth() - 105,
+                        imageHapusKategori.getFitHeight() - 15);
                 hoverHapusKategori.setFill(new Color(0, 0, 0, 0.5));
                 hoverHapusKategori.setArcWidth(40);
                 hoverHapusKategori.setArcHeight(40);
@@ -861,15 +879,17 @@ public class TanamUangPage {
                 labelEditNamaKategori.setStyle("-fx-font: 16 'Poppins Medium'");
                 labelEditNamaKategori.setTextFill(Color.valueOf("#FFFFFF"));
                 TextField fieldEditNamaKategori = new TextField(listKategori[index]);
-                fieldEditNamaKategori.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
+                fieldEditNamaKategori.getStylesheets()
+                        .add(getClass().getResource("/Utils/TextField.css").toExternalForm());
 
-                Hyperlink hyperlinkSimpanEditKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12, 30, 30);
+                Hyperlink hyperlinkSimpanEditKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12, 30,
+                        30);
                 StackPane stackHyperlinkSimpanEditKategori = new StackPane(hyperlinkSimpanEditKategori);
                 String nama_kategori = namaKategori.getText();
 
                 hyperlinkSimpanEditKategori.setOnMouseClicked(f -> {
                     String valueFieldEditNamaKategori = fieldEditNamaKategori.getText();
-                    
+
                     if (listKategori[index].equals(valueFieldEditNamaKategori)) {
                         if (mainPane.getParent() != null) {
                             mainPane.getChildren().remove(paneEdit);
@@ -915,7 +935,7 @@ public class TanamUangPage {
                 HBox editTitleHBox = new HBox(editBackHyperlink, titleEdit);
                 editTitleHBox.setSpacing(20);
                 editTitleHBox.setAlignment(Pos.CENTER_LEFT);
-                
+
                 HBox editHBox = new HBox(labelEditNamaKategori, fieldEditNamaKategori);
                 editHBox.setSpacing(20);
                 editHBox.setAlignment(Pos.CENTER);
@@ -1017,7 +1037,7 @@ public class TanamUangPage {
     private VBox kontenHistoriKeuangan() {
         VBox kontenHistoriKeuangan = new VBox();
         kontenHistoriKeuangan.setSpacing(10);
-        
+
         List<String> keteranganBarangList = model.getKeteranganBarangList();
         List<Double> nominalBarangList = model.getNominalBarangList();
         List<String> tipeBarangList = model.getTipeBarangList();
