@@ -235,12 +235,27 @@ public class PanenUang {
         vboxKontenPopUpKiri.setSpacing(40);
 
         Button buttonBatalTarget = new Button("Batal"); // Tombol untuk membatalkan penambahan target
+
+        ImageView imageTambahHover = new ImageView(new Image("/Assets/View/Dashboard/TambahPanenHover.png"));
+        imageTambahHover.setFitWidth(100);
+        imageTambahHover.setFitHeight(50);
+        imageTambahHover.setPreserveRatio(true);
+
         ImageView imageTambah = new ImageView(new Image("/Assets/View/Dashboard/TambahPanen.png"));
         imageTambah.setFitWidth(100);
-        imageTambah.setFitHeight(80);
+        imageTambah.setFitHeight(50);
         imageTambah.setPreserveRatio(true);
         Hyperlink tambahHyperlink = new Hyperlink();
         tambahHyperlink.setGraphic(imageTambah);
+
+        tambahHyperlink.setOnMouseEntered(e -> {
+            tambahHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+            tambahHyperlink.setGraphic(imageTambahHover);
+        });
+        tambahHyperlink.setOnMouseExited(e -> {
+            tambahHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+            tambahHyperlink.setGraphic(imageTambah);
+        });
 
         // Button buttonTambahTarget = new Button("Tambah"); // Tombol untuk menambahkan
         // target kedalam databases
@@ -1030,14 +1045,6 @@ public class PanenUang {
         saveImage.setPreserveRatio(true);
 
         Hyperlink saveHyperlink = new Hyperlink();
-        saveHyperlink.setOnMouseEntered(k -> {
-            saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
-            saveImage.setOpacity(0.5);
-        });
-        saveHyperlink.setOnMouseExited(k -> {
-            saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
-            saveImage.setOpacity(1);
-        });
         saveHyperlink.setGraphic(saveImage);
         saveHyperlink.setOnMouseClicked(e -> {
             if (updateKritis(
