@@ -325,19 +325,36 @@ public class TanamUangPage {
                 Hyperlink tambahBackHyperlink = new Hyperlink();
                 tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
 
+                Button closeButtonTambahKategori = createButton(28, 28, "X", "FF4646", 15, "Poppins", 30, "0F181B");
+
+                // BUTTON EVENTS
+                // saat di hover maka cursor berbeda
+                closeButtonTambahKategori.setOnMouseEntered(closeEvent -> {
+                    closeButtonTambahKategori.getScene().setCursor(hand);
+                    updateButton(closeButtonTambahKategori, 28, 28, "X", "6A1B1B", 15, "Poppins", 40, "0F181B");
+                });
+                closeButtonTambahKategori.setOnMouseExited(closeEvent -> {
+                    closeButtonTambahKategori.getScene().setCursor(defaultCursor);
+                    updateButton(closeButtonTambahKategori, 28, 28, "X", "FF4646", 15, "Poppins", 40, "0F181B");
+                });
+
                 Hyperlink hyperlinkSimpanTambahKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12,
                         30, 30);
 
                 StackPane stackHyperlinkSimpan = new StackPane(hyperlinkSimpanTambahKategori);
 
-                tambahBackHyperlink.setOnMouseClicked(g -> {
+                closeButtonTambahKategori.setOnMouseClicked(g -> {
                     refreshView(scrollPane, scrollPaneContent, mainPane);
                     editMainPane.getChildren().remove(tambahPane);
                     editMainPane.getChildren().remove(backgroundTambahPane);
                 });
 
-                HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
+                // HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
+                HBox subHBoxTitleTambah = new HBox(titleTambah);
+                HBox hboxTitleTambah = new HBox(subHBoxTitleTambah, closeButtonTambahKategori);
                 hboxTitleTambah.setSpacing(20);
+                hboxTitleTambah.setPadding(new Insets(0, 10, 0, 10));
+                HBox.setHgrow(subHBoxTitleTambah, Priority.ALWAYS);
 
                 Label labelTambah = new Label("Nama:");
                 labelTambah.setStyle("-fx-font: 16 'Poppins Medium'");
@@ -364,12 +381,12 @@ public class TanamUangPage {
                 });
 
                 HBox hboxFormTambah = new HBox(labelTambah, fieldTambah);
-                hboxFormTambah.setSpacing(20);
+                hboxFormTambah.setSpacing(30);
                 hboxFormTambah.setAlignment(Pos.CENTER);
 
                 VBox vboxTambah = new VBox(hboxTitleTambah, hboxFormTambah, stackHyperlinkSimpan);
 
-                vboxTambah.setMaxSize(tambahPane.getMaxWidth() - 50, tambahPane.getMaxHeight() - 80);
+                vboxTambah.setMaxSize(tambahPane.getMaxWidth() - 20, tambahPane.getMaxHeight() - 80);
                 vboxTambah.setSpacing(20);
 
                 tambahPane.getChildren().add(vboxTambah);
