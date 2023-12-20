@@ -267,7 +267,7 @@ public class PantauUangPage {
 
             kontenHistoriKeuangan.getChildren().add(ayamSedihPane);
         } else {
-            for (int i = 0; i < getTotalBarangyangDIbeli(); i++) {
+            for (int i = getTotalBarangyangDIbeli() - 1; i >= 0; i--) {
                 System.out.println(keteranganBarangList.get(i));
                 String keterangan = keteranganBarangList.get(i);
                 double nominal = nominalBarangList.get(i);
@@ -465,7 +465,7 @@ public class PantauUangPage {
         kontenHistoriKeuanganBarangfull.setSpacing(10);
         kontenHistoriKeuanganBarangfull.setSpacing(10);
 
-        for (int i = 0; i < model.banyakDatadiTransacDenganKategori(tipeTransaksi); i++) {
+        for (int i = model.banyakDatadiTransacDenganKategori(tipeTransaksi) - 1; i >= 0; i--) {
             System.out.println(keteranganBarangList.get(i));
             String keterangan = keteranganBarangList.get(i);
             double nominal = nominalBarangList.get(i);
@@ -967,6 +967,14 @@ public class PantauUangPage {
         saveImage.setPreserveRatio(true);
 
         Hyperlink saveHyperlink = new Hyperlink();
+        saveHyperlink.setOnMouseEntered(k -> {
+            saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
+            saveImage.setOpacity(0.5);
+        });
+        saveHyperlink.setOnMouseExited(k -> {
+            saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
+            saveImage.setOpacity(1);
+        });
         saveHyperlink.setGraphic(saveImage);
         saveHyperlink.setOnMouseClicked(e -> {
             if (updateKritis(

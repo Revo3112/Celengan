@@ -1030,6 +1030,14 @@ public class PanenUang {
         saveImage.setPreserveRatio(true);
 
         Hyperlink saveHyperlink = new Hyperlink();
+        saveHyperlink.setOnMouseEntered(k -> {
+            saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
+            saveImage.setOpacity(0.5);
+        });
+        saveHyperlink.setOnMouseExited(k -> {
+            saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
+            saveImage.setOpacity(1);
+        });
         saveHyperlink.setGraphic(saveImage);
         saveHyperlink.setOnMouseClicked(e -> {
             if (updateKritis(
