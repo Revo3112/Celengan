@@ -272,6 +272,15 @@ public class TanamUangPage {
         Hyperlink hyperlinkEdit = new Hyperlink();
         hyperlinkEdit.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/EditTanamUang.png")));
 
+        hyperlinkEdit.setOnMouseEntered(g -> {
+            hyperlinkEdit.getScene().setCursor(Cursor.cursor("HAND"));
+            hyperlinkEdit.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/EditTanamUangHover.png")));
+        });
+        hyperlinkEdit.setOnMouseExited(g -> {
+            hyperlinkEdit.getScene().setCursor(Cursor.cursor("DEFAULT"));
+            hyperlinkEdit.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/EditTanamUang.png")));
+        });
+
         hyperlinkEdit.setOnMouseClicked(e -> {
             double paneWidth = this.stage.getWidth() - 350;
             double paneHeight = this.stage.getHeight() - 200;
@@ -329,6 +338,15 @@ public class TanamUangPage {
             Hyperlink tambahHyperlink = new Hyperlink();
             tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Tambah.png")));
 
+            tambahHyperlink.setOnMouseEntered(f -> {
+                tambahHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/TambahHover.png")));
+            });
+            tambahHyperlink.setOnMouseExited(f -> {
+                tambahHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Tambah.png")));
+            });
+
             tambahHyperlink.setOnMouseClicked(f -> {
                 StackPane tambahPane = new StackPane();
                 StackPane backgroundTambahPane = new StackPane();
@@ -350,6 +368,14 @@ public class TanamUangPage {
                     refreshView(scrollPane, scrollPaneContent, mainPane);
                     editMainPane.getChildren().remove(tambahPane);
                     editMainPane.getChildren().remove(backgroundTambahPane);
+                });
+                tambahBackHyperlink.setOnMouseEntered(g -> {
+                    tambahHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                    tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/BackHover2.png")));
+                });
+                tambahBackHyperlink.setOnMouseExited(g -> {
+                    tambahHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                    tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
                 });
 
                 // HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
@@ -763,6 +789,24 @@ public class TanamUangPage {
             Hyperlink deleteHyperlink = new Hyperlink();
             deleteHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Delete.png")));
 
+            deleteHyperlink.setOnMouseEntered(g -> {
+                deleteHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                deleteHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/DeleteHover.png")));
+            });
+            deleteHyperlink.setOnMouseExited(g -> {
+                deleteHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                deleteHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Delete.png")));
+            });
+
+            editHyperlink.setOnMouseEntered(g -> {
+                editHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                editHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/EditHover.png")));
+            });
+            editHyperlink.setOnMouseExited(g -> {
+                editHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                editHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Edit.png")));
+            });
+
             HBox hboxNamaKategori = new HBox(namaKategori);
             HBox hboxEditHyperlink = new HBox(editHyperlink);
             HBox hboxDeleteHyperlink = new HBox(deleteHyperlink);
@@ -796,6 +840,14 @@ public class TanamUangPage {
                     refreshView(scrollPane, scrollPaneContent, mainPane);
                     mainPane.getChildren().remove(paneHapus);
                     mainPane.getChildren().remove(backgroundPaneHapus);
+                });
+                deleteBackHyperlink.setOnMouseEntered(g -> {
+                    deleteBackHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                    deleteBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/BackHover2.png")));
+                });
+                deleteBackHyperlink.setOnMouseExited(g -> {
+                    deleteBackHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                    deleteBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
                 });
 
                 Text titleYakinHapus = createText("Apakah Anda yakin ingin menghapus kategori ",
@@ -894,6 +946,14 @@ public class TanamUangPage {
                     refreshView(scrollPane, scrollPaneContent, mainPane);
                     mainPane.getChildren().remove(paneEdit);
                     mainPane.getChildren().remove(backgroundPaneEdit);
+                });
+                editBackHyperlink.setOnMouseEntered(f -> {
+                    editBackHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                    editBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/BackHover2.png")));
+                });
+                editBackHyperlink.setOnMouseExited(f -> {
+                    editBackHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                    editBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
                 });
 
                 Text titleEdit = createText("Ubah Kategori", "-fx-font: 20 'Poppins Bold';", "#FFFFFF");
