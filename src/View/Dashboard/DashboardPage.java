@@ -273,10 +273,21 @@ public class DashboardPage {
             pieChart.setTranslateY(0);
             pieChart.getTransforms().add(pieChartScale);
 
-            StackPane pieChartPane = new StackPane(pieChart);
-            pieChartPane.setAlignment(Pos.TOP_LEFT);
+            StackPane pieChartPane = new StackPane();
             pieChartPane.setPadding(new Insets(0, 0, 0, 0));
             pieChartPane.setMaxSize(330, 100);
+
+            if (pieChartData.size() == 0) {
+                ImageView ayamSedih = new ImageView("/Assets/View/Pantau_Uang/ayamsedih.png");
+                ayamSedih.setFitHeight(200);
+                ayamSedih.setFitWidth(250);
+                ayamSedih.setPreserveRatio(true);
+                pieChartPane.getChildren().add(ayamSedih);
+                pieChartPane.setAlignment(Pos.CENTER);
+            } else {
+                pieChartPane.getChildren().add(pieChart);
+                pieChartPane.setAlignment(Pos.TOP_LEFT);
+            }
 
             VBox kontenPieChart = new VBox(pieChartPane);
             kontenPieChart.setAlignment(Pos.CENTER);
@@ -306,12 +317,17 @@ public class DashboardPage {
             KontenTengah.setMaxHeight(300);
 
             // Konten Bagian Tengah dari main pane namun untuk Pantau Uang
+            Text PantauUang;
 
-            Text PantauUang = createText(getTarget(), "-fx-font: 30 'Poppins Bold'; -fx-fill: #FFFFFF;", 0, 0);
+            if (getTarget().equals("")) {
+                PantauUang = createText("Target Kosong", "-fx-font: 25 'Poppins Bold'; -fx-fill: #FFFFFF;", 0, 0);
+            } else {
+                PantauUang = createText(getTarget(), "-fx-font: 30 'Poppins Bold'; -fx-fill: #FFFFFF;", 0, 0);
+            }
 
             StackPane kontenPantauUangTextBVBoxPane = new StackPane(PantauUang);
             kontenPantauUangTextBVBoxPane.setAlignment(Pos.CENTER_LEFT);
-            kontenPantauUangTextBVBoxPane.setPadding(new Insets(0, 0, 0, 20));
+            kontenPantauUangTextBVBoxPane.setPadding(new Insets(0, 0, 0, 0));
 
             VBox kontenPantauUangTextBVBox = new VBox(kontenPantauUangTextBVBoxPane);
             kontenPantauUangTextBVBox.setAlignment(Pos.CENTER);
@@ -338,6 +354,7 @@ public class DashboardPage {
             } else if (roundedValuePantauUang2 < 0) {
                 roundedValuePantauUang2 = 0;
             }
+
             Text progressTextPantauUang = new Text(
                     formatDuit(roundedValuePantauUang2) + " / " + formatDuit(roundedValuePantauUang));
             progressTextPantauUang.setStyle("-fx-font: 14 'Poppins Regular'; -fx-fill: #FFFFFF;");
@@ -499,8 +516,13 @@ public class DashboardPage {
             // Membuat konten histori keuangan
             // Yang perlu diambil di database adalah keterangan, nominal, tipe menggunakan
             // gambar, dan tanggal
-
-            for (int i = 0; i < getTotalBarangyangDIbeli(); i++) {
+            int nilaiPenentu = getTotalBarangyangDIbeli();
+            if (nilaiPenentu > 5) {
+                nilaiPenentu = nilaiPenentu - 5;
+            } else {
+                nilaiPenentu = 0;
+            }
+            for (int i = getTotalBarangyangDIbeli() - 1; i >= nilaiPenentu; i--) {
                 String keterangan = keteranganBarangList.get(i);
                 double nominal = nominalBarangList.get(i);
                 String tipe = tipeBarangList.get(i);
@@ -522,6 +544,7 @@ public class DashboardPage {
 
                 VBox keteranganStackPane = new VBox(labelKeterangan);
                 keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
+                keteranganStackPane.setMinWidth(100);
 
                 Long roundedValueNominal = Math.round(nominal);
                 Text nominalText = createText(formatDuit(roundedValueNominal),
@@ -545,7 +568,7 @@ public class DashboardPage {
                     kondisi.setPreserveRatio(true);
                 }
                 StackPane gambarKondisi = new StackPane(kondisi);
-                gambarKondisi.setAlignment(Pos.CENTER_LEFT);
+                gambarKondisi.setAlignment(Pos.CENTER_RIGHT);
                 gambarKondisi.setPadding(new Insets(0, 0, 0, 60));
 
                 HBox gambarKondisidanNominal = new HBox(nominalStackPane, gambarKondisi);
@@ -559,9 +582,13 @@ public class DashboardPage {
                 StackPane tanggalTextPane = new StackPane(tanggalText);
                 tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
 
+                VBox tanggalTextVBox = new VBox(tanggalTextPane);
+                tanggalTextVBox.setAlignment(Pos.CENTER);
+                tanggalTextVBox.setMinWidth(200);
+
                 HBox kontenHistoriKeuanganBarang = new HBox(keteranganStackPane, nominalStackPane,
                         gambarKondisidanNominal,
-                        tanggalTextPane);
+                        tanggalTextVBox);
 
                 kontenHistoriKeuanganBarang.setSpacing(50);
                 kontenHistoriKeuanganBarang.setPadding(new Insets(10, 25, 10, 40));
@@ -1134,7 +1161,14 @@ public class DashboardPage {
         VBox kontenHistoriKeuanganBarangfull = new VBox();
         kontenHistoriKeuanganBarangfull.setSpacing(10);
         kontenHistoriKeuanganBarangfull.setSpacing(10);
-        for (int i = 0; i < refreshViewDashboard.getTotalBarang(Kategori); i++) {
+
+        int nilai = refreshViewDashboard.getTotalBarang(Kategori);
+        if (nilai > 5) {
+            nilai = nilai - 5;
+        } else {
+            nilai = 0;
+        }
+        for (int i = refreshViewDashboard.getTotalBarang(Kategori) - 1; i >= nilai; i--) {
             String keterangan = keteranganBarangList.get(i);
             double nominal = nominalBarangList.get(i);
             String tipe = Kategori;
@@ -1156,6 +1190,7 @@ public class DashboardPage {
 
             VBox keteranganStackPane = new VBox(labelKeterangan);
             keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
+            keteranganStackPane.setMinWidth(100);
 
             Long roundedValueNominal = Math.round(nominal);
             Text nominalText = createText(formatDuit(roundedValueNominal),
@@ -1193,9 +1228,13 @@ public class DashboardPage {
             StackPane tanggalTextPane = new StackPane(tanggalText);
             tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
 
+            VBox tanggalTextVBox = new VBox(tanggalTextPane);
+            tanggalTextVBox.setAlignment(Pos.CENTER);
+            tanggalTextVBox.setMinWidth(200);
+
             HBox kontenHistoriKeuanganBarang = new HBox(keteranganStackPane, nominalStackPane,
                     gambarKondisidanNominal,
-                    tanggalTextPane);
+                    tanggalTextVBox);
 
             kontenHistoriKeuanganBarang.setSpacing(50);
             kontenHistoriKeuanganBarang.setPadding(new Insets(10, 25, 10, 40));

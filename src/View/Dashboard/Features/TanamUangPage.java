@@ -327,7 +327,6 @@ public class TanamUangPage {
                 updateButton(closeButtonKategori, 28, 28, "X", "FF4646", 15, "Poppins", 40, "0F181B");
             });
 
-
             closeButtonKategori.setOnMouseClicked(f -> {
                 this.combobox.setItems(
                         FXCollections.observableArrayList(TanamUangModel.getKategoriTanamUang(this.tipeTanamUang)));
@@ -360,12 +359,14 @@ public class TanamUangPage {
                 tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
 
                 Hyperlink hyperlinkSimpanTambahKategori = new Hyperlink();
-                ImageView imageSimpanTambahKategoriHover = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
+                ImageView imageSimpanTambahKategoriHover = new ImageView(
+                        new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
                 imageSimpanTambahKategoriHover.setFitWidth(100);
                 imageSimpanTambahKategoriHover.setFitHeight(50);
                 imageSimpanTambahKategoriHover.setPreserveRatio(true);
 
-                ImageView imageSimpanTambahKategori = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
+                ImageView imageSimpanTambahKategori = new ImageView(
+                        new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
                 imageSimpanTambahKategori.setFitWidth(100);
                 imageSimpanTambahKategori.setFitHeight(50);
                 imageSimpanTambahKategori.setPreserveRatio(true);
@@ -881,7 +882,7 @@ public class TanamUangPage {
                 imageHapusKategori.setPreserveRatio(true);
 
                 Hyperlink hyperlinkHapusKategori = new Hyperlink();
-                hyperlinkHapusKategori.setGraphic(imageHapusKategori);                
+                hyperlinkHapusKategori.setGraphic(imageHapusKategori);
                 hyperlinkHapusKategori.setOnMouseEntered(g -> {
                     hyperlinkHapusKategori.getScene().setCursor(Cursor.cursor("HAND"));
                     hyperlinkHapusKategori.setGraphic(imageHapusKategoriHover);
@@ -966,12 +967,14 @@ public class TanamUangPage {
                         .add(getClass().getResource("/Utils/TextField.css").toExternalForm());
 
                 Hyperlink hyperlinkSimpanEditKategori = new Hyperlink();
-                ImageView imageSimpanEditKategoriHover = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
+                ImageView imageSimpanEditKategoriHover = new ImageView(
+                        new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
                 imageSimpanEditKategoriHover.setFitWidth(100);
                 imageSimpanEditKategoriHover.setFitHeight(50);
                 imageSimpanEditKategoriHover.setPreserveRatio(true);
 
-                ImageView imageSimpanEditKategori = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
+                ImageView imageSimpanEditKategori = new ImageView(
+                        new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
                 imageSimpanEditKategori.setFitWidth(100);
                 imageSimpanEditKategori.setFitHeight(50);
                 imageSimpanEditKategori.setPreserveRatio(true);
@@ -1144,7 +1147,16 @@ public class TanamUangPage {
         List<String> tipeBarangList = model.getTipeBarangList();
         List<String> tanggalBarangList = model.getTanggalBarangList();
 
-        for (int i = 0; i < getTotalBarangyangDIbeli(); i++) {
+        /*
+         * Membuat logika dimana untuk menampilkan konten histori yang paling terbaru
+         */
+        int nilaiPenentu = getTotalBarangyangDIbeli();
+        if (nilaiPenentu > 5) {
+            nilaiPenentu = nilaiPenentu - 5;
+        } else {
+            nilaiPenentu = 0;
+        }
+        for (int i = getTotalBarangyangDIbeli() - 1; i >= nilaiPenentu; i--) {
             String keterangan = keteranganBarangList.get(i);
             double nominal = nominalBarangList.get(i);
             String tipe = tipeBarangList.get(i);
@@ -1157,57 +1169,67 @@ public class TanamUangPage {
                     ? keteranganText.getText().substring(0, 10) + "..."
                     : keteranganText.getText();
 
-            Label labelKeteranganHistori = new Label(tampilanKeterangan);
-            labelKeteranganHistori.setStyle("-fx-font: 15 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the
-                                                                                                         // style
+            Label labelKeterangan = new Label(tampilanKeterangan);
+            labelKeterangan.setStyle("-fx-font: 15 'Poppins SemiBold'; -fx-text-fill: #ffffff;"); // Set the style
 
             // Tambahkan tooltip yang menampilkan saldo lengkap
             Tooltip tooltipKeterangan = new Tooltip(keteranganText.getText());
-            Tooltip.install(labelKeteranganHistori, tooltipKeterangan);
+            Tooltip.install(labelKeterangan, tooltipKeterangan);
 
-            VBox keteranganStackPane = new VBox(labelKeteranganHistori);
+            VBox keteranganStackPane = new VBox(labelKeterangan);
             keteranganStackPane.setAlignment(Pos.CENTER_LEFT);
+            keteranganStackPane.setMinWidth(100);
 
             Long roundedValueNominal = Math.round(nominal);
             Text nominalText = createText(formatDuit(roundedValueNominal),
                     "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;", 0, 0);
 
+            StackPane nominalStackPane = new StackPane(nominalText);
+            nominalStackPane.setAlignment(Pos.CENTER_RIGHT);
+            nominalStackPane.setPadding(new Insets(0, 0, 0, 60));
+
             ImageView kondisi = new ImageView();
+
             if (tipe.equals("pemasukan")) {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PemasukanKondisi.png");
+                kondisi = new ImageView("/Assets/View/Dashboard/PemasukanKondisi.png");
                 kondisi.setFitHeight(35);
                 kondisi.setFitWidth(100);
                 kondisi.setPreserveRatio(true);
             } else {
-                kondisi = new ImageView("file:src/Assets/View/Dashboard/PengeluaranKondisi.png");
+                kondisi = new ImageView("/Assets/View/Dashboard/PengeluaranKondisi.png");
                 kondisi.setFitHeight(35);
                 kondisi.setFitWidth(100);
                 kondisi.setPreserveRatio(true);
             }
+            StackPane gambarKondisi = new StackPane(kondisi);
+            gambarKondisi.setAlignment(Pos.CENTER_RIGHT);
+            gambarKondisi.setPadding(new Insets(0, 0, 0, 60));
 
-            HBox gambarKondisidanNominal = new HBox(nominalText, kondisi);
-            gambarKondisidanNominal.setSpacing(10);
-            VBox nominalStackPane = new VBox(gambarKondisidanNominal);
-            nominalStackPane.setAlignment(Pos.CENTER);
+            HBox gambarKondisidanNominal = new HBox(nominalStackPane, gambarKondisi);
+            gambarKondisidanNominal.setSpacing(5);
+            gambarKondisidanNominal.setAlignment(Pos.CENTER);
+            HBox.setHgrow(gambarKondisidanNominal, Priority.ALWAYS);
 
             Text tanggalText = createText(formatTanggal(tanggal), "-fx-font: 15 'Poppins Bold'; -fx-fill: #798F97;",
                     0, 0);
 
-            VBox tanggalTextPane = new VBox(tanggalText);
+            StackPane tanggalTextPane = new StackPane(tanggalText);
             tanggalTextPane.setAlignment(Pos.CENTER_RIGHT);
+
+            VBox tanggalTextVBox = new VBox(tanggalTextPane);
+            tanggalTextVBox.setAlignment(Pos.CENTER);
+            tanggalTextVBox.setMinWidth(200);
 
             HBox kontenHistoriKeuanganBarang = new HBox(keteranganStackPane, nominalStackPane,
                     gambarKondisidanNominal,
-                    tanggalTextPane);
-            kontenHistoriKeuanganBarang.setSpacing(80);
-            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 0, 10, 25));
+                    tanggalTextVBox);
+
+            kontenHistoriKeuanganBarang.setSpacing(50);
+            kontenHistoriKeuanganBarang.setPadding(new Insets(10, 25, 10, 40));
             kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
             kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
 
             kontenHistoriKeuangan.getChildren().add(kontenHistoriKeuanganBarang);
-            keteranganStackPane.setMaxWidth(200);
-            nominalStackPane.setMaxWidth(200);
-            tanggalTextPane.setMaxWidth(200);
 
         }
         return kontenHistoriKeuangan;

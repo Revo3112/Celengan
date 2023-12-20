@@ -154,6 +154,14 @@ public class PanenUang {
 
         // Menambah target
         Hyperlink tambahTargetHyperlink = new Hyperlink();
+        tambahTargetHyperlink.setOnMouseEntered(f -> {
+            tambahTargetHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+            tambahTargetHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/TambahHover.png")));
+        });
+        tambahTargetHyperlink.setOnMouseExited(f -> {
+            tambahTargetHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+            tambahTargetHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Tambah.png")));
+        });
         tambahTargetHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Tambah.png")));
 
         HBox kontenTengahAtas = new HBox(titleKontenTengah, tambahTargetHyperlink);
@@ -166,9 +174,22 @@ public class PanenUang {
         // Bagian atas kotak input.
         Text titleKotakInput = new Text("Tambah Target");
         titleKotakInput.setStyle("-fx-font: 24 'Poppins Bold'; -fx-fill: #FFFFFF");
-        // titleKotakInput.setFill(Color.valueOf("#FFFFFF"));
+
+        // Membuat hyperlink back
+        ImageView imageBack = new ImageView(new Image("/Assets/View/Dashboard/Back.png"));
+        imageBack.setFitWidth(30);
+        imageBack.setFitHeight(30);
+        imageBack.setPreserveRatio(true);
         Hyperlink backHyperlink = new Hyperlink();
-        backHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
+        backHyperlink.setOnMouseEntered(g -> {
+            backHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+            backHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/BackHover2.png")));
+        });
+        backHyperlink.setOnMouseExited(g -> {
+            backHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+            backHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
+        });
+        backHyperlink.setGraphic(imageBack);
         HBox hboxTitleKotakInput = new HBox(backHyperlink, titleKotakInput);
         hboxTitleKotakInput.setSpacing(20);
         HBox.setMargin(hboxTitleKotakInput, new Insets(20, 0, 0, 0));
@@ -189,6 +210,7 @@ public class PanenUang {
         labelNominalTarget.setStyle("-fx-font: 16px 'Poppins SemiBold'; -fx-text-fill: #FFFFFF;");
         TextField fieldNominalTarget = new TextField();
         fieldNominalTarget.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
+
         // Memecah hbox field supaya sejajar
         HBox hboxLabelNominalTarget = new HBox(labelNominalTarget);
         HBox hboxNominalTarget = new HBox(hboxLabelNominalTarget, fieldNominalTarget);
@@ -200,6 +222,7 @@ public class PanenUang {
         labelKeteranganTarget.setStyle("-fx-font: 16px 'Poppins SemiBold'; -fx-text-fill: #FFFFFF;");
         TextField fieldKeteranganTarget = new TextField();
         fieldKeteranganTarget.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
+
         // Memecah hbox field supaya sejajar
         HBox hboxLabelKeteranganTarget = new HBox(labelKeteranganTarget);
         HBox hboxKeteranganTarget = new HBox(hboxLabelKeteranganTarget, fieldKeteranganTarget);
@@ -231,19 +254,12 @@ public class PanenUang {
             fieldKeteranganTarget.clear();
         });
 
-        // VBox untuk konten form kotak input
-        // VBox kontenFormKotakInput = new VBox(hboxNamaTarget, hboxNominalTarget,
-        // hboxKeteranganTarget);
-
         // VBox untuk button kotak input
         HBox buttonKotakInput = new HBox(tambahHyperlink);
         buttonKotakInput.setAlignment(Pos.CENTER);
         buttonKotakInput.setPadding(new Insets(0, 0, 40, 0));
 
         // buttonKotakInput.setStyle("-fx-background-color: #FFFFFF");
-
-        Image iconSilang = new Image("/Assets/View/Login_Register/icons8-cross-mark-48.png");
-        ImageView iconSilangView = new ImageView(iconSilang);
 
         // Supaya ada efek koma ketika user memasukan input kedalam field nominal target
         fieldNominalTarget.textProperty().addListener(new ChangeListener<String>() {
@@ -448,7 +464,8 @@ public class PanenUang {
 
         // Vbox untuk konten kotak input
         VBox kontenKotakInput = new VBox(hboxTitleKotakInput, kontenFormKotakInput, buttonKotakInput);
-
+        kontenKotakInput.setAlignment(Pos.CENTER);
+        kontenKotakInput.setPadding(new Insets(20, 0, 0, 0));
         // Popup untuk kotak input
         StackPane kotakInput = new StackPane();
         kotakInput.getChildren().addAll(kontenKotakInput);
@@ -464,9 +481,11 @@ public class PanenUang {
         kontenFormKotakInput.setMaxSize(kotakInput.getMaxWidth() - 225, kotakInput.getMaxHeight());
         kontenFormKotakInput.setSpacing(20);
 
+        StackPane paneBlack = new StackPane();
+        paneBlack.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 30px;");
         // Menjalankan fungsi tambah target
         tambahTargetHyperlink.setOnMouseClicked(e -> {
-            mainPane.getChildren().add(kotakInput);
+            mainPane.getChildren().addAll(paneBlack, kotakInput);
         });
 
         // Menjalankan fungsi batal di kotak input
@@ -474,7 +493,7 @@ public class PanenUang {
             fieldNamaTarget.clear();
             fieldNominalTarget.clear();
             fieldKeteranganTarget.clear();
-            mainPane.getChildren().remove(kotakInput);
+            mainPane.getChildren().removeAll(kotakInput, paneBlack);
 
             // merefresh tampilan
             refreshView();
@@ -485,7 +504,7 @@ public class PanenUang {
             fieldNamaTarget.clear();
             fieldNominalTarget.clear();
             fieldKeteranganTarget.clear();
-            mainPane.getChildren().remove(kotakInput);
+            mainPane.getChildren().removeAll(kotakInput, paneBlack);
 
             // merefresh tampilan
             refreshView();

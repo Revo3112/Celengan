@@ -310,6 +310,7 @@ public class PantauUangPage {
                 VBox keteranganBagianKiri = new VBox(keteranganKategoriPane, keteranganStackPane);
                 keteranganBagianKiri.setSpacing(5);
                 keteranganBagianKiri.setAlignment(Pos.CENTER_LEFT);
+                keteranganBagianKiri.setMinWidth(100);
 
                 /*
                  * Bagian tengah pada scroll item
