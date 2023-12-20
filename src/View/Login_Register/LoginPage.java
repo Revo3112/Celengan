@@ -1,5 +1,6 @@
 package View.Login_Register;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -630,47 +633,8 @@ public class LoginPage {
     private void handleInputSaldodanMode(int saldo, int modeKritis) {
         InputSaldodanMode inputSaldodanMode = new InputSaldodanMode(saldo, modeKritis, this.user_id);
         SceneController sceneController = new SceneController(this.stage);
-            // membuat rectangle base loading
-            Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
-                    Color.valueOf("#101C22"));
-            // asset gif
-            ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
-            kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
-
-            Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
-            loadingText.setTranslateY(loadingText.getTranslateY() + 70);
-
-            Text tipsText = createText("Nabung Celengan setiap hari membuatmu punya tabungan darurat!", 20,
-                    "Poppins; -fx-font-weight: 500;", "ffffff");
-            tipsText.setTranslateY(loadingText.getTranslateY() + 60);
-
-            Rectangle border = new Rectangle(400, 400);
-            border.setFill(Color.TRANSPARENT);
-            border.setStroke(Color.valueOf("#101C22"));
-            border.setStrokeWidth(5);
-            border.setTranslateY(kukooAnim.getTranslateY());
-
-            StackPane loadingAnimation = new StackPane();
-            loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
-
-            root.getChildren().add(loadingAnimation);
-
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-
-            if (inputSaldodanMode.setSaldo()) {
-            Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.seconds(2), event -> {
-                        sceneController.switchToDashboard();
-                    }));
-            timeline.setCycleCount(1); // Set to 1 for a single loop
-
-            fadeIn.setOnFinished(event -> {
-                timeline.play();
-            });
-
-            fadeIn.play();
+        if (inputSaldodanMode.setSaldo()) {
+            sceneController.switchToDashboard();
         } else {
             System.out.println("Gagal");
         }
@@ -761,46 +725,8 @@ public class LoginPage {
         mainPane.getChildren().removeAll(chatError);
 
         if (login.isValidated(username, password, checkBox.isSelected())) {
-            // membuat rectangle base loading
-            Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
-                    Color.valueOf("#101C22"));
-            // asset gif
-            ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
-            kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
-
-            Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
-            loadingText.setTranslateY(loadingText.getTranslateY() + 70);
-
-            Text tipsText = createText("Nabung Celengan setiap hari membuatmu punya tabungan darurat!", 20,
-                    "Poppins; -fx-font-weight: 500;", "ffffff");
-            tipsText.setTranslateY(loadingText.getTranslateY() + 60);
-
-            Rectangle border = new Rectangle(400, 400);
-            border.setFill(Color.TRANSPARENT);
-            border.setStroke(Color.valueOf("#101C22"));
-            border.setStrokeWidth(5);
-            border.setTranslateY(kukooAnim.getTranslateY());
-
-            StackPane loadingAnimation = new StackPane();
-            loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
-
-            root.getChildren().add(loadingAnimation);
-
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
             if (login.penentuApakahSudahAdaSaldo()) {
-                Timeline timeline = new Timeline(
-                        new KeyFrame(Duration.seconds(2), event -> {
-                            sceneController.switchToDashboard();
-                        }));
-                timeline.setCycleCount(1); // Set to 1 for a single loop
-
-                fadeIn.setOnFinished(event -> {
-                    timeline.play();
-                });
-
-                fadeIn.play(); // Merubah scene menuju dashboard
+                sceneController.switchToDashboard();
             } else {
                 // membuat dark background overlay
                 Rectangle bgOverlay = new Rectangle(this.stage.getWidth(), this.stage.getHeight(), Color.BLACK);
@@ -861,6 +787,104 @@ public class LoginPage {
                                 "-fx-border-radius: 30;" +
                                 "-fx-text-fill: white;");
 
+                // field listener
+                fieldSaldo.textProperty().addListener((ChangeListener<? super String>) new ChangeListener<String>() {
+                    private String codeFormat = ",##0";
+                    private int codeLen = 4;
+
+                    @Override
+                    // ObservableValue = StringProperty (Represent an object that has changed its
+                    // state)
+                    public void changed(ObservableValue<? extends String> observable, String oldValue,
+                            String newValue) {
+                        // Hapus listener sementara
+
+                        fieldSaldo.textProperty().removeListener(this);
+                        if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
+                            if (newValue.length() > oldValue.length()) {
+                                if (newValue.length() > 13) {
+                                    fieldSaldo.setText(oldValue);
+                                } else {
+                                    updateCodeFormat(newValue);
+                                    formatAndSet(newValue, this.codeFormat);
+                                }
+                            }
+                        } else {
+                            fieldSaldo.setText(oldValue);
+                        }
+
+                        // Tambahkan kembali listener setelah pembaruan teks
+                        fieldSaldo.textProperty().addListener(this);
+                    }
+
+                    private void formatAndSet(String text, String format) {
+                        DecimalFormat decimalFormat = new DecimalFormat(format);
+                        double value = Double.parseDouble(text.replace(",", ""));
+                        System.out.println(value);
+                        fieldSaldo.setText("");
+                        fieldSaldo.setText(decimalFormat.format(value));
+                    }
+
+                    private void updateCodeFormat(String text) {
+                        int newLen = text.replace(",", "").length();
+                        if (newLen == this.codeLen + 3) {
+                            this.codeFormat = "#," + this.codeFormat;
+                            codeLen += 3;
+                        } else if (newLen >= 4) {
+                            this.codeFormat = "#" + this.codeFormat;
+                        }
+                    }
+                });
+                // field kritis listener
+                fieldModeKritis.textProperty()
+                        .addListener((ChangeListener<? super String>) new ChangeListener<String>() {
+                            private String codeFormat = ",##0";
+                            private int codeLen = 4;
+
+                            @Override
+                            // ObservableValue = StringProperty (Represent an object that has changed its
+                            // state)
+                            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                    String newValue) {
+                                // Hapus listener sementara
+
+                                fieldModeKritis.textProperty().removeListener(this);
+                                if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
+                                    if (newValue.length() > oldValue.length()) {
+                                        if (newValue.length() > 13) {
+                                            fieldModeKritis.setText(oldValue);
+                                        } else {
+                                            updateCodeFormat(newValue);
+                                            formatAndSet(newValue, this.codeFormat);
+                                        }
+                                    }
+                                } else {
+                                    fieldModeKritis.setText(oldValue);
+                                }
+
+                                // Tambahkan kembali listener setelah pembaruan teks
+                                fieldModeKritis.textProperty().addListener(this);
+                            }
+
+                            private void formatAndSet(String text, String format) {
+                                DecimalFormat decimalFormat = new DecimalFormat(format);
+                                double value = Double.parseDouble(text.replace(",", ""));
+                                System.out.println(value);
+                                fieldModeKritis.setText("");
+                                fieldModeKritis.setText(decimalFormat.format(value));
+                            }
+
+                            private void updateCodeFormat(String text) {
+                                int newLen = text.replace(",", "").length();
+                                if (newLen == this.codeLen + 3) {
+                                    this.codeFormat = "#," + this.codeFormat;
+                                    codeLen += 3;
+                                } else if (newLen >= 4) {
+                                    this.codeFormat = "#" + this.codeFormat;
+                                }
+                            }
+                        });
+
                 // button simpan
                 Button simpanButton = createButton(150, 60, "Simpan",
                         "AD7AFF", 25, "Poppins", 90, "000000");
@@ -887,8 +911,8 @@ public class LoginPage {
 
                 // button events
                 simpanButton.setOnAction(e -> {
-                    int saldo = Integer.parseInt(fieldSaldo.getText());
-                    int modeKritis = Integer.parseInt(fieldModeKritis.getText());
+                    int saldo = Integer.parseInt(fieldSaldo.getText().replace(",", ""));
+                    int modeKritis = Integer.parseInt(fieldModeKritis.getText().replace(",", ""));
                     handleInputSaldodanMode(saldo, modeKritis);
                 });
 
