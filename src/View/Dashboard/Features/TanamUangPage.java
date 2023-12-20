@@ -359,8 +359,26 @@ public class TanamUangPage {
                 Hyperlink tambahBackHyperlink = new Hyperlink();
                 tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
 
-                Hyperlink hyperlinkSimpanTambahKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12,
-                        30, 30);
+                Hyperlink hyperlinkSimpanTambahKategori = new Hyperlink();
+                ImageView imageSimpanTambahKategoriHover = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
+                imageSimpanTambahKategoriHover.setFitWidth(100);
+                imageSimpanTambahKategoriHover.setFitHeight(50);
+                imageSimpanTambahKategoriHover.setPreserveRatio(true);
+
+                ImageView imageSimpanTambahKategori = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
+                imageSimpanTambahKategori.setFitWidth(100);
+                imageSimpanTambahKategori.setFitHeight(50);
+                imageSimpanTambahKategori.setPreserveRatio(true);
+                hyperlinkSimpanTambahKategori.setGraphic(imageSimpanTambahKategori);
+
+                hyperlinkSimpanTambahKategori.setOnMouseEntered(g -> {
+                    hyperlinkSimpanTambahKategori.getScene().setCursor(Cursor.cursor("HAND"));
+                    hyperlinkSimpanTambahKategori.setGraphic(imageSimpanTambahKategoriHover);
+                });
+                hyperlinkSimpanTambahKategori.setOnMouseExited(g -> {
+                    hyperlinkSimpanTambahKategori.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                    hyperlinkSimpanTambahKategori.setGraphic(imageSimpanTambahKategori);
+                });
 
                 StackPane stackHyperlinkSimpan = new StackPane(hyperlinkSimpanTambahKategori);
 
@@ -370,12 +388,12 @@ public class TanamUangPage {
                     editMainPane.getChildren().remove(backgroundTambahPane);
                 });
                 tambahBackHyperlink.setOnMouseEntered(g -> {
-                    tambahHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
-                    tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/BackHover2.png")));
+                    tambahBackHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
+                    tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/BackHover2.png")));
                 });
                 tambahBackHyperlink.setOnMouseExited(g -> {
-                    tambahHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
-                    tambahHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
+                    tambahBackHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                    tambahBackHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Back.png")));
                 });
 
                 // HBox hboxTitleTambah = new HBox(tambahBackHyperlink, titleTambah);
@@ -530,7 +548,27 @@ public class TanamUangPage {
         // HBox hboxButtonSimpan = new HBox(buttonSimpan);
         // Menambahkan gambar
 
-        Hyperlink hyperlinkSimpan = createButtonKategori("SimpanTanamUang.png", 200, 50, 88, 14, 40, 40);
+        Hyperlink hyperlinkSimpan = new Hyperlink();
+        ImageView imageSimpanHover = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
+        imageSimpanHover.setFitWidth(100);
+        imageSimpanHover.setFitHeight(50);
+        imageSimpanHover.setPreserveRatio(true);
+
+        ImageView imageSimpan = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
+        imageSimpan.setFitWidth(100);
+        imageSimpan.setFitHeight(50);
+        imageSimpan.setPreserveRatio(true);
+        hyperlinkSimpan.setGraphic(imageSimpan);
+
+        hyperlinkSimpan.setOnMouseEntered(g -> {
+            hyperlinkSimpan.getScene().setCursor(Cursor.cursor("HAND"));
+            hyperlinkSimpan.setGraphic(imageSimpanHover);
+        });
+        hyperlinkSimpan.setOnMouseExited(g -> {
+            hyperlinkSimpan.getScene().setCursor(Cursor.cursor("DEFAULT"));
+            hyperlinkSimpan.setGraphic(imageSimpan);
+        });
+
         hyperlinkSimpan.setOnMouseClicked(e -> {
             if (isFormFilled()) {
                 LocalDate selectedTanggal = this.datePickerTanggal.getValue();
@@ -718,37 +756,6 @@ public class TanamUangPage {
         this.stage.show(); // Tetapkan setelah styling selesai
     }
 
-    private Hyperlink createButtonKategori(String imageName, double imageWidth, double imageHeight, double rectWidth,
-            double rectHeight, double rectArcWidth, double rectArcHeight) {
-        ImageView imageSimpan = new ImageView(new Image("/Assets/View/Dashboard/" + imageName));
-        imageSimpan.setFitWidth(imageWidth);
-        imageSimpan.setFitHeight(imageHeight);
-        imageSimpan.setPreserveRatio(true);
-        Rectangle hoverSimpan = new Rectangle(imageSimpan.getFitWidth() - rectWidth,
-                imageSimpan.getFitHeight() - rectHeight);
-        hoverSimpan.setFill(new Color(0, 0, 0, 0.5));
-        hoverSimpan.setArcWidth(rectArcWidth);
-        hoverSimpan.setArcHeight(rectArcHeight);
-        hoverSimpan.setVisible(false);
-
-        StackPane stackHoverSimpan = new StackPane(imageSimpan, hoverSimpan);
-        stackHoverSimpan.setAlignment(Pos.CENTER);
-
-        Hyperlink hyperlinkSimpan = new Hyperlink();
-        hyperlinkSimpan.setGraphic(stackHoverSimpan);
-
-        hyperlinkSimpan.setOnMouseEntered(g -> {
-            hyperlinkSimpan.getScene().setCursor(Cursor.cursor("HAND"));
-            hoverSimpan.setVisible(true);
-        });
-        hyperlinkSimpan.setOnMouseExited(g -> {
-            hyperlinkSimpan.getScene().setCursor(Cursor.cursor("DEFAULT"));
-            hoverSimpan.setVisible(false);
-        });
-
-        return hyperlinkSimpan;
-    }
-
     private void refreshView(ScrollPane scrollPane, VBox scrollContentBox, StackPane mainPane) {
         scrollContentBox.getChildren().clear();
 
@@ -863,31 +870,25 @@ public class TanamUangPage {
                 hboxSubTitleHapus.setAlignment(Pos.CENTER);
                 hboxSubTitleHapus.setPadding(new Insets(0, 20, 0, 20));
 
+                ImageView imageHapusKategoriHover = new ImageView(new Image("/Assets/View/Dashboard/HapusHover.png"));
+                imageHapusKategoriHover.setFitWidth(100);
+                imageHapusKategoriHover.setFitHeight(50);
+                imageHapusKategoriHover.setPreserveRatio(true);
+
                 ImageView imageHapusKategori = new ImageView(new Image("/Assets/View/Dashboard/Hapus.png"));
-                imageHapusKategori.setFitWidth(200);
+                imageHapusKategori.setFitWidth(100);
                 imageHapusKategori.setFitHeight(50);
                 imageHapusKategori.setPreserveRatio(true);
-                Rectangle hoverHapusKategori = new Rectangle(imageHapusKategori.getFitWidth() - 105,
-                        imageHapusKategori.getFitHeight() - 15);
-                hoverHapusKategori.setFill(new Color(0, 0, 0, 0.5));
-                hoverHapusKategori.setArcWidth(40);
-                hoverHapusKategori.setArcHeight(40);
-                hoverHapusKategori.setVisible(false);
-
-                StackPane stackHoverHapusKategori = new StackPane(imageHapusKategori, hoverHapusKategori);
-                stackHoverHapusKategori.setAlignment(Pos.CENTER);
-                StackPane.setMargin(hoverHapusKategori, new Insets(10, 0, 0, 0));
 
                 Hyperlink hyperlinkHapusKategori = new Hyperlink();
-                hyperlinkHapusKategori.setGraphic(stackHoverHapusKategori);
-
+                hyperlinkHapusKategori.setGraphic(imageHapusKategori);                
                 hyperlinkHapusKategori.setOnMouseEntered(g -> {
                     hyperlinkHapusKategori.getScene().setCursor(Cursor.cursor("HAND"));
-                    hoverHapusKategori.setVisible(true);
+                    hyperlinkHapusKategori.setGraphic(imageHapusKategoriHover);
                 });
                 hyperlinkHapusKategori.setOnMouseExited(g -> {
                     hyperlinkHapusKategori.getScene().setCursor(Cursor.cursor("DEFAULT"));
-                    hoverHapusKategori.setVisible(false);
+                    hyperlinkHapusKategori.setGraphic(imageHapusKategori);
                 });
 
                 StackPane stackHyperlinkHapusKategori = new StackPane(hyperlinkHapusKategori);
@@ -964,8 +965,26 @@ public class TanamUangPage {
                 fieldEditNamaKategori.getStylesheets()
                         .add(getClass().getResource("/Utils/TextField.css").toExternalForm());
 
-                Hyperlink hyperlinkSimpanEditKategori = createButtonKategori("SimpanTanamUang.png", 150, 40, 62, 12, 30,
-                        30);
+                Hyperlink hyperlinkSimpanEditKategori = new Hyperlink();
+                ImageView imageSimpanEditKategoriHover = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUangHover.png"));
+                imageSimpanEditKategoriHover.setFitWidth(100);
+                imageSimpanEditKategoriHover.setFitHeight(50);
+                imageSimpanEditKategoriHover.setPreserveRatio(true);
+
+                ImageView imageSimpanEditKategori = new ImageView(new Image("/Assets/View/Dashboard/SimpanTanamUang.png"));
+                imageSimpanEditKategori.setFitWidth(100);
+                imageSimpanEditKategori.setFitHeight(50);
+                imageSimpanEditKategori.setPreserveRatio(true);
+                hyperlinkSimpanEditKategori.setGraphic(imageSimpanEditKategori);
+
+                hyperlinkSimpanEditKategori.setOnMouseEntered(g -> {
+                    hyperlinkSimpanEditKategori.getScene().setCursor(Cursor.cursor("HAND"));
+                    hyperlinkSimpanEditKategori.setGraphic(imageSimpanEditKategoriHover);
+                });
+                hyperlinkSimpanEditKategori.setOnMouseExited(g -> {
+                    hyperlinkSimpanEditKategori.getScene().setCursor(Cursor.cursor("DEFAULT"));
+                    hyperlinkSimpanEditKategori.setGraphic(imageSimpanEditKategori);
+                });
                 StackPane stackHyperlinkSimpanEditKategori = new StackPane(hyperlinkSimpanEditKategori);
                 String nama_kategori = namaKategori.getText();
 
