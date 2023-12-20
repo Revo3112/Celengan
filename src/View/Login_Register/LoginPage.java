@@ -260,9 +260,9 @@ public class LoginPage {
 
                     root.getChildren().add(loadingAnimation);
 
-                    FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
-                    fadeIn.setFromValue(0.0);
-                    fadeIn.setToValue(1.0);
+                    FadeTransition fadeInSaldo = new FadeTransition(Duration.millis(500), loadingAnimation);
+                    fadeInSaldo.setFromValue(0.0);
+                    fadeInSaldo.setToValue(1.0);
 
                     Timeline timeline = new Timeline(
                             new KeyFrame(Duration.seconds(2), event -> {
@@ -280,11 +280,11 @@ public class LoginPage {
                             }));
                     timeline.setCycleCount(1); // Set to 1 for a single loop
 
-                    fadeIn.setOnFinished(event -> {
+                    fadeInSaldo.setOnFinished(event -> {
                         timeline.play();
                     });
 
-                    fadeIn.play();
+                    fadeInSaldo.play();
                 }
             }
         });
@@ -629,8 +629,7 @@ public class LoginPage {
     /* SALDO DAN MODE KRITIS */
     private void handleInputSaldodanMode(int saldo, int modeKritis) {
         InputSaldodanMode inputSaldodanMode = new InputSaldodanMode(saldo, modeKritis, this.user_id);
-        if (inputSaldodanMode.setSaldo()) {
-            SceneController sceneController = new SceneController(this.stage);
+        SceneController sceneController = new SceneController(this.stage);
             // membuat rectangle base loading
             Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
                     Color.valueOf("#101C22"));
@@ -660,6 +659,7 @@ public class LoginPage {
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
 
+            if (inputSaldodanMode.setSaldo()) {
             Timeline timeline = new Timeline(
                     new KeyFrame(Duration.seconds(2), event -> {
                         sceneController.switchToDashboard();
@@ -671,7 +671,6 @@ public class LoginPage {
             });
 
             fadeIn.play();
-
         } else {
             System.out.println("Gagal");
         }
@@ -762,8 +761,46 @@ public class LoginPage {
         mainPane.getChildren().removeAll(chatError);
 
         if (login.isValidated(username, password, checkBox.isSelected())) {
+            // membuat rectangle base loading
+            Rectangle baseKukooLoading = new Rectangle(root.getWidth(), root.getHeight(),
+                    Color.valueOf("#101C22"));
+            // asset gif
+            ImageView kukooAnim = createImage(logRegPath + "celengan_loading_anim.gif", 400, 400);
+            kukooAnim.setTranslateY(kukooAnim.getTranslateY() - 90);
+
+            Text loadingText = createText("LOADING ...", 20, "Poppins", "376675");
+            loadingText.setTranslateY(loadingText.getTranslateY() + 70);
+
+            Text tipsText = createText("Nabung Celengan setiap hari membuatmu punya tabungan darurat!", 20,
+                    "Poppins; -fx-font-weight: 500;", "ffffff");
+            tipsText.setTranslateY(loadingText.getTranslateY() + 60);
+
+            Rectangle border = new Rectangle(400, 400);
+            border.setFill(Color.TRANSPARENT);
+            border.setStroke(Color.valueOf("#101C22"));
+            border.setStrokeWidth(5);
+            border.setTranslateY(kukooAnim.getTranslateY());
+
+            StackPane loadingAnimation = new StackPane();
+            loadingAnimation.getChildren().addAll(baseKukooLoading, kukooAnim, border, loadingText, tipsText);
+
+            root.getChildren().add(loadingAnimation);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(500), loadingAnimation);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
             if (login.penentuApakahSudahAdaSaldo()) {
-                sceneController.switchToDashboard(); // Merubah scene menuju dashboard
+                Timeline timeline = new Timeline(
+                        new KeyFrame(Duration.seconds(2), event -> {
+                            sceneController.switchToDashboard();
+                        }));
+                timeline.setCycleCount(1); // Set to 1 for a single loop
+
+                fadeIn.setOnFinished(event -> {
+                    timeline.play();
+                });
+
+                fadeIn.play(); // Merubah scene menuju dashboard
             } else {
                 // membuat dark background overlay
                 Rectangle bgOverlay = new Rectangle(this.stage.getWidth(), this.stage.getHeight(), Color.BLACK);
@@ -855,10 +892,10 @@ public class LoginPage {
                     handleInputSaldodanMode(saldo, modeKritis);
                 });
 
-                FadeTransition fadeIn = new FadeTransition(Duration.millis(300), bgOverlay);
-                fadeIn.setFromValue(0);
-                fadeIn.setToValue(0.7);
-                fadeIn.play();
+                FadeTransition fadeInSaldo = new FadeTransition(Duration.millis(300), bgOverlay);
+                fadeInSaldo.setFromValue(0);
+                fadeInSaldo.setToValue(0.7);
+                fadeInSaldo.play();
 
                 FadeTransition fadeOut = new FadeTransition(Duration.millis(300), bgOverlay);
                 fadeOut.setFromValue(0.7);
