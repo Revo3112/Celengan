@@ -3,7 +3,6 @@ package View.Splash_Screen;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart.Data;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -126,6 +125,7 @@ public class SplashScreen {
         // mengambil atau menambahkan seluruh pane yang akan ditambahkan ke dalam root
         root.getChildren().addAll(outPane, mainContent);
 
+        // kondisi dimana roto draggable
         root.setOnMousePressed(e -> {
             if (e.isPrimaryButtonDown() && e.getClickCount() == 2) {
                 root.getScene().setCursor(closedHand);

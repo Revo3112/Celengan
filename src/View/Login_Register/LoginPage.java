@@ -38,7 +38,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 // membuat class LoginPage
@@ -51,15 +50,18 @@ public class LoginPage {
     private Cursor closedHand = Cursor.cursor("CLOSED_HAND");
     private Cursor defaultCursor = Cursor.cursor("DEFAULT");
 
-    private boolean isMousePressed = false;
-    private boolean isWindowMax = true;
-    private double xOffset = 0;
-    private double yOffset = 0;
+    // kondisi
+    private boolean isMousePressed = false; // apakah mouse ditekan
+    private boolean isWindowMax = true; // apakah window maximized
+
+    // inisiasi koordinat offset x y mouse
+    private double xOffset = 0; // track x
+    private double yOffset = 0; // track y
 
     // error status
     boolean hLogErrStat = false;
 
-    // panes
+    // main pane inisiasi
     StackPane mainContent;
 
     // timelines
@@ -79,43 +81,51 @@ public class LoginPage {
     List<Timeline> listAyamError_IN;
     List<Timeline> listAyamError_OUT;
 
-    // deklarasi path asset error
+    // deklarasi path asset dari login_register
     String logRegPath = "/Assets/View/Login_Register/";
+
     // animasi ayam error/deklarasi image
     ImageView ayamError = createImage(logRegPath + "ayamMarah.png", 180, 180);
     ImageView awanError = createImage(logRegPath + "awan.png", 350, 350);
+
+    // deklarasi durasi animasi ayamError hop
     Duration ayamErrorHopDur = Duration.millis(600);
     Duration awanErrorHopDur = Duration.millis(2300);
+
+    // deklarasi koordinat awal Y dan akhir untuk animasi ayamError
     double ayamErrorOriginY = ayamError.getTranslateY();
     double ayamErrorTargetY = ayamErrorOriginY - 250;
     double awanErrorOriginY = awanError.getTranslateY();
     double awanErrorTargetY = awanErrorOriginY - 500;
+
+    // List image chat error ayam
     List<ImageView> listChatErrorAyam;
 
-    // user id
+    // inisiasi variabel user_id utk database
     private int user_id;
 
+    // inisiasi pane root
     StackPane root = new StackPane(); // stackpane root
 
     // Melakukan inisiasi class LoginPage dengan parameter stage
     public LoginPage(Stage stage) {
         this.stage = stage; // Instansiasi property stage dengan parameter stage
-        sceneController = new SceneController(stage);
-        // user id from login model
+        sceneController = new SceneController(stage); // instansiasi sceneController
+        // instansiasi objek user dari class login model
         LoginModel user = new LoginModel();
-        this.user_id = user.getUserId();
-        // Set the application icon
+        this.user_id = user.getUserId(); // menampung user id dari method getUserId()
+        // menetapkan icon aplikasi
         Image icon = new Image("Assets/View/Splash_Screen/images/logo/celengan_image_logo.png");
         this.stage.getIcons().add(icon); // Menambahkan icon ke dalam stage
-        this.stage.setTitle("Celengan");
+        this.stage.setTitle("Celengan"); // membuat title aplikasi
     }
 
+    // fungsi untuk menentukan apakah user langsung dashboard atau tidak
     public void penentuApakahStartAtauLangsungDashboard() {
-        Boolean penentuAkhir = false;
+        Boolean penentuAkhir = false; // trigger penentu user
         LoginModel login = new LoginModel(); // Membuat objek login
-        penentuAkhir = login.penentuBagianLastUser();
+        penentuAkhir = login.penentuBagianLastUser(); // menampung penentuAkhir dari method penentuBagiLastUser()
         if (penentuAkhir) {
-            SceneController sceneController = new SceneController(this.stage); // Membuat objek sceneController
             sceneController.switchToDashboard(); // Merubah scene menuju dashboard
         } else {
             this.start(); // Menjalankan method start()
@@ -131,13 +141,14 @@ public class LoginPage {
 
         // membuat maximizeButton
         Button maximizeButton = createButton(35, 35, " ", "FFFFFF", 23, "Poppins", 30, "0F181B");
-        // set graphic untuk label maximize
+
+        // membuat icon maximize
         Rectangle maxIcon = new Rectangle(14, 14);
-        maxIcon.setFill(Color.TRANSPARENT);
-        maxIcon.setStroke(Color.valueOf("#0F181B"));
-        maxIcon.setStrokeWidth(4);
-        maxIcon.setTranslateX(maximizeButton.getTranslateX() + 5);
-        maximizeButton.setGraphic(maxIcon);
+        maxIcon.setFill(Color.TRANSPARENT); // warna transparen
+        maxIcon.setStroke(Color.valueOf("#0F181B")); // stroke berwarna
+        maxIcon.setStrokeWidth(4); // ketebalan stroke 4
+        maxIcon.setTranslateX(maximizeButton.getTranslateX() + 5); // posisi koordinat x icon
+        maximizeButton.setGraphic(maxIcon); // menetapkan grafik icon dalam maximizeButton
 
         // membuat minimizeButton
         Button minimizeButton = createButton(35, 35, "-", "FFFFFF", 23, "Poppins", 30, "0F181B");
@@ -150,6 +161,7 @@ public class LoginPage {
             closeButton.getScene().setCursor(hand);
             updateButton(closeButton, 35, 35, "X", "6A1B1B", 23, "Poppins", 30, "0F181B");
         });
+        // saat selesai dihover maka cursor kembali ke default
         closeButton.setOnMouseExited(closeEvent -> {
             closeButton.getScene().setCursor(defaultCursor);
             updateButton(closeButton, 35, 35, "X", "FF4646", 23, "Poppins", 30, "0F181B");
@@ -198,6 +210,8 @@ public class LoginPage {
             maxIcon.setTranslateX(maximizeButton.getTranslateX());
             maximizeButton.setGraphic(maxIcon);
         });
+        // saat mouse keluar maka maximizeButton akan kembali ke default dan warna
+        // default
         maximizeButton.setOnMouseExited(closeEvent -> {
             maximizeButton.getScene().setCursor(defaultCursor);
             updateButton(maximizeButton, 35, 35, "", "FFFFFF", 23, "Poppins", 30, "0F181B");
@@ -214,6 +228,8 @@ public class LoginPage {
             minimizeButton.getScene().setCursor(hand);
             updateButton(minimizeButton, 35, 35, "-", "959595", 23, "Poppins", 30, "0F181B");
         });
+        // saat tidak di hover maka cursor kembali ke default dan warna minimzeButton
+        // balik
         minimizeButton.setOnMouseExited(closeEvent -> {
             minimizeButton.getScene().setCursor(defaultCursor);
             updateButton(minimizeButton, 35, 35, "-", "FFFFFF", 23, "Poppins", 30, "0F181B");
@@ -221,11 +237,17 @@ public class LoginPage {
 
         /* BAGIAN DROPDOWN LOGIN */
         // membuat dropdown button
-        ComboBox<String> dropDownBtn = new ComboBox<>();
+        ComboBox<String> dropDownBtn = new ComboBox<>(); // menetapkan inisiasi objeck dropDownBtn dr class ComboBox()
         dropDownBtn.setMinWidth(20);
         dropDownBtn.setMinHeight(40);
         dropDownBtn.setPromptText("Login Page");
-        dropDownBtn.setItems(FXCollections.observableArrayList("Login Page", "Register Page", "Request New Password"));
+        dropDownBtn.setItems(FXCollections.observableArrayList("Login Page", "Register Page", "Request New Password")); // menambahkan
+                                                                                                                        // items
+                                                                                                                        // yang
+                                                                                                                        // ada
+                                                                                                                        // di
+                                                                                                                        // cell
+                                                                                                                        // dropdown
         dropDownBtn.setStyle(
                 "-fx-background-radius: 130;" +
                         "-fx-background-color: #FFFFFF;" +

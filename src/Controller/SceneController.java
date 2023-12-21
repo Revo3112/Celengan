@@ -5,7 +5,6 @@ import View.Dashboard.Features.PanenUang;
 import View.Dashboard.Features.PantauUangPage;
 import View.Dashboard.Features.TanamUangPage;
 import View.Login_Register.LoginPage;
-import View.Login_Register.PenentuSaldo;
 import View.Login_Register.RegistrationPage;
 import View.Login_Register.RequestNewPass;
 import View.Splash_Screen.SplashScreen;
@@ -83,13 +82,6 @@ public class SceneController {
                                                                             // RequestNewPassword ke dalam
                                                                             // variabel requestNewPassword
         requestNewPassword.start(); // Menjalankan method start() pada class RequestNewPassword
-    }
-
-    // Buat saldo dan mode kritis
-    public void switchToBuatSaldoDanModeKritis() {
-        PenentuSaldo penentuSaldo = new PenentuSaldo(this.stage); // Instansiasi class PenentuSaldo ke dalam variabel
-                                                                  // penentuSaldo
-        penentuSaldo.penentuSaldo(); // Menjalankan method penentuSaldo() pada class PenentuSaldo
     }
 
     // Menambahkan Target
