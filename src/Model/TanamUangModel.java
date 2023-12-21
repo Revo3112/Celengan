@@ -222,9 +222,10 @@ public class TanamUangModel {
             String sql_2 = String.format(
                     "SELECT uk.name, uk.transac_kategori_id FROM user_kategori AS uk WHERE user_id=%d AND tipe='%s' AND transac_kategori_id != 0;",
                     userId, tipeTanamUang);
+            System.out.println(userId);
 
-            String sql_3 = String.format("SELECT name FROM user_kategori WHERE transac_kategori_id = 0 AND tipe='%s'",
-                    tipeTanamUang);
+            String sql_3 = String.format("SELECT name FROM user_kategori WHERE user_id=%d AND transac_kategori_id = 0 AND tipe='%s'",
+                    userId, tipeTanamUang);
 
             Statement statement_1 = connection.createStatement(); // Membuat statement dari method createStatement()
             ResultSet resultKategori = statement_1.executeQuery(sql_1); // Execute query sql menggunakan method
@@ -233,7 +234,7 @@ public class TanamUangModel {
 
             Statement statement_2 = connection.createStatement(); // Membuat statement dari method createStatement()
             ResultSet resultUserKategori = statement_2.executeQuery(sql_2); // Execute query sql menggunakan method
-                                                                            // executeQuery dan dimasukkan ke dalam
+                                                                            // executeQuery dan dimasukkan ke dalam]
                                                                             // variabel result
 
             Statement statement_3 = connection.createStatement(); // Membuat statement dari method createStatement()
