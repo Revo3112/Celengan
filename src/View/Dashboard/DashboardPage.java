@@ -60,7 +60,9 @@ import javafx.util.Callback;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
-
+    /*
+     * 
+     */
     private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
     private String username;
     private SceneController sceneController; // Tambahkan property SceneController\
