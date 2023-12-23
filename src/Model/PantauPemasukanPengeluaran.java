@@ -9,14 +9,24 @@ import Utils.DBConnection;
 import java.util.List;
 import java.util.ArrayList;
 
+/*
+ * Kelas PantauPemasukanPengeluaran untuk mengatur pemasukan dan pengeluaran
+ */
 public class PantauPemasukanPengeluaran {
+    // Atribut
     public int userId;
 
+    /*
+     * Konstruktor PantauPemasukanPengeluaran
+     */
     public PantauPemasukanPengeluaran() {
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
     }
 
+    /*
+     * Mengambil jumlah banyak data di transac
+     */
     public int banyakDatadiTransac() {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -27,6 +37,10 @@ public class PantauPemasukanPengeluaran {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setInt(1, this.userId);
 
+                /*
+                 * Mengambil banyak data di transac dengan userId yang sesuai
+                 * dan dilakukan loop untuk mengambil banyak data
+                 */
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     int banyakData = resultSet.getInt("COUNT(*)");
@@ -41,7 +55,9 @@ public class PantauPemasukanPengeluaran {
 
     // Yang perlu diambil di database adalah Kategori, Keterangan, Nominal, Tipe,
     // jenis Transfer, Tanggal
-
+    /*
+     * Mengambil kategori barang dari database
+     */
     public List<String> kategoriBarangList() {
         List<String> kategoriBarangList = new ArrayList<>();
         try {
@@ -54,8 +70,13 @@ public class PantauPemasukanPengeluaran {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
+                    // Mengambil kategori_id dan tipe_kategori dari database
                     int kategori_id = resultSet.getInt("kategori_id");
                     int tipe_kategori = resultSet.getInt("tipe_kategori");
+                    // Jika tipe_kategori = 0, maka kategoriBarangList akan mengambil kategori
+                    // dari user_kategori
+                    // Jika tipe_kategori = 1, maka kategoriBarangList akan mengambil kategori
+                    // dari transac_kategori
                     if (tipe_kategori == 0) {
                         kategoriBarangList.add(getKategoriNameUser(kategori_id));
                     } else {
@@ -69,6 +90,10 @@ public class PantauPemasukanPengeluaran {
         return kategoriBarangList; // Corrected return statement
     }
 
+    /*
+     * Method untuk mengambil data nama dari transac_kategori yang merupakan
+     * kategori default
+     */
     private static String getKategoriNameByDefault(int id) throws SQLException {
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
@@ -85,6 +110,10 @@ public class PantauPemasukanPengeluaran {
         return null;
     }
 
+    /*
+     * Method untuk mengambil data nama dari user_kategori yang merupakan kategori
+     * user
+     */
     private String getKategoriNameUser(int id) throws SQLException {
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
@@ -102,6 +131,9 @@ public class PantauPemasukanPengeluaran {
         return null;
     }
 
+    /*
+     * Mengambil keterangan barang dari database
+     */
     public List<String> getKeteranganBarangList() {
         List<String> keteranganBarangList = new ArrayList<>();
         try {
@@ -126,6 +158,9 @@ public class PantauPemasukanPengeluaran {
 
     }
 
+    /*
+     * Mengambil nominal barang dari database
+     */
     public List<Double> getNominalBarangList() {
         List<Double> nominalBarangList = new ArrayList<>();
         try {
@@ -149,6 +184,9 @@ public class PantauPemasukanPengeluaran {
         return nominalBarangList;
     }
 
+    /*
+     * Mengambil tipe barang dari database
+     */
     public List<String> getTipeBarangList() {
         List<String> tipeBarangList = new ArrayList<>();
         try {
@@ -172,6 +210,9 @@ public class PantauPemasukanPengeluaran {
         return tipeBarangList;
     }
 
+    /*
+     * Mengambil Tanggal barang dari database
+     */
     public List<String> getTanggalBarangList() {
         List<String> tanggalBarangList = new ArrayList<>();
         try {
@@ -195,6 +236,9 @@ public class PantauPemasukanPengeluaran {
         return tanggalBarangList;
     }
 
+    /*
+     * Mengambil Tipe Pembayaran barang dari database
+     */
     public List<String> listTipePembayaran() {
         List<String> tipePembayaranList = new ArrayList<>();
         try {
@@ -221,6 +265,10 @@ public class PantauPemasukanPengeluaran {
     /*
      * Khusus dengan kategori
      */
+
+    /*
+     * Mengambil banyak data di transac dengan kategori tertentu
+     */
     public int banyakDatadiTransacDenganKategori(String kategori) {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -244,6 +292,9 @@ public class PantauPemasukanPengeluaran {
         return 0;
     }
 
+    /*
+     * Mengambil keterangan barang dari database dengan kategori tertentu
+     */
     public List<String> getKeteranganBarangListDenganTipeTransaksi(String kategori) {
         List<String> keteranganBarangList = new ArrayList<>();
         try {
@@ -269,6 +320,9 @@ public class PantauPemasukanPengeluaran {
 
     }
 
+    /*
+     * Mengambil nominal barang dari database dengan kategori tertentu
+     */
     public List<Double> getNominalBarangListDenganTipeTransaksi(String kategori) {
         List<Double> nominalBarangList = new ArrayList<>();
         try {
@@ -293,6 +347,9 @@ public class PantauPemasukanPengeluaran {
         return nominalBarangList;
     }
 
+    /*
+     * Mengambil kategori barang dari database dengan kategori tertentu
+     */
     public List<String> kategoriBarangListDenganTipeTransaksi(String kategori) {
         List<String> kategoriBarangList = new ArrayList<>();
         try {
@@ -306,8 +363,13 @@ public class PantauPemasukanPengeluaran {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
+                    // Mengambil kategori_id dan tipe_kategori dari database
                     int kategori_id = resultSet.getInt("kategori_id");
                     int tipe_kategori = resultSet.getInt("tipe_kategori");
+                    // Jika tipe_kategori = 0, maka kategoriBarangList akan mengambil kategori
+                    // dari user_kategori
+                    // Jika tipe_kategori = 1, maka kategoriBarangList akan mengambil kategori
+                    // dari transac_kategori
                     if (tipe_kategori == 0) {
                         kategoriBarangList.add(getKategoriNameUser(kategori_id));
                     } else {
@@ -321,6 +383,9 @@ public class PantauPemasukanPengeluaran {
         return kategoriBarangList; // Corrected return statement
     }
 
+    /*
+     * Mengambil Tanggal barang dari database dengan kategori tertentu
+     */
     public List<String> getTanggalBarangListDenganTipeTransaksi(String kategori) {
         List<String> tanggalBarangList = new ArrayList<>();
         try {
@@ -345,6 +410,9 @@ public class PantauPemasukanPengeluaran {
         return tanggalBarangList;
     }
 
+    /*
+     * Mengambil Tipe Pembayaran barang dari database dengan kategori tertentu
+     */
     public List<String> getTipePembayaranListDenganTipeTransaksi(String kategori) {
         List<String> tipePembayaranList = new ArrayList<>();
         try {

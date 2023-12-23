@@ -2,9 +2,8 @@
 .progress-bar > .bar {
     -fx-background-radius: 400;
     -fx-background-insets: 1 1 1 1;
-    -fx-pref-width: 400px; /* Set the preferred width */
-    /* -fx-pref-height: 20px; Set the preferred height */
-    -fx-background-color: #5AE1F3; /* Set the background color */
+    -fx-pref-width: 400px; 
+    -fx-background-color: #5AE1F3; 
 }
 
 .progress-bar .track {

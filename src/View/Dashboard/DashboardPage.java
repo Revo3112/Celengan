@@ -61,7 +61,7 @@ import javafx.util.Callback;
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
     /*
-     * 
+     * Deklarasi atribut yang digunakan untuk menampilkan halaman dashboard
      */
     private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
     private String username;
@@ -80,6 +80,10 @@ public class DashboardPage {
     public StackPane root = new StackPane();
     StackPane mainPane = new StackPane();
 
+    /*
+     * Constructor DashboardPage untuk menginisialisasi atribut yang dibutuhkan
+     * untuk menampilkan halaman dashboard
+     */
     public DashboardPage(Stage stage) {
         this.stage = stage;
         this.username = getUsername();
@@ -94,16 +98,23 @@ public class DashboardPage {
         this.tanggalBarangList = model.getTanggalBarangList();
     }
 
-    // Menampilkan halaman dashboard
+    /*
+     * Fungsi untuk menampilkan halaman dashboard
+     */
     public void start() {
-        // Membuat side bar
+        /*
+         * Memasukkan konten sidebar ke dalam VBox dan mengatur posisi VBox
+         * yang nantinya akan di masukkan ke dalam pane utama
+         */
         ImageLinkPane imageLinkPane = new ImageLinkPane(this); // Mengirim referensi DashboardPage ke ImageLinkPane
         VBox sideBar = imageLinkPane.createImageLinkVBox(this.stage, sceneController);
         sideBar.setAlignment(Pos.CENTER);
         sideBar.setMinWidth(242);
         VBox.setVgrow(sideBar, Priority.ALWAYS);
 
-        // Membuat teks welcome
+        /*
+         * Membuat welcome Text dan name Text yang akan ditampilkan di dashboard
+         */
         Text welcome = createText("Selamat Datang,", "-fx-font: 40 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
         Text name = createText(this.username + "!", "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 0);
 
@@ -150,7 +161,9 @@ public class DashboardPage {
         kontenTengahAtas.setAlignment(Pos.CENTER_LEFT);
         kontenTengahAtas.setPadding(new Insets(0, 0, 20, 0));
 
-        // Konten kiri
+        /*
+         * Membuat konten tengah kiri yang berisi gambar duit dan saldo awal
+         */
         ImageView Gambarduit = new ImageView(new Image("/Assets/View/Dashboard/Gambarduit.png"));
         Gambarduit.setFitWidth(220);
         Gambarduit.setFitHeight(43);
@@ -163,6 +176,9 @@ public class DashboardPage {
         // Membulatkan tampilan uang agar tidak muncul E
         long roundedValue = Math.round(this.saldo);
 
+        /*
+         * Membuat teks saldo awal dan saldo awal 2 yang akan ditampilkan di dashboard
+         */
         Text Saldoawal = createText("Saldo Awal", "-fx-font: 15 'Poppins-Regular'; -fx-fill: #064D00;", 0, 0);
         Text Saldoawal2 = createText(formatDuit(roundedValue), "-fx-font: 25 'Poppins SemiBold'; -fx-fill: #ffffff;", 0,
                 -6);
@@ -197,23 +213,33 @@ public class DashboardPage {
         VBox penyatuanKonten = new VBox(vboxKiriAtas, vboxKiriTengah, vboxKiriBawah);
         penyatuanKonten.setPadding(new Insets(20, 0, 0, 0));
         penyatuanKonten.setSpacing(4);
-        // Saldoawal2.wrappingWidthProperty().bind(penyatuanKonten.widthProperty());
 
         StackPane Kontenkiri = new StackPane(penyatuanKonten);
         Kontenkiri.setStyle("-fx-background-color: #39B200; -fx-background-radius: 20px");
         Kontenkiri.setAlignment(Pos.CENTER);
         Kontenkiri.setMaxHeight(200);
-        // Konten Tengah
 
+        /*
+         * Membuat konten tengah tengah yang berisi pie chart
+         */
         // Membuat pie chart
         try {
             PieChart pieChart = new PieChart();
             ObservableList<PieChart.Data> pieChartData = PieChartData.pieChartData();
             pieChart.setData(pieChartData);
+
+            /*
+             * Membuat tooltip untuk menampilkan persentase dan nominal dari pie chart
+             * yang ditunjukkan serta mengisikan data ke dalam pie chart
+             */
             for (PieChart.Data data : pieChartData) {
                 Tooltip.install(data.getNode(), tooltip);
                 System.out.println(data.getPieValue());
 
+                /*
+                 * Membuat event handler untuk menampilkan tooltip ketika mouse berada di atas
+                 * pie chart
+                 */
                 data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
                     double pieValue = data.getPieValue();
                     double nominalValue = PieChartData.totalpengeluaran() * ((pieValue));
@@ -255,7 +281,6 @@ public class DashboardPage {
 
                 data.getNode().setStyle("-fx-label-line-length: -100px;");
             }
-
             pieChart.setStartAngle(90);
             pieChart.setClockwise(false);
             pieChart.setMaxSize(350, 100);
@@ -267,8 +292,6 @@ public class DashboardPage {
             pieChart.setCenterShape(true);
             pieChart.getStylesheets()
                     .add(getClass().getResource("/Utils/PieChart.css").toExternalForm());
-            // pieChart.setTranslateX(-50);
-            // pieChart.setTranslateY(-20);
 
             Scale pieChartScale = new Scale(1, 1);
             pieChart.setTranslateX(0);
@@ -279,6 +302,10 @@ public class DashboardPage {
             pieChartPane.setPadding(new Insets(0, 0, 0, 0));
             pieChartPane.setMaxSize(330, 100);
 
+            /*
+             * Jika tidak ada data yang ditampilkan, maka tampilkan gambar ayam sedih
+             * Jika terdapat data maka data tersebut yang akan di tampilkan
+             */
             if (pieChartData.size() == 0) {
                 ImageView ayamSedih = new ImageView("/Assets/View/Pantau_Uang/ayamsedih.png");
                 ayamSedih.setFitHeight(200);
@@ -318,7 +345,9 @@ public class DashboardPage {
             KontenTengah.setStyle("-fx-background-color: #0D1416; -fx-background-radius: 20px");
             KontenTengah.setMaxHeight(300);
 
-            // Konten Bagian Tengah dari main pane namun untuk Pantau Uang
+            /*
+             * Membuat konten tengah kanan yang berisi target dan progress bar
+             */
             Text PantauUang;
 
             if (getTarget().equals("")) {
@@ -334,7 +363,9 @@ public class DashboardPage {
             VBox kontenPantauUangTextBVBox = new VBox(kontenPantauUangTextBVBoxPane);
             kontenPantauUangTextBVBox.setAlignment(Pos.CENTER);
 
-            // Nanti mau ditambahkan IconTarget
+            /*
+             * Membuat icon target yang akan ditampilkan di dashboard
+             */
             ImageView IconTarget = new ImageView(new Image("/Assets/View/Dashboard/TargetIcon.png"));
             IconTarget.setFitWidth(25);
             IconTarget.setFitHeight(25);
@@ -349,6 +380,9 @@ public class DashboardPage {
             kontenPantauUangTextHBox.setSpacing(5);
             HBox.setHgrow(kontenPantauUangTextBVBox, Priority.ALWAYS);
 
+            /*
+             * Membuat progress bar yang akan ditampilkan di dashboard
+             */
             long roundedValuePantauUang = Math.round(getFirstTargetHarga());
             long roundedValuePantauUang2 = Math.round(mendapatkanSaldoUntukMembeliBarang());
             if (roundedValuePantauUang2 > roundedValuePantauUang) {
@@ -378,6 +412,7 @@ public class DashboardPage {
             progressUang.setAlignment(Pos.CENTER);
             progressUang.setPadding(new Insets(5, 0, 0, 0));
 
+            // Membuat image yang bisa ditekan untuk menuju panen uang
             ImageView mainKontenPanenUang = new ImageView(
                     new Image("/Assets/View/Dashboard/KontenPanenUang.png"));
             mainKontenPanenUang.setFitWidth(220);
@@ -400,6 +435,7 @@ public class DashboardPage {
             StackPane KontenKanan = new StackPane(kontenPantauUang);
             KontenKanan.setStyle("-fx-background-color: #395FE7; -fx-background-radius: 20px");
             KontenKanan.setMaxHeight(200);
+
             // Membuat bagian bagian konten tangah bawah
             HBox kontenFiturCelengan = new HBox(Kontenkiri, KontenTengah, KontenKanan);
             kontenFiturCelengan.setSpacing(10);
@@ -411,6 +447,7 @@ public class DashboardPage {
             // Membuat konten tengah bawah untuk konten tengah
             VBox kontenTengahBawah = new VBox(kontenFiturCelengan);
             kontenTengahBawah.fillWidthProperty();
+
             // Membuat konten bagian tengah untuk main pane
             VBox kontenTengahPane = new VBox(kontenTengahAtas, kontenTengahBawah);
             kontenTengahPane.setPadding(new Insets(0, 0, 0, 30));
@@ -419,7 +456,10 @@ public class DashboardPage {
 
             // ------------------------------------------------------------------------------------------------------------//
 
-            // Konten Tulisan
+            /*
+             * Membuat konten bagian bawah untuk main pane berisikan histori keuangan
+             * terbaru dengan total 5 data
+             */
             Text historiKeuanganmu = createText("Histori Keuanganmu",
                     "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;",
                     0, 0);
@@ -440,7 +480,10 @@ public class DashboardPage {
             kontenHistoriKeuangan.setSpacing(10);
             kontenHistoriKeuangan.setSpacing(10);
 
-            // Membuat combo box
+            /*
+             * Membuat combobox untuk memilih kategori yang akan ditampilkan di histori
+             * keuangan
+             */
             ComboBox<CustomItem> comboBox = new ComboBox<>();
             comboBox.getItems().addAll(
                     new CustomItem("Pengeluaran", Color.valueOf("#FB5050")),
@@ -516,14 +559,19 @@ public class DashboardPage {
             VBox kontenTulisan = new VBox(isiKontenTulisan);
 
             // Membuat konten histori keuangan
-            // Yang perlu diambil di database adalah keterangan, nominal, tipe menggunakan
-            // gambar, dan tanggal
+            /*
+             * Jika banyak data yang ditampilkan lebih dari 5, maka tampilkan 5 data terbaru
+             * Jika tidak, maka tampilkan semua data
+             */
             int nilaiPenentu = getTotalBarangyangDIbeli();
             if (nilaiPenentu > 5) {
                 nilaiPenentu = nilaiPenentu - 5;
             } else {
                 nilaiPenentu = 0;
             }
+            /*
+             * Membuat konten histori keuangan yang akan ditampilkan di dashboard
+             */
             for (int i = getTotalBarangyangDIbeli() - 1; i >= nilaiPenentu; i--) {
                 String keterangan = keteranganBarangList.get(i);
                 double nominal = nominalBarangList.get(i);
@@ -626,7 +674,6 @@ public class DashboardPage {
             scrollbarStyle += "-fx-background-radius: 20px;";
 
             scrollPane.setId("custom-scrollbar");
-            // scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             scrollPane.setStyle(scrollbarStyle);
 
@@ -637,6 +684,9 @@ public class DashboardPage {
             mainPane.setPadding(new Insets(0, 10, 0, 0));
             mainPane.setAlignment(Pos.CENTER);
 
+            /*
+             * Membuat right bar yang berisi saldo dan menuju ke halaman profil
+             */
             RightBar rightBar = new RightBar(this.saldo, this.userId);
             HBox Rightbar = rightBar.createRightBar(this.stage, sceneController);
             Rightbar.setAlignment(Pos.CENTER_RIGHT);
@@ -663,11 +713,17 @@ public class DashboardPage {
 
     }
 
+    /*
+     * Fungsi untuk membuat button dapat mengatur position
+     */
     private void updateTooltipPosition(double x, double y) {
         tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
         tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
     }
 
+    /*
+     * Fungsi untuk membuat text dengan style tertentu
+     */
     private static Text createText(String text, String style, double translateX, double translateY) {
         Text welcome = new Text(text);
         welcome.setStyle(style);
@@ -683,33 +739,50 @@ public class DashboardPage {
         return loginModel.getLastActiveUsers();
     }
 
+    /*
+     * Fungsi untuk mendapatkan saldo
+     */
     private double getSaldo() {
         LoginModel loginModel = new LoginModel();
         return loginModel.getUserSaldo();
     }
 
+    /*
+     * Fungsi untuk mendapatkan harga target yang pertama
+     */
     private double getFirstTargetHarga() {
         TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
         return tampilkanSemuaTarget.ambilHargaDataPertama(this.userId);
 
     }
 
+    /*
+     * Fungsi untuk mendapatkan banyak data yang ada di database
+     */
     private int getTotalBarangyangDIbeli() {
         return model.banyakDatadiTransac();
     }
 
-    // Fungsi untuk mengambil data yang paling pertama di database target
+    /*
+     * Fungsi untuk mendapatkan data target dari database
+     */
     private String getTarget() {
         TampilkanSemuaTarget target1 = new TampilkanSemuaTarget();
         return target1.ambilDataNamaTargetPertama(this.userId);
     }
 
+    /*
+     * Fungsi untuk mendapatkan data saldo dari database
+     */
     private long mendapatkanSaldoUntukMembeliBarang() {
         TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
         return tampilkanSemuaTarget.ambilSaldodanBatasKritis();
 
     }
 
+    /*
+     * MEmbuat format Duit
+     */
     private static String formatDuit(double nilai) {
         // Membuat instance NumberFormat untuk mata uang Indonesia (IDR)
         Locale locale = Locale.forLanguageTag("id-ID");
@@ -720,6 +793,9 @@ public class DashboardPage {
         return formattedValue;
     }
 
+    /*
+     * Format tanggal
+     */
     private static String formatTanggal(String tanggal) {
         // Parse string tanggal dari database ke objek LocalDate
         LocalDate tanggalLocalDate = LocalDate.parse(tanggal);
@@ -732,6 +808,9 @@ public class DashboardPage {
         return tanggalDiformat;
     }
 
+    /*
+     * Fungsi untuk popupmodeuser
+     */
     public void popUpUntukModeUser() {
         RightBar rightBar = new RightBar(this.saldo, this.userId);
         StackPane modeUserPane = new StackPane(); // agar tidak duplicate
@@ -741,6 +820,9 @@ public class DashboardPage {
         double target = batasKritis * 2 * 4;
         double perkembangan = rightBar.kembangProgres();
 
+        /*
+         * Pembuatan konten atas
+         */
         Text titleEdit = createText("Kondisi Keuangan Kamu", "-fx-font: 40 'Poppins'; -fx-fill: #FFFFFF;", 0, 0);
         Text kondisi;
         if (perkembangan <= batasKritis / target) {
@@ -756,6 +838,9 @@ public class DashboardPage {
 
         backgroundPaneModeUserPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 30px;");
 
+        /*
+         * Pembuatan button close
+         */
         Button closeButton = createButton(28, 28, "X", "FF4646", 15, "Poppins", 30, "0F181B");
         // BUTTON EVENTS
         // saat di hover maka cursor berbeda
@@ -785,6 +870,10 @@ public class DashboardPage {
         VBox allKontenAtas = new VBox(editTitleHBox, kontenKondisi);
         allKontenAtas.setAlignment(Pos.TOP_CENTER);
         allKontenAtas.setSpacing(15);
+
+        /*
+         * Pembuatan untuk profile
+         */
 
         /*
          * Pembuatan konten tengah tengah
@@ -1034,6 +1123,9 @@ public class DashboardPage {
         saveImage.setFitHeight(60);
         saveImage.setPreserveRatio(true);
 
+        /*
+         * Pembuatan hyperlink untuk menyimpan data
+         */
         Hyperlink saveHyperlink = new Hyperlink();
         saveHyperlink.setOnMouseEntered(k -> {
             saveImage.setImage(new Image("/Assets/View/Dashboard/Simpan.png"));
@@ -1107,6 +1199,9 @@ public class DashboardPage {
 
         this.mainPane.getChildren().add(backgroundPaneModeUserPane);
 
+        /*
+         * Button close fungsi untuk menutup pop up mode user
+         */
         closeButton.setOnMouseClicked(e -> {
             this.mainPane.getChildren().remove(backgroundPaneModeUserPane);
             refreshAllViewDashboard();
@@ -1114,6 +1209,9 @@ public class DashboardPage {
 
     }
 
+    /*
+     * Fungsi untuk popupmodeuser untuk mengupdate butrron
+     */
     private static void updateButton(Button btn, int width, int height, String text, String bgColor,
             int fontSize, String font,
             int radius, String textFill) {
@@ -1127,6 +1225,9 @@ public class DashboardPage {
                         "-fx-padding: 0;");
     }
 
+    /*
+     * Fungsi untuk membuat button dengan style tertentu
+     */
     private static Button createButton(int width, int height, String text, String bgColor, int fontSize,
             String font,
             int radius, String textFill) {
@@ -1142,11 +1243,17 @@ public class DashboardPage {
         return button;
     }
 
+    /*
+     * Fungsi untuk membuat button dapat mengatur position
+     */
     private void updateTooltipPosition(Tooltip tooltip, double x, double y) {
         tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
         tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
     }
 
+    /*
+     * Fungsi untuk membuat text dengan style tertentu untuk tooltips
+     */
     private Tooltip createCustomTooltip(String content) {
         Tooltip tooltip = new Tooltip(content);
         tooltip.setStyle("-fx-font: 15 'Poppins'; -fx-background-color: #141F23;");
@@ -1154,16 +1261,25 @@ public class DashboardPage {
         return tooltip;
     }
 
+    /*
+     * Fungsi untuk mengupdate batas kritis
+     */
     private boolean updateKritis(double inputKritis) {
         BatasKritis batasKritis = new BatasKritis(this.userId);
         return batasKritis.setBatasKritis(inputKritis);
     }
 
+    /*
+     * Fungsi untuk melakukan refresh view dashboard
+     */
     private void refreshAllViewDashboard() {
         mainPane.getChildren().clear();
         start();
     }
 
+    /*
+     * Fungsi untuk melakukan refresh pada tampilan dashboard
+     */
     private VBox refreshViewHBox(String Kategori) {
         this.refreshViewDashboard = new RefreshViewDashboard();
         this.keteranganBarangList = refreshViewDashboard.getKeteranganBarangCatatList(Kategori);
@@ -1173,12 +1289,18 @@ public class DashboardPage {
         kontenHistoriKeuanganBarangfull.setSpacing(10);
         kontenHistoriKeuanganBarangfull.setSpacing(10);
 
+        /*
+         * Logika untuk menampilkan 5 data terakhir
+         */
         int nilai = refreshViewDashboard.getTotalBarang(Kategori);
         if (nilai > 5) {
             nilai = nilai - 5;
         } else {
             nilai = 0;
         }
+        /*
+         * Logika untuk menampilkan data dari database
+         */
         for (int i = refreshViewDashboard.getTotalBarang(Kategori) - 1; i >= nilai; i--) {
             String keterangan = keteranganBarangList.get(i);
             double nominal = nominalBarangList.get(i);
@@ -1290,6 +1412,9 @@ public class DashboardPage {
         }
     }
 
+    /*
+     * class untuk membuat side bar
+     */
     class ImageLinkPane {
         DashboardPage dashboardPage;
         ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
@@ -1360,7 +1485,9 @@ public class DashboardPage {
             MulaiMencatatSekarang.setClip(clip);
 
             // Membuat masing masing Text dan Image pada side bar dengan menggunakan HBOX
-
+            /*
+             * Membuat fungsi agar dapat berpindah halaman dengan menggunakan ImageView
+             */
             Text homePageText = createText("Home", "-fx-font: 20 'Poppins'; -fx-fill: #ffffff;", 0, 0);
             StackPane homePageTextPane = new StackPane(homePageText);
             homePageTextPane.setAlignment(Pos.CENTER_LEFT);
@@ -1447,6 +1574,9 @@ public class DashboardPage {
 
         }
 
+        /*
+         * Fungsi untuk membuat hyperlink dengan menggunakan ImageView
+         */
         private static Hyperlink createHyperlinkWithImageView(ImageView imageView) {
             Hyperlink hyperlink = new Hyperlink();
             hyperlink.setGraphic(imageView);
@@ -1456,6 +1586,9 @@ public class DashboardPage {
 
     }
 
+    /*
+     * Fungsi untuk membuat hyperlink text dengan menggunakan hanya graphic text
+     */
     public class HyperlinkText extends Hyperlink {
         private Text text;
         private ImageView imageView;
@@ -1526,6 +1659,10 @@ public class DashboardPage {
     }
 }
 
+/*
+ * Class untuk tampilan right bar yang berisi tombol close, maximize, dan
+ * minimize serta progress bar
+ */
 class VerticalProgress {
     private ProgressBar progressBar = new ProgressBar();
     private Group progressHolder = new Group(progressBar);
@@ -1548,6 +1685,9 @@ class VerticalProgress {
     }
 }
 
+/*
+ * Class untuk membuat right bar
+ */
 class RightBar {
     private static Cursor hand = Cursor.cursor("HAND");
     private static Cursor closedHand = Cursor.cursor("CLOSED_HAND");
@@ -1739,6 +1879,9 @@ class RightBar {
         return allCombine;
     }
 
+    /*
+     * Fungsi untuk membuat button dengan style tertentu
+     */
     private static Button createButton(int width, int height, String text, String bgColor, int fontSize,
             String font,
             int radius, String textFill) {
@@ -1754,6 +1897,9 @@ class RightBar {
         return button;
     }
 
+    /*
+     * Fungsi untuk mengupdate button
+     */
     private static void updateButton(Button btn, int width, int height, String text, String bgColor,
             int fontSize, String font,
             int radius, String textFill) {
@@ -1767,6 +1913,9 @@ class RightBar {
                         "-fx-padding: 0;");
     }
 
+    /*
+     * mendapatkan perkembangan untuk batas kritis
+     */
     private double perkembanganProgresBar(int userId) {
         BatasKritis bataskritis = new BatasKritis(userId);
         double batasKritis = bataskritis.getBatasKritis();
@@ -1779,16 +1928,25 @@ class RightBar {
         return perkembangan;
     }
 
+    /*
+     * Fungsi untuk mengambil batas kritis
+     */
     private double mengambilBatasKritis(int userId) {
         BatasKritis bataskritis = new BatasKritis(userId);
         double batasKritis = bataskritis.getBatasKritis();
         return batasKritis;
     }
 
+    /*
+     * Fungsi untuk mendapatkan batas kritis
+     */
     public double batasKritis() {
         return mengambilBatasKritis(this.userId);
     }
 
+    /*
+     * untuk mendapatkan perkembangan progres
+     */
     public double kembangProgres() {
         return perkembanganProgresBar(this.userId);
     }

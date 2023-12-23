@@ -53,7 +53,7 @@ public class SceneController {
         // tanamUang
         tanamUang.start(TanamUangModel.getKategoriTanamUang("pemasukan"),
                 TanamUangModel.getKategoriTanamUang("pengeluaran")); // Menjalankan
-        
+
         String[] pemasukan = TanamUangModel.getKategoriTanamUang("pemasukan");
         String[] pengeluaran = TanamUangModel.getKategoriTanamUang("pengeluaran");
 

@@ -6,9 +6,17 @@ import java.sql.ResultSet;
 
 import Utils.DBConnection;
 
+/*
+ * Kelas BatasKritis untuk mengatur batas kritis saldo
+ * pada akun pengguna
+ */
 public class BatasKritis {
+    // Atribut
     private static int userId;
 
+    /*
+     * Konstruktor BatasKritis
+     */
     public BatasKritis(int userId) {
         BatasKritis.userId = userId;
     }

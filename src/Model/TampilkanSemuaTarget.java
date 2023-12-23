@@ -8,14 +8,24 @@ import java.util.List;
 
 import Utils.DBConnection;
 
+/*
+ * Class TampilkanSemuaTarget untuk menampilkan semua target
+ */
 public class TampilkanSemuaTarget {
+    // Atribut
     private int userId;
 
+    /*
+     * Konstruktor TampilkanSemuaTarget
+     */
     public TampilkanSemuaTarget() {
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
     }
 
+    /*
+     * Mengambil nama target dari database
+     */
     public List<String> getNamaTargetList() {
         List<String> namaTargetList = new ArrayList<>();
         try {
@@ -39,6 +49,9 @@ public class TampilkanSemuaTarget {
         return namaTargetList;
     }
 
+    /*
+     * Mengambil nominal target dari database
+     */
     public List<Double> getNominalTargetList() {
         List<Double> nominalTargetList = new ArrayList<>();
         try {
@@ -62,6 +75,9 @@ public class TampilkanSemuaTarget {
         return nominalTargetList;
     }
 
+    /*
+     * Mengambil keterangan barang dari database
+     */
     public List<String> getKeteranganBarangList() {
         List<String> keteranganBarangList = new ArrayList<>();
         try {
@@ -85,6 +101,9 @@ public class TampilkanSemuaTarget {
         return keteranganBarangList;
     }
 
+    /*
+     * Mengambil banyak data di target dari database
+     */
     public int mendapatkanBanyakDataDiTarget() {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -107,6 +126,9 @@ public class TampilkanSemuaTarget {
         return 0;
     }
 
+    /*
+     * Mengambil harga target dari database
+     */
     public double mendapatkanHargaTarget(String namaTarget) {
         double progres = 0;
         try {
@@ -135,6 +157,9 @@ public class TampilkanSemuaTarget {
         return progres;
     }
 
+    /*
+     * Mengambil saldo dan batas kritis dari database
+     */
     public long ambilSaldodanBatasKritis() {
         long TotalDuitUntukProgress = 0;
         long saldo = 0;
@@ -160,6 +185,9 @@ public class TampilkanSemuaTarget {
         return TotalDuitUntukProgress;
     }
 
+    /*
+     * Mengambil nama target pertama dari database
+     */
     public String ambilDataNamaTargetPertama(int user_id) {
         String namaTarget = "";
         try {
@@ -181,6 +209,9 @@ public class TampilkanSemuaTarget {
         return namaTarget;
     }
 
+    /*
+     * Mengambil harga target pertama dari database
+     */
     public double ambilHargaDataPertama(int user_id) {
         double hargaTarget = 0;
         try {

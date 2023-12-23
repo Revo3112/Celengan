@@ -7,14 +7,22 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Pembaharuan kelas RefreshViewDashboard
+ */
 public class RefreshViewDashboard {
+    // Atribut
     public int userId;
 
+    // Konstruktor
     public RefreshViewDashboard() {
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
     }
 
+    /*
+     * Mengambil total barang yang ada di database berdasarkan tipe transaksi
+     */
     public int getTotalBarang(String tipeTransaksi) {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -36,6 +44,9 @@ public class RefreshViewDashboard {
         return 0;
     }
 
+    /*
+     * Mendapatkan keterangan barang dari database berdasarkan tipe transaksi
+     */
     public List<String> getKeteranganBarangCatatList(String tipeTransaksi) {
         List<String> keteranganTargetList = new ArrayList<>();
         try {
@@ -60,6 +71,9 @@ public class RefreshViewDashboard {
         return keteranganTargetList;
     }
 
+    /*
+     * Mendapatkan nominal barang dari database berdasarkan tipe transaksi
+     */
     public List<Double> getNominalBarangList(String tipeTransaksi) {
         List<Double> nominalBarangList = new ArrayList<>();
         try {
@@ -84,6 +98,9 @@ public class RefreshViewDashboard {
         return nominalBarangList;
     }
 
+    /*
+     * Mendapatkan tanggal barang dari database berdasarkan tipe transaksi
+     */
     public List<String> getTanggalBarangList(String tipeTransaksi) {
         List<String> tanggalBarangList = new ArrayList<>();
         try {
@@ -108,27 +125,4 @@ public class RefreshViewDashboard {
         return tanggalBarangList;
     }
 
-    // public List<String> getTipeBarangList() {
-    // List<String> tipeBarangList = new ArrayList<>();
-    // try {
-    // DBConnection dbc = DBConnection.getDatabaseConnection();
-    // Connection connection = dbc.getConnection();
-
-    // // Gunakan PreparedStatement untuk melindungi dari SQL injection
-    // String query = "SELECT tipe_transaksi FROM transac WHERE user_id = ?";
-    // try (PreparedStatement preparedStatement =
-    // connection.prepareStatement(query)) {
-    // preparedStatement.setInt(1, this.userId);
-
-    // ResultSet resultSet = preparedStatement.executeQuery();
-    // while (resultSet.next()) {
-    // String tipeTarget = resultSet.getString("tipe_transaksi");
-    // tipeBarangList.add(tipeTarget);
-    // }
-    // }
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
 }

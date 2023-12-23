@@ -6,26 +6,36 @@ import Utils.DBConnection;
 import Utils.hashingregister;
 import java.sql.Statement;
 
+/*
+ * Kelas RequestNewPassword untuk mengatur permintaan
+ */
 public class RequestNewPassword {
+    // Atribut
     private String pinCode, salt, username;
     hashingregister hashing = new hashingregister();
     private int user_ID;
 
+    /*
+     * Konstruktor RequestNewPassword
+     */
     public RequestNewPassword() {
         LoginModel loginModel = new LoginModel();
         this.user_ID = loginModel.getUserId();
     }
 
+    /*
+     * Mengubah password baru pada akun pengguna di database
+     */
     public boolean updateNewPassword(String keyUser, String newPassword) throws Exception {
         boolean status = false;
         String hashedPassword = "";
         String hashedKeyUser = "";
         String userIDSalt = getSalt(this.user_ID);
 
+        // Hashing password dan keyUser
         hashingregister hashingRegister = new hashingregister();
         hashedPassword = hashingRegister.hash(newPassword, userIDSalt);
         hashedKeyUser = hashingRegister.hash(keyUser, userIDSalt);
-        System.out.println(userIDSalt);
 
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -35,14 +45,15 @@ public class RequestNewPassword {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
             status = true;
-            System.out.println(hashedPassword);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        System.out.println("Status pada Update new password " + status);
         return status;
     }
 
+    /*
+     * Mengambil salt dari database
+     */
     private String getSalt(int userID) {
         String salt = "";
         DBConnection dbc = DBConnection.getDatabaseConnection();
@@ -64,6 +75,9 @@ public class RequestNewPassword {
         return salt;
     }
 
+    /*
+     * Memeriksa data yang dimasukkan pengguna
+     */
     public boolean checkData(String inputUsername, String keyUser, String newPassword) throws Exception {
         boolean status = false;
         try {
@@ -78,8 +92,10 @@ public class RequestNewPassword {
                 this.salt = result.getString("hash");
                 this.username = result.getString("username");
                 String hashedPinCode = hashing.hash(keyUser, salt);
-                System.out.println(hashedPinCode);
+
+                // Memeriksa apakah pinCode dan username sesuai
                 if (hashedPinCode.equals(pinCode) && inputUsername.equals(this.username)) {
+                    // Memperbarui password baru dan mengembalikan status true
                     status = updateNewPassword(keyUser, newPassword);
                 }
             }

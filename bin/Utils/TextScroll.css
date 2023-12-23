@@ -7,5 +7,5 @@
 }
 
 .text-rolling:hover {
-    -fx-translate-x: 20; /* Ganti nilai sesuai keinginan untuk efek gulung */
+    -fx-translate-x: 20; 
 }
