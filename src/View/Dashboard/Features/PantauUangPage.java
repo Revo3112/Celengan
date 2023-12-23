@@ -1041,6 +1041,7 @@ public class PantauUangPage {
 
         closeButton.setOnMouseClicked(e -> {
             this.mainPane.getChildren().remove(backgroundPaneModeUserPane);
+            refreshAllViewDashboard();
         });
 
     }
@@ -1130,6 +1131,10 @@ public class PantauUangPage {
 
     class ImageLinkPane {
         PantauUangPage pantauUangPage;
+        ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
+        HyperlinkText modeUserHyperlink = new HyperlinkText("Mode User", modeUser, true);
+        VBox kontenSideAtas = new VBox();
+        HBox modeUserHBox = new HBox();
 
         public ImageLinkPane(PantauUangPage pantauUangPage) {
             this.pantauUangPage = pantauUangPage;
@@ -1143,13 +1148,19 @@ public class PantauUangPage {
             logoImageView.setPreserveRatio(true);
 
             ImageView homePageImageView = new ImageView(new Image("/Assets/View/Dashboard/HomePage.png"));
+            homePageImageView.setOpacity(0.5);
             ImageView tanamUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Tanam Uang.png"));
+            tanamUangImageView.setOpacity(0.5);
             ImageView pantauUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Pantau Uang.png"));
+            pantauUangImageView.setOpacity(1);
             ImageView panenUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Panen Uang.png"));
-            ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
+            panenUangImageView.setOpacity(0.5);
+            /* Supaya Mode User opacity nya 0.5 pada tahap awal */
+            modeUser.setOpacity(0.5);
             ImageView MulaiMencatatSekarang = new ImageView(
                     "/Assets/View/Dashboard/MulaiMencatatSekarang!.png");
             ImageView logOut = new ImageView("/Assets/View/Dashboard/Log Out.png");
+            logOut.setOpacity(0.5);
 
             // Menyesuaikan ukuran ImageView
             homePageImageView.setFitWidth(30);
@@ -1198,36 +1209,41 @@ public class PantauUangPage {
             pantauUangPageHBox.setAlignment(Pos.CENTER_LEFT);
 
             // Membuat Hyperlink dengan menggunakan HyperlinkText
-            HyperlinkText tanamUangHyperlink = new HyperlinkText("Tanam Uang");
+            HyperlinkText tanamUangHyperlink = new HyperlinkText("Tanam Uang", tanamUangImageView, false);
             tanamUangHyperlink.setOnAction(e -> sceneController.switchToTanamUang());
             tanamUangHyperlink.setBorder(Border.EMPTY);
             HBox tanamUangHBox = new HBox(tanamUangImageView, tanamUangHyperlink);
             tanamUangHBox.setSpacing(10);
             tanamUangHBox.setAlignment(Pos.CENTER_LEFT);
 
-            HyperlinkText homeHyperlinkText = new HyperlinkText("Home");
+            HyperlinkText homeHyperlinkText = new HyperlinkText("Home", homePageImageView, false);
             homeHyperlinkText.setOnAction(e -> sceneController.switchToDashboard());
             homeHyperlinkText.setBorder(Border.EMPTY);
             HBox homePageHBox = new HBox(homePageImageView, homeHyperlinkText);
             homePageHBox.setSpacing(10);
             homePageHBox.setAlignment(Pos.CENTER_LEFT);
 
-            HyperlinkText panenUangHyperlink = new HyperlinkText("Panen Uang");
+            HyperlinkText panenUangHyperlink = new HyperlinkText("Panen Uang", panenUangImageView, false);
             panenUangHyperlink.setOnAction(e -> sceneController.switchToPanenUang());
             panenUangHyperlink.setBorder(Border.EMPTY);
             HBox panenUangHBox = new HBox(panenUangImageView, panenUangHyperlink);
             panenUangHBox.setSpacing(10);
             panenUangHBox.setAlignment(Pos.CENTER_LEFT);
 
-            HyperlinkText modeUserHyperlink = new HyperlinkText("Mode User");
-            modeUserHyperlink.setOnAction(e -> pantauUangPage.popUpUntukModeUser());
+            /* Hyperlink Mode User */
+            modeUserHyperlink.setOnAction(e -> {
+                modeUserHyperlink.toggleMode();
+                pantauUangPage.popUpUntukModeUser();
+            });
             modeUserHyperlink.setBorder(Border.EMPTY);
-            HBox modeUserHBox = new HBox(modeUser, modeUserHyperlink);
+            modeUserHBox.getChildren().addAll(modeUser, modeUserHyperlink);
             modeUserHBox.setSpacing(10);
             modeUserHBox.setAlignment(Pos.CENTER_LEFT);
 
             Hyperlink logOutHyperlink = createHyperlinkWithImageView(logOut);
             logOutHyperlink.setBorder(Border.EMPTY);
+            logOutHyperlink.setOnMouseEntered(e -> logOut.setOpacity(1));
+            logOutHyperlink.setOnMouseExited(e -> logOut.setOpacity(0.5));
 
             // Membuat Hyperlink dengan menggunakan ImageView
             logOutHyperlink.setOnMouseClicked(e -> {
@@ -1269,12 +1285,40 @@ public class PantauUangPage {
             return kontenSide;
         }
 
-        class HyperlinkText extends Hyperlink {
+        public class HyperlinkText extends Hyperlink {
             private Text text;
+            private ImageView imageView;
+            private boolean modeUser;
+            private boolean isModeActivated = false;
 
-            public HyperlinkText(String linkText) {
+            public HyperlinkText(String linkText, ImageView image, boolean modeUser) {
                 super(linkText);
+                this.imageView = image;
+                this.modeUser = modeUser;
                 configure();
+            }
+
+            public void toggleMode() {
+                isModeActivated = !isModeActivated;
+                updateStyle();
+            }
+
+            private void updateStyle() {
+                if (isModeActivated) {
+                    text.setFill(Color.WHITE);
+                    text.setFont(Font.font("Poppins", FontWeight.BOLD, 20));
+                    setStyle("-fx-opacity: 1;");
+                    imageView.setOpacity(1);
+                } else {
+                    resetStyle();
+                }
+            }
+
+            public void resetStyle() {
+                text.setFill(Color.WHITE);
+                text.setFont(Font.font("Poppins", FontWeight.BOLD, 20));
+                setStyle("-fx-opacity: 0.5;");
+                imageView.setOpacity(0.5);
             }
 
             private void configure() {
@@ -1282,15 +1326,30 @@ public class PantauUangPage {
                 setGraphic(text);
                 setBorder(null);
 
-                // CSS styling
+                // CSS styling for text
                 text.setStyle("-fx-font: 20 'Poppins'; -fx-fill: #ffffff;"); // Initial color
                 setStyle("-fx-opacity: 0.5;"); // Initial opacity
 
                 // Event handlers for hover effect
-                setOnMouseEntered(event -> setStyle("-fx-opacity: 1;"));
-                setOnMouseExited(event -> setStyle("-fx-opacity: 0.5;"));
+                setOnMouseEntered(event -> {
+                    setStyle("-fx-opacity: 1;");
+                    imageView.setOpacity(1);
+                });
 
-                // Set contentDisplay to show only the graphic (Text)
+                setOnMouseExited(event -> {
+                    if (!modeUser || !isModeActivated) {
+                        setStyle("-fx-opacity: 0.5;");
+                        imageView.setOpacity(0.5);
+                    }
+                });
+
+                setOnAction(event -> {
+                    if (modeUser) {
+                        toggleMode();
+                    }
+                });
+
+                // Set contentDisplay to show both text and graphic
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
         }

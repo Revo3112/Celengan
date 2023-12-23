@@ -60,7 +60,9 @@ import javafx.util.Callback;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class DashboardPage {
-
+    /*
+     * 
+     */
     private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
     private String username;
     private SceneController sceneController; // Tambahkan property SceneController\
@@ -265,8 +267,6 @@ public class DashboardPage {
             pieChart.setCenterShape(true);
             pieChart.getStylesheets()
                     .add(getClass().getResource("/Utils/PieChart.css").toExternalForm());
-            // pieChart.setTranslateX(-50);
-            // pieChart.setTranslateY(-20);
 
             Scale pieChartScale = new Scale(1, 1);
             pieChart.setTranslateX(0);
@@ -1107,6 +1107,7 @@ public class DashboardPage {
 
         closeButton.setOnMouseClicked(e -> {
             this.mainPane.getChildren().remove(backgroundPaneModeUserPane);
+            refreshAllViewDashboard();
         });
 
     }
@@ -1289,6 +1290,10 @@ public class DashboardPage {
 
     class ImageLinkPane {
         DashboardPage dashboardPage;
+        ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
+        HyperlinkText modeUserHyperlink = new HyperlinkText("Mode User", modeUser, true);
+        VBox kontenSideAtas = new VBox();
+        HBox modeUserHBox = new HBox();
 
         public ImageLinkPane(DashboardPage dashboardPage) {
             this.dashboardPage = dashboardPage;
@@ -1303,12 +1308,17 @@ public class DashboardPage {
 
             ImageView homePageImageView = new ImageView(new Image("/Assets/View/Dashboard/HomePage.png"));
             ImageView tanamUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Tanam Uang.png"));
+            tanamUangImageView.setOpacity(0.5);
             ImageView pantauUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Pantau Uang.png"));
+            pantauUangImageView.setOpacity(0.5);
             ImageView panenUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Panen Uang.png"));
-            ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
+            panenUangImageView.setOpacity(0.5);
+            /* Membuat Mode User menjadi opacity 0.5 */
+            modeUser.setOpacity(0.5);
             ImageView MulaiMencatatSekarang = new ImageView(
                     "/Assets/View/Dashboard/MulaiMencatatSekarang!.png");
             ImageView logOut = new ImageView("/Assets/View/Dashboard/Log Out.png");
+            logOut.setOpacity(0.5);
 
             // Menyesuaikan ukuran ImageView
             homePageImageView.setFitWidth(30);
@@ -1357,37 +1367,42 @@ public class DashboardPage {
             homePageHBox.setAlignment(Pos.CENTER_LEFT);
 
             // Membuat Hyperlink dengan menggunakan HyperlinkText
-            HyperlinkText tanamUangHyperlink = new HyperlinkText("Tanam Uang");
+            HyperlinkText tanamUangHyperlink = new HyperlinkText("Tanam Uang", tanamUangImageView, false);
             tanamUangHyperlink.setOnAction(e -> sceneController.switchToTanamUang());
             tanamUangHyperlink.setBorder(Border.EMPTY);
             HBox tanamUangHBox = new HBox(tanamUangImageView, tanamUangHyperlink);
             tanamUangHBox.setSpacing(10);
             tanamUangHBox.setAlignment(Pos.CENTER_LEFT);
 
-            HyperlinkText pantauUangHyperlink = new HyperlinkText("Pantau Uang");
+            HyperlinkText pantauUangHyperlink = new HyperlinkText("Pantau Uang", pantauUangImageView, false);
             pantauUangHyperlink.setOnAction(e -> sceneController.switchToPantauUang());
             pantauUangHyperlink.setBorder(Border.EMPTY);
             HBox pantauUangHBox = new HBox(pantauUangImageView, pantauUangHyperlink);
             pantauUangHBox.setSpacing(10);
             pantauUangHBox.setAlignment(Pos.CENTER_LEFT);
 
-            HyperlinkText panenUangHyperlink = new HyperlinkText("Panen Uang");
+            HyperlinkText panenUangHyperlink = new HyperlinkText("Panen Uang", panenUangImageView, false);
             panenUangHyperlink.setOnAction(e -> sceneController.switchToPanenUang());
             panenUangHyperlink.setBorder(Border.EMPTY);
             HBox panenUangHBox = new HBox(panenUangImageView, panenUangHyperlink);
             panenUangHBox.setSpacing(10);
             panenUangHBox.setAlignment(Pos.CENTER_LEFT);
 
-            HyperlinkText modeUserHyperlink = new HyperlinkText("Mode User");
-            modeUserHyperlink.setOnAction(e -> dashboardPage.popUpUntukModeUser());
+            /* Hyperlink Mode User */
+            modeUserHyperlink.setOnAction(e -> {
+                modeUserHyperlink.toggleMode();
+                dashboardPage.popUpUntukModeUser();
+            });
             modeUserHyperlink.setBorder(Border.EMPTY);
-            HBox modeUserHBox = new HBox(modeUser, modeUserHyperlink);
+
+            modeUserHBox.getChildren().addAll(modeUser, modeUserHyperlink);
             modeUserHBox.setSpacing(10);
             modeUserHBox.setAlignment(Pos.CENTER_LEFT);
 
             Hyperlink logOutHyperlink = createHyperlinkWithImageView(logOut);
             logOutHyperlink.setBorder(Border.EMPTY);
-
+            logOutHyperlink.setOnMouseEntered(e -> logOut.setOpacity(1));
+            logOutHyperlink.setOnMouseExited(e -> logOut.setOpacity(0.5));
             // Membuat Hyperlink dengan menggunakan ImageView
             logOutHyperlink.setOnMouseClicked(e -> {
                 LoginModel loginModel = new LoginModel();
@@ -1406,8 +1421,8 @@ public class DashboardPage {
             VBox logOutVBox = new VBox(logOutHyperlink);
             logOutVBox.setAlignment(Pos.TOP_CENTER);
 
-            // Vbox untuk menggabungkan pilihan
-            VBox kontenSideAtas = new VBox(homePageHBox, tanamUangHBox, pantauUangHBox, panenUangHBox, modeUserHBox);
+            kontenSideAtas.getChildren().addAll(homePageHBox, tanamUangHBox, pantauUangHBox, panenUangHBox,
+                    modeUserHBox);
             kontenSideAtas.setSpacing(30);
 
             // Membuat Stackpane untuk bagian atas bawah logo
@@ -1417,7 +1432,9 @@ public class DashboardPage {
             homeStackPane.setPadding(new Insets(10, 0, 10, 20));
             homeStackPane.setMaxHeight(300);
 
-            VBox kontenSide = new VBox(image, homeStackPane, mulaiMencatatSekarang, logOutVBox);
+            // Membuat VBox untuk menggabungkan semua pilihan
+            VBox kontenSide = new VBox();
+            kontenSide.getChildren().addAll(image, homeStackPane, mulaiMencatatSekarang, logOutVBox);
             kontenSide.setSpacing(20);
             kontenSide.setAlignment(Pos.CENTER);
             kontenSide.setPadding(new Insets(20, 10, 10, 10));
@@ -1437,12 +1454,40 @@ public class DashboardPage {
 
     }
 
-    class HyperlinkText extends Hyperlink {
+    public class HyperlinkText extends Hyperlink {
         private Text text;
+        private ImageView imageView;
+        private boolean modeUser;
+        private boolean isModeActivated = false;
 
-        public HyperlinkText(String linkText) {
+        public HyperlinkText(String linkText, ImageView image, boolean modeUser) {
             super(linkText);
+            this.imageView = image;
+            this.modeUser = modeUser;
             configure();
+        }
+
+        public void toggleMode() {
+            isModeActivated = !isModeActivated;
+            updateStyle();
+        }
+
+        private void updateStyle() {
+            if (isModeActivated) {
+                text.setFill(Color.WHITE);
+                text.setFont(Font.font("Poppins", FontWeight.BOLD, 20));
+                setStyle("-fx-opacity: 1;");
+                imageView.setOpacity(1);
+            } else {
+                resetStyle();
+            }
+        }
+
+        public void resetStyle() {
+            text.setFill(Color.WHITE);
+            text.setFont(Font.font("Poppins", FontWeight.BOLD, 20));
+            setStyle("-fx-opacity: 0.5;");
+            imageView.setOpacity(0.5);
         }
 
         private void configure() {
@@ -1450,15 +1495,30 @@ public class DashboardPage {
             setGraphic(text);
             setBorder(null);
 
-            // CSS styling
+            // CSS styling for text
             text.setStyle("-fx-font: 20 'Poppins'; -fx-fill: #ffffff;"); // Initial color
             setStyle("-fx-opacity: 0.5;"); // Initial opacity
 
             // Event handlers for hover effect
-            setOnMouseEntered(event -> setStyle("-fx-opacity: 1;"));
-            setOnMouseExited(event -> setStyle("-fx-opacity: 0.5;"));
+            setOnMouseEntered(event -> {
+                setStyle("-fx-opacity: 1;");
+                imageView.setOpacity(1);
+            });
 
-            // Set contentDisplay to show only the graphic (Text)
+            setOnMouseExited(event -> {
+                if (!modeUser || !isModeActivated) {
+                    setStyle("-fx-opacity: 0.5;");
+                    imageView.setOpacity(0.5);
+                }
+            });
+
+            setOnAction(event -> {
+                if (modeUser) {
+                    toggleMode();
+                }
+            });
+
+            // Set contentDisplay to show both text and graphic
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         }
     }

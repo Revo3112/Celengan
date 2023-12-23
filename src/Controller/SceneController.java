@@ -54,18 +54,6 @@ public class SceneController {
         tanamUang.start(TanamUangModel.getKategoriTanamUang("pemasukan"),
                 TanamUangModel.getKategoriTanamUang("pengeluaran")); // Menjalankan
         
-        String[] pemasukan = TanamUangModel.getKategoriTanamUang("pemasukan");
-        String[] pengeluaran = TanamUangModel.getKategoriTanamUang("pengeluaran");
-
-        System.out.println("=========PEMASUKAN========");
-        for (int i = 0; i < pemasukan.length; i++) {
-            System.out.println(pemasukan[i]);
-        }
-
-        System.out.println("=========PENGELUARAN========");
-        for (int i = 0; i < pengeluaran.length; i++) {
-            System.out.println(pengeluaran[i]);
-        }
         // method start
         // pada objek
         // tanamUang

@@ -12,8 +12,11 @@ import Utils.DBConnection;
 
 public class TanamUangModel {
 
+    // Fungsi untuk menyimpan catatan keuangan user
     public static boolean simpanTanamUang(String tanggal, String kategori, int kategoriId, double jumlah, double saldo,
             String tipePembayaran, String keterangan, String tipeTU, boolean isDefault) {
+
+        // Memubat koneksi ke database
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
         String tipeTanamUang = tipeTU.toLowerCase();
@@ -23,21 +26,26 @@ public class TanamUangModel {
         int userId = user.getUserId();
         try {
 
+            // Cek apakah kategori yang dipilih kategori default atau tidak
             if (isDefault) {
                 tipeKategori = 1;
             }
 
+            // Menambah atau mengurangi saldo
             if (tipeTanamUang.equals("pengeluaran")) {
                 saldo = saldo - jumlah;
             } else if (tipeTanamUang.equals("pemasukan")) {
                 saldo = saldo + jumlah;
             }
 
+            // Menambah data ke table transac
             String sqlInsert = String.format(
                     "INSERT INTO transac(user_id, nominal, keterangan, kategori_id, tipe_kategori, tipe_pembayaran, date, tipe_transaksi) VALUES(%d, %f, '%s', %d, %d, '%s', '%s', '%s')",
                     userId, jumlah, keterangan, kategoriId, tipeKategori, tipePembayaran, tanggal, tipeTanamUang);
+            // Mengupdate saldo
             String sqlUpdate = String.format("UPDATE saldo SET balance=%f WHERE user_id=%d", saldo, userId);
 
+            // Eksekusi sql statement
             Statement statement = connection.createStatement();
             statement.executeUpdate(sqlInsert);
             statement.executeUpdate(sqlUpdate);
@@ -49,30 +57,36 @@ public class TanamUangModel {
         return false;
     }
 
+    // Fungsi untuk menyimpan nama kategori
     public static boolean simpanNamaKategori(String namaKategoriNew, String namaKategoriOld, boolean kategoriDefault,
             String tipeKategori, int idKategoriDefault) {
+
+        // Membuat koneksi ke database
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
         String sql = "";
         LoginModel loginModel = new LoginModel();
         int userId = loginModel.getUserId();
 
+        // Cek apakah kategori default
         if (kategoriDefault) {
+            // Menambah data ke table user_kategori
             sql = String.format(
                     "INSERT INTO user_kategori(user_id, name, tipe, transac_kategori_id) VALUES(%d, '%s', '%s', %d)",
                     userId, namaKategoriNew, tipeKategori, idKategoriDefault);
         } else {
-            if (isKategoriDefault(namaKategoriNew)) {
+            // Cek apakah nama kategori yang disimpan merupakan kategori default
+            if (_isKategoriDefault(namaKategoriNew)) {
                 sql = String.format("DELETE FROM user_kategori WHERE id=%d", getIdKategoriUser(namaKategoriOld));
             } else {
                 sql = String.format("UPDATE user_kategori SET name='%s' WHERE id=%d", namaKategoriNew,
                         getIdKategoriUser(namaKategoriOld));
             }
-            System.out.println("UPDATEEEEEEE!!");
             System.out.println(namaKategoriNew);
             System.out.println("Kategori ID: " + getIdKategoriUser(namaKategoriOld));
         }
 
+        // Eksekusi sql statement
         try (PreparedStatement updateStatement = connection.prepareStatement(sql)) {
             updateStatement.executeUpdate();
             return true;
@@ -82,7 +96,8 @@ public class TanamUangModel {
         return false;
     }
 
-    private static boolean isKategoriDefault(String namaKategori) {
+    // Fungsi untuk mengecek apakah kategori yang dipilih merupakan kategori default
+    private static boolean _isKategoriDefault(String namaKategori) {
         String[] listKategoriDefault = getKategoriDefault();
         for (int i = 0; i < listKategoriDefault.length; i++) {
             if (listKategoriDefault[i].equals(namaKategori)) {
@@ -91,16 +106,18 @@ public class TanamUangModel {
         }
         return false;
     }
-
     public static boolean getIsKategoriDefault(String namaKategori) {
-        return isKategoriDefault(namaKategori);
+        return _isKategoriDefault(namaKategori);
     }
 
+    // Fungsi untuk mendapatkan kategori default
     private static int _idKategoriDefault(String namaKategori) {
+        // Membuat koneksi ke database
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
 
         try {
+            // Mengambil id dari table transac_kategori
             String sql = String.format("SELECT id FROM transac_kategori WHERE name='%s'", namaKategori);
 
             Statement statement = connection.createStatement();
@@ -114,16 +131,18 @@ public class TanamUangModel {
         }
         return 0;
     }
-
     public static int getIdKategoriDefault(String namaKategori) {
         return _idKategoriDefault(namaKategori);
     }
 
+    // Fungsi untuk mengambil id kategori user
     private static int _idKategoriUser(String namaKategori) {
+        // Membuat koneksi ke database
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
 
         try {
+            // Mengambil id dari table user_kategori
             String sql = String.format("SELECT id FROM user_kategori WHERE name='%s'", namaKategori);
 
             Statement statement = connection.createStatement();
@@ -137,17 +156,19 @@ public class TanamUangModel {
         }
         return 0;
     }
-
     public static int getIdKategoriUser(String namaKategori) {
         return _idKategoriUser(namaKategori);
     }
 
+    // Fungsi untuk mendapatkan semua kategori default
     private static String[] getKategoriDefault() {
+        // Membuat koneksi ke database
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
         List<String> listKategoriDefault = new ArrayList<>();
 
         try {
+            // Mengambil semua data dari table transac_kategori
             String sql = String.format("SELECT * FROM transac_kategori");
 
             Statement statement = connection.createStatement();
@@ -168,24 +189,7 @@ public class TanamUangModel {
         return new String[0];
     }
 
-    public int getJumlahKategoriPemasukan() {
-        DBConnection dbc = DBConnection.getDatabaseConnection();
-        Connection connection = dbc.getConnection();
-
-        try {
-            String sql = String.format("SELECT COUNT(*) FROM transac_kategori WHERE tipe='pemasukan'");
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(sql);
-            result.next();
-
-            return result.getInt(1);
-        } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        return 0;
-    }
-
+    // Fungsi untuk mengambil semua kategori berdasarkan tipe tanam uang (pemasukan / pengeluaran)
     private static String[] _kategoriTanamUang(String tipeTU) {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                                                                  // dengan nilai dari method getDatabaseConnection().
@@ -193,9 +197,11 @@ public class TanamUangModel {
         Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection()
                                                      // dari object dbc
 
+        // Membuat list temporary
         List<String> kategoriListTemp = new ArrayList<>();
         List<String> kategoriList = new ArrayList<>();
 
+        // Membuat list kategori default dan kategori user
         List<String> listKategoriDefault = new ArrayList<>();
         List<Integer> listIdKategoriDefault = new ArrayList<>();
         List<String> listKategoriUser = new ArrayList<>();
@@ -209,21 +215,24 @@ public class TanamUangModel {
         int userId = user.getUserId();
 
         try {
+            // Mengambil data kategori default yang tidak ada di table hapus_kategori 
             String sql_1 = String.format(
                     "SELECT tk.* " +
                             "FROM transac_kategori AS tk " +
                             "WHERE NOT EXISTS ( " +
                             "SELECT 1 " +
                             "FROM hapus_kategori AS kh " +
-                            "WHERE tk.id = kh.id) " +
-                            "AND tk.tipe = '%s';",
-                    tipeTanamUang);
+                            "WHERE tk.id = kh.id AND kh.user_id = %d) " +
+                            "AND tk.tipe = '%s'",
+                    userId, tipeTanamUang);
 
+            // Mengambil kategori user (Konteks: ketika user ingin mengubah kategori default, maka id dari kategori default harus disimpan)
             String sql_2 = String.format(
                     "SELECT uk.name, uk.transac_kategori_id FROM user_kategori AS uk WHERE user_id=%d AND tipe='%s' AND transac_kategori_id != 0;",
                     userId, tipeTanamUang);
             System.out.println(userId);
 
+            // Mengambil semua kategori user (bukan default, kategori custom dari user)
             String sql_3 = String.format("SELECT name FROM user_kategori WHERE user_id=%d AND transac_kategori_id = 0 AND tipe='%s'",
                     userId, tipeTanamUang);
 
@@ -243,6 +252,7 @@ public class TanamUangModel {
                                                                                       // dimasukkan ke dalam variabel
                                                                                       // result
 
+            // Mengambil data dari ResultSet
             while (resultKategori.next()) {
                 listKategoriDefault.add(resultKategori.getString("name"));
                 listIdKategoriDefault.add(resultKategori.getInt("id"));
@@ -255,6 +265,7 @@ public class TanamUangModel {
                 listKategoriUserNonDefault.add(resultUserKategoriNonDefault.getString("name"));
             }
 
+            // Memasukkan list ke dalam array
             String[] arrKategoriDefault = listKategoriDefault.toArray(new String[0]);
             String[] arrKategoriUser = listKategoriUser.toArray(new String[0]);
             String[] arrKategoriUserNonDefault = listKategoriUserNonDefault.toArray(new String[0]);
@@ -262,14 +273,19 @@ public class TanamUangModel {
             Integer[] arrIdKategoriUser = listIdKategoriUser.toArray(new Integer[0]);
 
             boolean isDefault;
+            
+            // Mengganti kategori default dengan kategori user (jika ada)
             for (int i = 0; i < arrKategoriDefault.length; i++) {
                 isDefault = false;
                 for (int j = 0; j < arrKategoriUser.length; j++) {
+                    // Cek apakah ada kategori default yang diganti namanya oleh user. 
+                    // Jika ada, masukkan ke dalam list kategori untuk mengganti urutan dari kategori default
                     if (arrIdKategoriDefault[i] == arrIdKategoriUser[j]) {
                         kategoriListTemp.add(arrKategoriUser[j]);
                         isDefault = true;
                     }
                 }
+                // Jika tidak ada kategori default yang diganti namanya oleh user, masukkan kategori default ke dalam list kategori
                 if (!isDefault) {
                     kategoriListTemp.add(arrKategoriDefault[i]);
                 }
@@ -278,6 +294,7 @@ public class TanamUangModel {
             String[] kategoriTemp = kategoriListTemp.toArray(new String[0]); // Mengubah kategoriList menjadi array
 
             boolean isHapus;
+            // Filter kategori default yang sudah dihapus oleh user
             for (int i = 0; i < kategoriTemp.length; i++) {
                 isHapus = false;
                 for (int j = 0; j < arrKategoriHapus.length; j++) {
@@ -292,6 +309,7 @@ public class TanamUangModel {
                 }
             }
 
+            // Memasukkan semua kategori non default ke dalam list kategori
             for (int i = 0; i < arrKategoriUserNonDefault.length; i++) {
                 kategoriList.add(arrKategoriUserNonDefault[i]);
             }
@@ -306,20 +324,23 @@ public class TanamUangModel {
 
         return new String[0]; // Mengembalikan string kosong jika terjadi kesalahan
     }
-
     public static String[] getKategoriTanamUang(String tipeTanamUang) {
         return _kategoriTanamUang(tipeTanamUang);
     }
 
+    // Fungsi untuk mengambil data kategori default yang telah dihapus oleh user
     private static String[] getKategoriHapus() {
+        // Membuat koneksi ke database
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
 
+        // Mengambil id user
         LoginModel user = new LoginModel();
         int userId = user.getUserId();
         List<String> listKategoriHapus = new ArrayList<>();
 
         try {
+            // Mengambil data kategori default yang telah dihapus user
             String sql = String.format(
                     "SELECT tk.name FROM hapus_kategori AS kh JOIN transac_kategori as tk ON (kh.kategori_id = tk.id) WHERE kh.user_id=%d;",
                     userId);
@@ -340,6 +361,7 @@ public class TanamUangModel {
         return new String[0];
     }
 
+    // Fungsi untuk menghapus kategori
     private static boolean _hapusKategori(String namaKategori, boolean isDefault) {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                                                                  // dengan nilai dari method getDatabaseConnection().
@@ -353,10 +375,13 @@ public class TanamUangModel {
         System.out.println("Id Kategori: " + getIdKategoriUser(namaKategori));
 
         try {
+            // Cek apakah merupakan kategori default atau tidak
             if (isDefault) {
+                // Jika kategori default, masukkan ke dalam table hapus_kategori
                 sql = String.format("INSERT INTO hapus_kategori(user_id, kategori_id) VALUES(%d, %d)", userId,
                         getIdKategoriDefault(namaKategori));
             } else {
+                // Jika kategori custom, langsung hapus dari table user_kategori
                 sql = String.format("DELETE FROM user_kategori WHERE id=%d", getIdKategoriUser(namaKategori));
             }
             Statement statement = connection.createStatement();
@@ -369,11 +394,11 @@ public class TanamUangModel {
 
         return false;
     }
-
     public static boolean hapusKategori(String namaKategori, boolean isDefault) {
         return _hapusKategori(namaKategori, isDefault);
     }
 
+    // Fungsi untuk menambah kategori
     private static boolean _tambahKategori(String namaKategori, String tipeTU) {
         DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
                                                                  // dengan nilai dari method getDatabaseConnection().
@@ -387,6 +412,7 @@ public class TanamUangModel {
         String tipeTanamUang = tipeTU.toLowerCase();
 
         try {
+            // Menambah kategori ke table user_kategori
             String sql = String.format(
                     "INSERT INTO user_kategori(user_id, name, tipe, transac_kategori_id) VALUES(%d, '%s', '%s', 0)",
                     userId, namaKategori, tipeTanamUang);
@@ -400,7 +426,6 @@ public class TanamUangModel {
 
         return false;
     }
-
     public static boolean tambahKategori(String namaKategori, String tipeTU) {
         return _tambahKategori(namaKategori, tipeTU);
     }

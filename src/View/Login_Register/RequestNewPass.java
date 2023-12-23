@@ -347,24 +347,34 @@ public class RequestNewPass {
         });
         gantiPassword.setOnAction(e -> {
             System.out.println("Login button clicked!");
-            try {
-                RequestNewPassword requestNewPassword = new RequestNewPassword();
-                boolean status = requestNewPassword.checkData(inputUsername.getText(), inputKeyUser.getText(),
-                        inputPassword.getText());
-                System.out.println(status);
-                if (status) {
-                    SceneController sceneController = new SceneController(this.stage);
-                    sceneController.switchToLogin();
-                } else {
-                    System.out.println("Username atau Pin Code salah");
-                    if (mainContent.getChildren().contains(errorChat)) {
-                        mainContent.getChildren().remove(errorChat);
+            if (inputPassword.getText().length() < 8 || !isContainDigit(inputPassword.getText())) {
+                inputPassword.setStyle(
+                "-fx-background-radius: 90;" +
+                        "-fx-background-color: #141F23;" +
+                        "-fx-font: 23 Poppins;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-border-color: #FF4646;" +
+                        "-fx-border-radius: 90");
+            } else {
+                try {
+                    RequestNewPassword requestNewPassword = new RequestNewPassword();
+                    boolean status = requestNewPassword.checkData(inputUsername.getText(), inputKeyUser.getText(),
+                            inputPassword.getText());
+                    System.out.println(status);
+                    if (status) {
+                        SceneController sceneController = new SceneController(this.stage);
+                        sceneController.switchToLogin();
+                    } else {
+                        System.out.println("Username atau Pin Code salah");
+                        if (mainContent.getChildren().contains(errorChat)) {
+                            mainContent.getChildren().remove(errorChat);
+                        }
+                        mainContent.getChildren().add(errorChat);
+                        chatErrorTimeline_IN(errorChat);
                     }
-                    mainContent.getChildren().add(errorChat);
-                    chatErrorTimeline_IN(errorChat);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
-            } catch (Exception e1) {
-                e1.printStackTrace();
             }
         });
 
@@ -560,5 +570,10 @@ public class RequestNewPass {
         rect.setArcHeight(arcHeight);
         rect.setFill(Color.valueOf("#" + fill));
         return rect;
+    }
+
+    // method untuk mengecek apakah ada digit
+    private boolean isContainDigit(String s) {
+        return s != null && s.chars().anyMatch(Character::isDigit);
     }
 }
