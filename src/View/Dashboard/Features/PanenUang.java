@@ -4,80 +4,58 @@ import Controller.SceneController;
 import Model.BatasKritis;
 import Model.HapusTarget;
 import Model.LoginModel;
-import Model.PantauPemasukanPengeluaran;
-import Model.PieChartData;
-import Model.RefreshViewDashboard;
 import Model.TambahTarget;
 import Model.TampilkanSemuaTarget;
 import Utils.AlertHelper;
-import View.Dashboard.DashboardPage.CustomItem.CustomItemConverter;
-import View.Dashboard.Features.PantauUangPage.ImageLinkPane.HyperlinkText;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.util.StringConverter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
-// class DashboardPage digunakan untuk menampilkan halaman dashboard
+/*
+ * Kelas PanenUang untuk menampilkan halaman PanenUang
+ */
 public class PanenUang {
 
-    private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
+    /*
+     * Pembuatan property untuk kelas PanenUang
+     */
+    private Stage stage;
     private String username;
-    // private TextField namaTarget;
-    // private TextField nominalTarget;
-    // private TextField keteranganBarang;
     private static TampilkanSemuaTarget model = new TampilkanSemuaTarget();
     private static List<String> namaTargetList;
     private static List<Double> nominalTargetList;
@@ -91,8 +69,10 @@ public class PanenUang {
     public StackPane root = new StackPane();
     private VBox scrollContentBox;
     StackPane mainPane = new StackPane();
-    // private ScrollPane scrollPanes;
 
+    /*
+     * Konstruktor untuk kelas PanenUang
+     */
     public PanenUang(Stage stage) {
         this.stage = stage;
         this.username = getUsername();
@@ -105,9 +85,13 @@ public class PanenUang {
         this.keteranganBarangList = model.getKeteranganBarangList();
     }
 
-    // Menampilkan halaman dashboard
+    /*
+     * method untuk membuat tampilan PanenUang
+     */
     public void start() {
-        // Membuat side bar
+        /*
+         * Membuat side bar dengan memanggil kelas ImageLinkPane
+         */
         ImageLinkPane imageLinkPane = new ImageLinkPane(this); // Mengirim referensi DashboardPage ke ImageLinkPane
         VBox sideBar = imageLinkPane.createImageLinkVBox(this.stage, sceneController);
         sideBar.setAlignment(Pos.CENTER);
@@ -142,17 +126,17 @@ public class PanenUang {
         HBox.setHgrow(textPane, Priority.ALWAYS);
         textPane.setTranslateX(20);
 
-        // ------------------------------------------------------------------------------
-        // \\
-        // KONTEN TENGAH
-        // ------------------------------------------------------------------------------
-        // \\
+        /*
+         * KONTEN TENGAH
+         */
 
         // Membuat title
         Text titleKontenTengah = createText("Target Keuanganmu", "-fx-font: 30 'Poppins Medium'; -fx-fill: #FFFFFF;", 0,
                 0);
 
-        // Menambah target
+        /*
+         * Membuat hyperlink untuk menambahkan target
+         */
         Hyperlink tambahTargetHyperlink = new Hyperlink();
         tambahTargetHyperlink.setOnMouseEntered(f -> {
             tambahTargetHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
@@ -165,13 +149,11 @@ public class PanenUang {
         tambahTargetHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Tambah.png")));
 
         HBox kontenTengahAtas = new HBox(titleKontenTengah, tambahTargetHyperlink);
-        // kontenTengahAtas.setPadding(new Insets(0, 0, 0, 20)); // Memberi padding di
-        // kiri
         kontenTengahAtas.setSpacing(20);
 
-        // ----------- Membuat konten di dalam kotak input ----------- \\
-
-        // Bagian atas kotak input.
+        /*
+         * Membuat konten untuk kotak input
+         */
         Text titleKotakInput = new Text("Tambah Target");
         titleKotakInput.setStyle("-fx-font: 24 'Poppins Bold'; -fx-fill: #FFFFFF");
 
@@ -234,13 +216,16 @@ public class PanenUang {
         VBox vboxKontenPopUpKiri = new VBox(labelNamaTarget, labelNominalTarget, labelKeteranganTarget);
         vboxKontenPopUpKiri.setSpacing(40);
 
-        Button buttonBatalTarget = new Button("Batal"); // Tombol untuk membatalkan penambahan target
+        // Tombol untuk membatalkan penambahan target
+        Button buttonBatalTarget = new Button("Batal");
 
+        // Memasukkan gambar ke dalam button
         ImageView imageTambahHover = new ImageView(new Image("/Assets/View/Dashboard/TambahPanenHover.png"));
         imageTambahHover.setFitWidth(100);
         imageTambahHover.setFitHeight(50);
         imageTambahHover.setPreserveRatio(true);
 
+        // Memasukkan gambar ke dalam button
         ImageView imageTambah = new ImageView(new Image("/Assets/View/Dashboard/TambahPanen.png"));
         imageTambah.setFitWidth(100);
         imageTambah.setFitHeight(50);
@@ -248,6 +233,8 @@ public class PanenUang {
         Hyperlink tambahHyperlink = new Hyperlink();
         tambahHyperlink.setGraphic(imageTambah);
 
+        // Saat di hover maka cursor berbeda
+        // Serta mengganti gambar button tambah untuk memiliki efek hover
         tambahHyperlink.setOnMouseEntered(e -> {
             tambahHyperlink.getScene().setCursor(Cursor.cursor("HAND"));
             tambahHyperlink.setGraphic(imageTambahHover);
@@ -257,8 +244,7 @@ public class PanenUang {
             tambahHyperlink.setGraphic(imageTambah);
         });
 
-        // Button buttonTambahTarget = new Button("Tambah"); // Tombol untuk menambahkan
-        // target kedalam databases
+        // Tombol untuk menambahkan target kedalam databases
         tambahHyperlink.setOnMouseClicked(e -> {
             LoginModel loginModel = new LoginModel();
             setUserTarget(loginModel.getUserId(), fieldNamaTarget.getText(),
@@ -274,19 +260,21 @@ public class PanenUang {
         buttonKotakInput.setAlignment(Pos.CENTER);
         buttonKotakInput.setPadding(new Insets(0, 0, 40, 0));
 
-        // buttonKotakInput.setStyle("-fx-background-color: #FFFFFF");
-
         // Supaya ada efek koma ketika user memasukan input kedalam field nominal target
         fieldNominalTarget.textProperty().addListener(new ChangeListener<String>() {
             private String codeFormat = ",##0";
             private int codeLen = 4;
 
             @Override
-            // ObservableValue = StringProperty (Represent an object that has changed its
-            // state)
+            /*
+             * Method untuk mengubah format inputan user
+             */
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 // Hapus listener sementara
 
+                /*
+                 * Jika inputan user berupa angka maka akan diubah menjadi format uang
+                 */
                 fieldNominalTarget.textProperty().removeListener(this);
                 if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
                     if (newValue.length() > oldValue.length()) {
@@ -305,6 +293,9 @@ public class PanenUang {
                 fieldNominalTarget.textProperty().addListener(this);
             }
 
+            /*
+             * Method untuk mengubah format inputan user menjadi format uang
+             */
             private void formatAndSet(String text, String format) {
                 DecimalFormat decimalFormat = new DecimalFormat(format);
                 double value = Double.parseDouble(text.replace(",", ""));
@@ -313,6 +304,9 @@ public class PanenUang {
                 fieldNominalTarget.setText(decimalFormat.format(value));
             }
 
+            /*
+             * Method untuk mengupdate code formatnya
+             */
             private void updateCodeFormat(String text) {
                 int newLen = text.replace(",", "").length();
                 if (newLen == this.codeLen + 3) {
@@ -328,7 +322,7 @@ public class PanenUang {
         scrollContentBox = new VBox();
         scrollContentBox.setSpacing(20);
 
-        // Logika untuk membuat vbox vbox yang nantinya dapa di scroll
+        // Logika untuk membuat vbox vbox yang nantinya dapat di scrollbar
         for (int i = 0; i < mengambilBanyakDataDiTarget(); i++) {
             String namaTarget = namaTargetList.get(i);
             double nominalTarget = nominalTargetList.get(i);
@@ -460,7 +454,6 @@ public class PanenUang {
         scrollbarStyle += "-fx-background-radius: 20px;";
 
         scrollPane.setId("custom-scrollbar");
-        // scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setStyle(scrollbarStyle);
 
@@ -470,6 +463,10 @@ public class PanenUang {
         mainPane.setMinWidth(this.stage.getWidth() - 370);
         mainPane.setPadding(new Insets(0, 10, 0, 0));
         mainPane.setAlignment(Pos.CENTER);
+
+        // ------------------------------------------------------------------------------------------------------------//
+        // KONTEN PopUp Kotak Input pemisah kanan kiri
+        // ------------------------------------------------------------------------------------------------------------//
 
         HBox kontenFormKotakInput = new HBox(vboxKontenPopUpKiri, vboxKontenPopUpKanan);
         kontenFormKotakInput.setSpacing(40);
@@ -481,6 +478,7 @@ public class PanenUang {
         VBox kontenKotakInput = new VBox(hboxTitleKotakInput, kontenFormKotakInput, buttonKotakInput);
         kontenKotakInput.setAlignment(Pos.CENTER);
         kontenKotakInput.setPadding(new Insets(20, 0, 0, 0));
+
         // Popup untuk kotak input
         StackPane kotakInput = new StackPane();
         kotakInput.getChildren().addAll(kontenKotakInput);
@@ -498,6 +496,7 @@ public class PanenUang {
 
         StackPane paneBlack = new StackPane();
         paneBlack.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 30px;");
+
         // Menjalankan fungsi tambah target
         tambahTargetHyperlink.setOnMouseClicked(e -> {
             mainPane.getChildren().addAll(paneBlack, kotakInput);
@@ -525,15 +524,19 @@ public class PanenUang {
             refreshView();
         });
 
-        RightBarPantauUang rightBar = new RightBarPantauUang(this.saldo, this.userId);
+        /*
+         * Membuat right bar dengan memanggil kelas RightBarPanenUang
+         */
+        RightBarPanenUang rightBar = new RightBarPanenUang(this.saldo, this.userId);
         HBox Rightbar = rightBar.createRightBar(this.stage, sceneController);
         Rightbar.setAlignment(Pos.CENTER_RIGHT);
-        // Mengatur binding fitToHeight dan fitToWidth
 
+        // Menggabungkan main pane dengan side bar
         HBox penggabunganMainPanedenganSideBar = new HBox(sideBar, mainPane);
         penggabunganMainPanedenganSideBar.setStyle("-fx-background-color: #0B1214;");
         penggabunganMainPanedenganSideBar.setPadding(new Insets(10, 0, 0, 0));
 
+        // Menggabungkan main pane dengan right bar
         HBox fullPane = new HBox(penggabunganMainPanedenganSideBar, Rightbar);
         // Set horizontal grow priority for mainPane
         HBox.setHgrow(penggabunganMainPanedenganSideBar, Priority.ALWAYS);
@@ -547,11 +550,9 @@ public class PanenUang {
         this.stage.show(); // Tetapkan setelah styling selesai
     }
 
-    private void updateTooltipPosition(double x, double y) {
-        tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
-        tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
-    }
-
+    /*
+     * Method untuk membuat text
+     */
     private Text createText(String text, String style, double translateX, double translateY) {
         Text welcome = new Text(text);
         welcome.setStyle(style);
@@ -567,22 +568,13 @@ public class PanenUang {
         return loginModel.getLastActiveUsers();
     }
 
+    // Fungsi untuk mendapatkan saldo
     private double getSaldo() {
         LoginModel loginModel = new LoginModel();
         return loginModel.getUserSaldo();
     }
 
-    private double getFirstTargetHarga() {
-        TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
-        return tampilkanSemuaTarget.ambilHargaDataPertama(this.userId);
-    }
-
-    // Fungsi untuk mengambil data yang paling pertama di database target
-    private String getTarget() {
-        TampilkanSemuaTarget target1 = new TampilkanSemuaTarget();
-        return target1.ambilDataNamaTargetPertama(this.userId);
-    }
-
+    // Fungsi untuk mengubah formatDuit
     private static String formatDuit(double nilai) {
         // Membuat instance NumberFormat untuk mata uang Indonesia (IDR)
         Locale locale = Locale.forLanguageTag("id-ID");
@@ -593,18 +585,7 @@ public class PanenUang {
         return formattedValue;
     }
 
-    private static String formatTanggal(String tanggal) {
-        // Parse string tanggal dari database ke objek LocalDate
-        LocalDate tanggalLocalDate = LocalDate.parse(tanggal);
-
-        // Format ulang LocalDate ke dalam string dengan format yang diinginkan
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMMM-yyyy");
-        String tanggalDiformat = tanggalLocalDate.format(formatter);
-
-        // Gunakan hasil tanggal yang sudah diformat
-        return tanggalDiformat;
-    }
-
+    // Fungsi untuk mendapatkan root
     public StackPane getRoot() {
         return this.root;
     }
@@ -742,15 +723,24 @@ public class PanenUang {
 
     }
 
+    /*
+     * Method untuk menampilkan pop up untuk mode user
+     */
     public void popUpUntukModeUser() {
         RightBarPanenUang rightBar = new RightBarPanenUang(this.saldo, this.userId);
         StackPane modeUserPane = new StackPane(); // agar tidak duplicate
         StackPane backgroundPaneModeUserPane = new StackPane();
 
+        /*
+         * Logika untuk bata kritis dan target
+         */
         double batasKritis = rightBar.batasKritis();
         double target = batasKritis * 2 * 4;
         double perkembangan = rightBar.kembangProgres();
 
+        /*
+         * Pembuatan konten atas
+         */
         Text titleEdit = createText("Kondisi Keuangan Kamu", "-fx-font: 40 'Poppins'; -fx-fill: #FFFFFF;", 0, 0);
         Text kondisi;
         if (perkembangan <= batasKritis / target) {
@@ -983,6 +973,9 @@ public class PanenUang {
         StackPane kontenKiriBawah = new StackPane(titleKontenKiri2);
         kontenKiriBawah.setAlignment(Pos.CENTER_LEFT);
 
+        /*
+         * Pembuatan Text Field untuk input batas kritis
+         */
         TextField inputKritis = new TextField();
         inputKritis.setMaxWidth(160);
         inputKritis.setMaxHeight(55);
@@ -997,11 +990,14 @@ public class PanenUang {
             private int codeLen = 4;
 
             @Override
-            // ObservableValue = StringProperty (Represent an object that has changed its
-            // state)
+            /*
+             * Method untuk mengubah format inputan menjadi format mata uang
+             */
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 // Hapus listener sementara
-
+                /*
+                 * Jika inputan berupa angka maka akan diubah menjadi format mata uang
+                 */
                 inputKritis.textProperty().removeListener(this);
                 if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
                     if (newValue.length() > oldValue.length()) {
@@ -1020,6 +1016,9 @@ public class PanenUang {
                 inputKritis.textProperty().addListener(this);
             }
 
+            /*
+             * Method untuk mengubah format inputan menjadi format mata uang
+             */
             private void formatAndSet(String text, String format) {
                 DecimalFormat decimalFormat = new DecimalFormat(format);
                 double value = Double.parseDouble(text.replaceAll(",", ""));
@@ -1028,6 +1027,9 @@ public class PanenUang {
                 inputKritis.setText(decimalFormat.format(value));
             }
 
+            /*
+             * Method untuk mengupdate format mata uang
+             */
             private void updateCodeFormat(String text) {
                 int newLen = text.replace(",", "").length();
                 if (newLen == this.codeLen + 3) {
@@ -1039,6 +1041,9 @@ public class PanenUang {
             }
         });
 
+        /*
+         * Pembuatan hyperlink untuk menyimpan inputan batas kritis
+         */
         ImageView saveImage = new ImageView("/Assets/View/Dashboard/Simpan.png");
         saveImage.setFitWidth(200);
         saveImage.setFitHeight(60);
@@ -1116,6 +1121,9 @@ public class PanenUang {
 
     }
 
+    /*
+     * Method untuk mengupdate button
+     */
     private static void updateButton(Button btn, int width, int height, String text, String bgColor,
             int fontSize, String font,
             int radius, String textFill) {
@@ -1129,6 +1137,9 @@ public class PanenUang {
                         "-fx-padding: 0;");
     }
 
+    /*
+     * Method untuk membuat button
+     */
     private static Button createButton(int width, int height, String text, String bgColor, int fontSize,
             String font,
             int radius, String textFill) {
@@ -1144,11 +1155,17 @@ public class PanenUang {
         return button;
     }
 
+    /*
+     * Method untuk mengupdate tooltip
+     */
     private void updateTooltipPosition(Tooltip tooltip, double x, double y) {
         tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
         tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
     }
 
+    /*
+     * Method untuk membuat tooltip custom agar teks bisa di custom
+     */
     private Tooltip createCustomTooltip(String content) {
         Tooltip tooltip = new Tooltip(content);
         tooltip.setStyle("-fx-font: 15 'Poppins'; -fx-background-color: #141F23;");
@@ -1156,11 +1173,17 @@ public class PanenUang {
         return tooltip;
     }
 
+    /*
+     * Method untuk mengupdate batas kritis
+     */
     private boolean updateKritis(double inputKritis) {
         BatasKritis batasKritis = new BatasKritis(this.userId);
         return batasKritis.setBatasKritis(inputKritis);
     }
 
+    /*
+     * Method untuk merefresh tampilan
+     */
     private void refreshAllViewDashboard() {
         mainPane.getChildren().clear();
         start();
@@ -1184,6 +1207,10 @@ public class PanenUang {
             return color;
         }
 
+        /*
+         * CustomItemConverter class untuk mengubah CustomItem menjadi String dan
+         * sebaliknya
+         */
         public static class CustomItemConverter extends StringConverter<CustomItem> {
 
             @Override
@@ -1199,17 +1226,29 @@ public class PanenUang {
         }
     }
 
+    /*
+     * class imageLinkPane untuk membuat sidebar
+     */
     class ImageLinkPane {
+        /*
+         * Deklarasi properti
+         */
         PanenUang PanenUangPage;
         ImageView modeUser = new ImageView("/Assets/View/Dashboard/Mode User.png");
         HyperlinkText modeUserHyperlink = new HyperlinkText("Mode User", modeUser, true);
         VBox kontenSideAtas = new VBox();
         HBox modeUserHBox = new HBox();
 
+        /*
+         * Constructor untuk class ImageLinkPane
+         */
         public ImageLinkPane(PanenUang PanenUangPage) {
             this.PanenUangPage = PanenUangPage;
         }
 
+        /*
+         * Method untuk membuat sidebar
+         */
         public VBox createImageLinkVBox(Stage stage, SceneController sceneController) {
             // Gunakan ImageView untuk semua pilihan di Sidebar
             ImageView logoImageView = new ImageView(new Image("/Assets/View/Dashboard/Logo.png"));
@@ -1217,6 +1256,7 @@ public class PanenUang {
             logoImageView.setFitHeight(70);
             logoImageView.setPreserveRatio(true);
 
+            // Membuat mode User opacity awalnya 0.5
             ImageView homePageImageView = new ImageView(new Image("/Assets/View/Dashboard/HomePage.png"));
             homePageImageView.setOpacity(0.5);
             ImageView tanamUangImageView = new ImageView(new Image("/Assets/View/Dashboard/Tanam Uang.png"));
@@ -1355,12 +1395,18 @@ public class PanenUang {
 
         }
 
+        /*
+         * HyperlinkText class untuk membuat hyperlink dengan ImageView
+         */
         public class HyperlinkText extends Hyperlink {
             private Text text;
             private ImageView imageView;
             private boolean modeUser;
             private boolean isModeActivated = false;
 
+            /*
+             * Constructor untuk HyperlinkText
+             */
             public HyperlinkText(String linkText, ImageView image, boolean modeUser) {
                 super(linkText);
                 this.imageView = image;
@@ -1368,11 +1414,19 @@ public class PanenUang {
                 configure();
             }
 
+            /*
+             * Method untuk mengaktifkan mode
+             */
             public void toggleMode() {
                 isModeActivated = !isModeActivated;
                 updateStyle();
             }
 
+            /*
+             * Method untuk mengupdate style
+             * jika mode aktif maka akan berubah menjadi warna putih
+             * jika mode tidak aktif maka akan berubah menjadi warna abu abu
+             */
             private void updateStyle() {
                 if (isModeActivated) {
                     text.setFill(Color.WHITE);
@@ -1384,6 +1438,12 @@ public class PanenUang {
                 }
             }
 
+            /*
+             * Method untuk mereset style
+             * jika mode aktif maka akan berubah menjadi warna putih
+             * jika mode tidak aktif maka akan berubah menjadi warna abu abu
+             * dan opacity menjadi 0.5
+             */
             public void resetStyle() {
                 text.setFill(Color.WHITE);
                 text.setFont(Font.font("Poppins", FontWeight.BOLD, 20));
@@ -1391,16 +1451,22 @@ public class PanenUang {
                 imageView.setOpacity(0.5);
             }
 
+            /*
+             * Method untuk mengkonfigurasi hyperlink
+             * Hyperlink akan menampilkan text dan image
+             * Hyperlink akan berubah warna saat di hover
+             * Hyperlink akan berubah warna saat di klik
+             */
             private void configure() {
                 text = new Text(getText());
                 setGraphic(text);
                 setBorder(null);
 
-                // CSS styling for text
+                // Set initial style
                 text.setStyle("-fx-font: 20 'Poppins'; -fx-fill: #ffffff;"); // Initial color
                 setStyle("-fx-opacity: 0.5;"); // Initial opacity
 
-                // Event handlers for hover effect
+                // Set hover style
                 setOnMouseEntered(event -> {
                     setStyle("-fx-opacity: 1;");
                     imageView.setOpacity(1);
@@ -1419,19 +1485,23 @@ public class PanenUang {
                     }
                 });
 
-                // Set contentDisplay to show both text and graphic
+                // Set content display untuk graphic only
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
         }
 
+        /*
+         * Method untuk membuat hyperlink dengan ImageView
+         */
         private static Hyperlink createHyperlinkWithImageView(ImageView imageView) {
             Hyperlink hyperlink = new Hyperlink();
             hyperlink.setGraphic(imageView);
             return hyperlink;
         }
 
-        // metode untukpopup mode user
-
+        /*
+         * Method untuk membuat text
+         */
         private Text createText(String text, String style, double translateX, double translateY) {
             Text customText = new Text(text);
             customText.setStyle(style);
@@ -1444,10 +1514,25 @@ public class PanenUang {
     }
 }
 
+/*
+ * class untuk membuat progress bar vertikal
+ * progress bar vertikal digunakan untuk menampilkan progress dari batas kritis
+ */
 class VerticalProgress {
     private ProgressBar progressBar = new ProgressBar();
     private Group progressHolder = new Group(progressBar);
 
+    /*
+     * Constructor untuk VerticalProgress
+     * berisikan width dan height
+     * width dan height digunakan untuk mengatur ukuran progress bar
+     * progress bar akan di rotate 90 derajat
+     * sehingga progress bar akan menjadi vertikal
+     * progress bar akan di set min size dan max size
+     * sehingga progress bar tidak bisa di resize
+     * progress bar akan di set pref size
+     * sehingga progress bar akan mengikuti ukuran dari width dan height
+     */
     public VerticalProgress(double width, double height) {
         progressBar.setMinSize(StackPane.USE_PREF_SIZE, StackPane.USE_PREF_SIZE - 100);
         progressBar.setPrefSize(height, width);
@@ -1457,15 +1542,24 @@ class VerticalProgress {
                 new Rotate(-90, 0, 0));
     }
 
+    /*
+     * Method untuk mengupdate progress bar
+     */
     public ProgressBar getProgressBar() {
         return progressBar;
     }
 
+    /*
+     * Method untuk mengupdate progress holder
+     */
     public Group getProgressHolder() {
         return progressHolder;
     }
 }
 
+/*
+ * class untuk membuat RightBarPanenUang
+ */
 class RightBarPanenUang {
     private static Cursor hand = Cursor.cursor("HAND");
     private static Cursor closedHand = Cursor.cursor("CLOSED_HAND");
@@ -1478,11 +1572,17 @@ class RightBarPanenUang {
     private double user_saldo;
     private int userId;
 
+    /*
+     * Constructor untuk RightBarPanenUang
+     */
     public RightBarPanenUang(double saldo, int userId) {
         this.user_saldo = saldo;
         this.userId = userId;
     }
 
+    /*
+     * Method untuk membuat right bar
+     */
     public HBox createRightBar(Stage stage, SceneController sceneController) {
         /* BAGIAN MMC (MINIMIZE, MAXIMIZE, CLOSE) */
         // membuat closeButton
@@ -1583,7 +1683,9 @@ class RightBarPanenUang {
         mmcButton.setMaxWidth(150);
         mmcButton.setAlignment(Pos.TOP_RIGHT);
 
-        // ------------------------------------------------------------------------------------------------------------//
+        /*
+         * BAGIAN PROFILE
+         */
         StackPane penggabunganBackgroundDenganProfile = new StackPane();
         Circle backgroundProfileCircle = new Circle(40);
 
@@ -1600,6 +1702,7 @@ class RightBarPanenUang {
         penggabunganBackgroundDenganProfile.setAlignment(Pos.CENTER);
         penggabunganBackgroundDenganProfile
                 .setStyle("-fx-background-color: #141F23; -fx-background-radius: 30 30 0 0;");
+
         // Membuat objek VerticalProgress
         VerticalProgress verticalProgress = new VerticalProgress(20, 100);
 
@@ -1656,6 +1759,9 @@ class RightBarPanenUang {
         return allCombine;
     }
 
+    /*
+     * Method untuk membuat button
+     */
     private static Button createButton(int width, int height, String text, String bgColor, int fontSize,
             String font,
             int radius, String textFill) {
@@ -1671,6 +1777,9 @@ class RightBarPanenUang {
         return button;
     }
 
+    /*
+     * Method untuk mengupdate button
+     */
     private static void updateButton(Button btn, int width, int height, String text, String bgColor,
             int fontSize, String font,
             int radius, String textFill) {
@@ -1684,7 +1793,13 @@ class RightBarPanenUang {
                         "-fx-padding: 0;");
     }
 
+    /*
+     * Method untuk mengembalikan nilai perkembangan progres bar
+     */
     private double perkembanganProgresBar(int userId) {
+        /*
+         * Logika untuk menghitung perkembangan progres bar
+         */
         BatasKritis bataskritis = new BatasKritis(userId);
         double batasKritis = bataskritis.getBatasKritis();
         System.out.println("Batas Kritis = " + bataskritis);
@@ -1696,16 +1811,25 @@ class RightBarPanenUang {
         return perkembangan;
     }
 
+    /*
+     * Method untuk mengambil batas kritis
+     */
     private double mengambilBatasKritis(int userId) {
         BatasKritis bataskritis = new BatasKritis(userId);
         double batasKritis = bataskritis.getBatasKritis();
         return batasKritis;
     }
 
+    /*
+     * Method untuk mengambil bata kritis
+     */
     public double batasKritis() {
         return mengambilBatasKritis(this.userId);
     }
 
+    /*
+     * Method untuk mengambil perkembangan progres bar
+     */
     public double kembangProgres() {
         return perkembanganProgresBar(this.userId);
     }

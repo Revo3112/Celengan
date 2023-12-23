@@ -4,40 +4,28 @@ import Controller.SceneController;
 import Model.BatasKritis;
 import Model.LoginModel;
 import Model.PantauPemasukanPengeluaran;
-import Model.PieChartData;
-import Model.RefreshViewDashboard;
 import Model.TampilkanSemuaTarget;
-import View.Dashboard.DashboardPage;
 import View.Dashboard.Features.PantauUangPage.CustomItemPantau.CustomItemPantauConverter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.util.StringConverter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -46,14 +34,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
 import java.text.DecimalFormat;
@@ -68,7 +54,9 @@ import javafx.util.Callback;
 
 // class DashboardPage digunakan untuk menampilkan halaman dashboard
 public class PantauUangPage {
-
+    /*
+     * Inisialisasi semua komponen yang dibutuhkan
+     */
     private Stage stage; // Property stage sebaiknya dideklarasikan sebagai final
     private String username;
     private SceneController sceneController; // Tambahkan property SceneController\
@@ -87,6 +75,9 @@ public class PantauUangPage {
     public StackPane root = new StackPane();
     StackPane mainPane = new StackPane();
 
+    /*
+     * Constructor untuk inisialisasi semua komponen yang dibutuhkan
+     */
     public PantauUangPage(Stage stage) {
         this.stage = stage;
         this.username = getUsername();
@@ -103,16 +94,22 @@ public class PantauUangPage {
         this.tipePembayaranList = model.listTipePembayaran();
     }
 
-    // Menampilkan halaman dashboard
+    /*
+     * Fungsi untuk membuat pantau uang page
+     */
     public void start() {
-        // Membuat side bar
+        /*
+         * Membuat Sidebar
+         */
         ImageLinkPane imageLinkPane = new ImageLinkPane(this); // Mengirim referensi DashboardPage ke ImageLinkPane
         VBox sideBar = imageLinkPane.createImageLinkVBox(this.stage, sceneController);
         sideBar.setAlignment(Pos.CENTER);
         sideBar.setMinWidth(242);
         VBox.setVgrow(sideBar, Priority.ALWAYS);
 
-        // Membuat teks welcome
+        /*
+         * Membuat konten utama (main pane) untuk Pantau Uang
+         */
         Text welcome = createText("Selamat Datang di Pantau Uang,",
                 "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
         Text name = createText(this.username, "-fx-font: 40 'Poppins SemiBold'; -fx-fill: #FFFFFF;", 0, 0);
@@ -595,11 +592,6 @@ public class PantauUangPage {
         pantauUangPage.start();
     }
 
-    private void updateTooltipPosition(double x, double y) {
-        tooltip.setX(x + 10); // Sesuaikan posisi X agar tidak menutupi cursor
-        tooltip.setY(y - 20); // Sesuaikan posisi Y agar tidak menutupi cursor
-    }
-
     private Text createText(String text, String style, double translateX, double translateY) {
         Text welcome = new Text(text);
         welcome.setStyle(style);
@@ -620,26 +612,8 @@ public class PantauUangPage {
         return loginModel.getUserSaldo();
     }
 
-    private double getFirstTargetHarga() {
-        TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
-        return tampilkanSemuaTarget.ambilHargaDataPertama(this.userId);
-
-    }
-
     private int getTotalBarangyangDIbeli() {
         return model.banyakDatadiTransac();
-    }
-
-    // Fungsi untuk mengambil data yang paling pertama di database target
-    private String getTarget() {
-        TampilkanSemuaTarget target1 = new TampilkanSemuaTarget();
-        return target1.ambilDataNamaTargetPertama(this.userId);
-    }
-
-    private long mendapatkanSaldoUntukMembeliBarang() {
-        TampilkanSemuaTarget tampilkanSemuaTarget = new TampilkanSemuaTarget();
-        return tampilkanSemuaTarget.ambilSaldodanBatasKritis();
-
     }
 
     private static String formatDuit(double nilai) {

@@ -5,17 +5,28 @@ import java.sql.Statement;
 
 import Utils.DBConnection;
 
+/*
+ * Kelas InputSaldodanMode untuk mengatur saldo dan batas kritis
+ */
 public class InputSaldodanMode {
+    // Atribut
     private int saldo;
     private int modeKritis;
     private int user_id;
 
+    /*
+     * Konstruktor InputSaldodanMode
+     */
     public InputSaldodanMode(int saldo, int modeKritis, int user_id) {
         this.saldo = saldo;
         this.modeKritis = modeKritis;
         this.user_id = user_id;
     }
 
+    /*
+     * Mengatur saldo dan batas kritis pada akun pengguna
+     * di database
+     */
     public boolean setSaldo() {
         try {
             DBConnection dbConnection = new DBConnection();

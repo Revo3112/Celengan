@@ -5,12 +5,19 @@ import java.sql.PreparedStatement;
 
 import Utils.DBConnection;
 
+/*
+ * Kelas TambahTarget untuk menambahkan target
+ */
 public class TambahTarget {
+    // Atribut
     private int userId;
     private String namaTarget;
     private double nominalTarget;
     private String keteranganBarang;
 
+    /*
+     * Konstruktor TambahTarget
+     */
     public TambahTarget(int userId, String namaTarget, double nominalTarget, String keteranganBarang) {
         this.userId = userId;
         this.namaTarget = namaTarget;
@@ -18,6 +25,9 @@ public class TambahTarget {
         this.keteranganBarang = keteranganBarang;
     }
 
+    /*
+     * Menambahkan target ke database
+     */
     public boolean start() {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();

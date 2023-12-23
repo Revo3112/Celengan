@@ -44,11 +44,15 @@ public class LoginModel {
         return count; // Mengembalikan nilai count
     }
 
+    /*
+     * Method untuk mengecek apakah username dan password yang dimasukkan sudah
+     * benar ketika user melakukan remember me
+     */
     public boolean penentuBagianLastUser() {
         boolean masuk = false;
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
-        System.out.println("Masuk ke dalam check last active user");
+
         // Mendapatkan username yang paling terakhir active
         String lastActiveUsers = getLastActiveUser(connection);
 
@@ -56,6 +60,8 @@ public class LoginModel {
         if (!lastActiveUsers.isEmpty()) {
             String lastPassword = getPasswordFromLastUser(connection, lastActiveUsers);
             this.rememberMe = getRememberMeFromUsername(connection, lastActiveUsers);
+            // Periksa apakah rememberMe bernilai true jika tidak maka akan mengembalikan
+            // nilai false
             if (this.rememberMe) {
                 masuk = isValidated(lastActiveUsers, lastPassword, this.rememberMe);
                 System.out.println("Masuk ke dalam remember me");
@@ -68,12 +74,18 @@ public class LoginModel {
         return masuk;
     }
 
+    /*
+     * Method untuk mendapatkan username yang paling terakhir active
+     */
     public String getLastActiveUsers() {
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
         return getLastActiveUser(connection);
     }
 
+    /*
+     * Method untuk mendapatkan username dari username yang paling terakhir active
+     */
     private String getLastActiveUser(Connection connection) {
         this.lastActiveUsers = "";
         try {
@@ -90,6 +102,9 @@ public class LoginModel {
         return this.lastActiveUsers;
     }
 
+    /*
+     * Method untuk mendapatkan user id dari username yang paling terakhir active
+     */
     private int _userId(Connection connection) {
         try {
             String sql = "SELECT id FROM users WHERE last_edited = (SELECT MAX(last_edited) FROM users)";
@@ -105,6 +120,9 @@ public class LoginModel {
         return this.userId;
     }
 
+    /*
+     * Method untuk mendapatkan user id dari username yang paling terakhir active
+     */
     public int getUserId() {
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
@@ -112,6 +130,9 @@ public class LoginModel {
         return _userId(connection);
     }
 
+    /*
+     * Method untuk mendapatkan saldo dari user yang sedang login
+     */
     public double getUserSaldo() {
         DBConnection dbc = DBConnection.getDatabaseConnection();
         Connection connection = dbc.getConnection();
@@ -130,6 +151,10 @@ public class LoginModel {
         return saldo;
     }
 
+    /*
+     * Method untuk mendapatkan remember me dari username yang paling terakhir
+     * active
+     */
     private boolean getRememberMeFromUsername(Connection connection, String lastUser) {
         this.rememberMe = false;
         try {
@@ -146,6 +171,9 @@ public class LoginModel {
         return this.rememberMe;
     }
 
+    /*
+     * Method untuk mendapatkan password dari username yang paling terakhir active
+     */
     private String getPasswordFromLastUser(Connection connection, String LastUser) {
         String password = "";
         try {
@@ -162,43 +190,89 @@ public class LoginModel {
         return password;
     }
 
+    /*
+     * Method untuk mengecek apakah username dan password yang dimasukkan sudah
+     * benar ketika user melakukan remember me maupun tidak ini merupakan method
+     * untuk login
+     */
     public boolean isValidated(String username, String password, boolean rememberMe) {
-        String salt = ""; // Deklarasi dan inisialisasi variabel salt dengan nilai kosong
-        String hashedPassword = ""; // Deklarasi dan inisialisasi variabel hashedPassword dengan nilai kosong
-        DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
-                                                                 // dengan nilai dari method getDatabaseConnection().
-                                                                 // Berguna untuk mendapat koneksi ke database
-        Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method getConnection()
-                                                     // dari object dbc
+        // Deklarasi dan inisialisasi variabel salt dengan nilai kosong
+        String salt = "";
+        // Deklarasi dan inisialisasi variabel hashedPassword dengan nilai kosong
+        String hashedPassword = "";
 
+        /*
+         * Deklarasi dan inisialisasi variabel dbc
+         * dengan nilai dari method getDatabaseConnection().
+         * Berguna untuk mendapat koneksi ke database
+         */
+
+        DBConnection dbc = DBConnection.getDatabaseConnection();
+        /*
+         * Inisialisasi variabel connection dengan method getConnection() dari object
+         * dbc
+         */
+        Connection connection = dbc.getConnection();
+
+        /*
+         * Query ke database yaitu mengambil data dari tabel users berdasarkan nilai
+         * dari
+         * variabel username
+         */
         try {
-            String sql = String.format("SELECT * FROM users WHERE username='%s'", username); // Inisialisasi variable
-                                                                                             // sql dengan query ke
-                                                                                             // database yaitu mengambil
-                                                                                             // data dari
-            // tabel users berdasarkan nilai dari variabel username dan password
+            /*
+             * Inisialisasi variable
+             * sql dengan query ke
+             * database yaitu mengambil
+             * data dari tabel users berdasarkan nilai dari variabel username dan password
+             */
+            String sql = String.format("SELECT * FROM users WHERE username='%s'", username);
 
-            Statement statement = connection.createStatement(); // Membuat statement dari method createStatement()
-            ResultSet result = statement.executeQuery(sql); // Execute query sql menggunakan method executeQuery dan
-                                                            // dimasukkan ke dalam variabel result
+            // Membuat statement dari method createStatement()
+            Statement statement = connection.createStatement();
+            /*
+             * Execute query sql menggunakan method executeQuery dan
+             * dimasukkan ke dalam variabel result
+             */
+            ResultSet result = statement.executeQuery(sql);
 
-            result.next(); // Memindahkan pointer ke baris kedua dari result set
+            // Memindahkan pointer ke baris kedua dari result set
+            result.next();
+
             // Inisialisasi property username dengan nilai dari kolom username
             this.username = result.getString("username");
+
             // Inisialisasi property password dengan nilai dari kolom password
             this.password = result.getString("password");
+
             // Inisialisasi variabel salt dengan nilai dari kolom hash
             salt = result.getString("hash");
-            // Deklarasi dan inisialisasi variabel hashing dengan nilai dari class
-            // hashingregister
+
+            // Inisialisasi variabel hashedPassword dengan nilai dari method hash() dari
+            // class hashingregister
             hashingregister hashing = new hashingregister();
-            // Inisialisasi variabel hashedPassword dengan nilai
-            // dari method hash() dari class hashingregister
+
+            /*
+             * Periksa apakah rememberMe bernilai true jika tidak maka hashedPassword tidak
+             * akan berisi dari password yang di hash
+             * melainkan melakukan hash terlebih dahulu dengan nilai dari variabel salt lalu
+             * di masukkan ke dalam variabel hashedPassword
+             * jika true maka akan mengembalikan nilai hashedPassword dengan nilai password
+             */
             if (this.rememberMe == true) {
                 hashedPassword = password;
             } else {
                 hashedPassword = hashing.hash(password, salt);
             }
+
+            /*
+             * Periksa apakah username dan password yang dimasukkan sudah benar jika benar
+             * maka akan mengembalikan nilai true sekaligus mengubah nilai dari rememberMe
+             * dan mengubah nilai dari last_edited menjadi NOW()
+             * jika salah mengembalikan nilai false dan tidak mengubah nilai dari rememberMe
+             * dan
+             * last_edited
+             */
             if (this.username.equals(username) && hashedPassword.equals(this.password)) {
                 String updateSql = "UPDATE users SET remember_me=?, last_edited=NOW() WHERE username=? AND password=?";
 
@@ -219,12 +293,21 @@ public class LoginModel {
         return false; // Mengembalikan nilai false
     }
 
-    public boolean registerAccount(String username, String password, String pinCode) { // Membuat method untuk
+    /*
+     * Method untuk register akun baru
+     */
+    public boolean registerAccount(String username, String password, String pinCode) {
 
+        /*
+         * Deklarasi dan inisialisasi variabel salt dengan nilai dari method setkey()
+         */
         String salt = new hashingregister().setkey();
         // Deklarasi dan inisialisasi variabel hashedPassword dengan nilai dari method
         // hash() dari class hashingregister
         String hashedPassword = new hashingregister().hash(password, salt);
+        /*
+         * Deklarasi dan inisialisasi variabel hashedpin dengan nilai dari method
+         */
         String hashedpin = new hashingregister().hash(pinCode, salt);
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
@@ -254,6 +337,9 @@ public class LoginModel {
         return false; // Mengembalikan nilai false
     }
 
+    /*
+     * Method untuk membuat saldo awal ketika user melakukan register
+     */
     public boolean pembuatanSaldo(int userId) {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
@@ -274,6 +360,9 @@ public class LoginModel {
         return false;
     }
 
+    /*
+     * Method unutk mengecek apakah use ryang sekarang emmiliki saldo atau tidak
+     */
     public boolean penentuApakahSudahAdaSaldo() {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc
@@ -301,6 +390,9 @@ public class LoginModel {
         return false;
     }
 
+    /*
+     * Method untuk mengatur remember me menjadi false
+     */
     public boolean mengaturRememberMeMenjadiFalse() {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection(); // Deklarasi dan inisialisasi variabel dbc

@@ -1,7 +1,4 @@
-/* .radio-button {
-    -fx-background-color: #0D1416;
-    -fx-border-color: #213339;
-} */
+/* This file contains the css for the radio buttons */
 
 .radio-button .radio {
     -fx-border-width: 3px;

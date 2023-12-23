@@ -53,7 +53,7 @@ public class SceneController {
         // tanamUang
         tanamUang.start(TanamUangModel.getKategoriTanamUang("pemasukan"),
                 TanamUangModel.getKategoriTanamUang("pengeluaran")); // Menjalankan
-        
+
         // method start
         // pada objek
         // tanamUang

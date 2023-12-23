@@ -5,13 +5,23 @@ import java.sql.PreparedStatement;
 
 import Utils.DBConnection;
 
+/*
+ * Kelas HapusTarget untuk menghapus target
+ */
 public class HapusTarget {
+    // Atribut
     private String nama_target;
 
+    /*
+     * Konstruktor HapusTarget
+     */
     public HapusTarget(String nama_target) {
         this.nama_target = nama_target;
     }
 
+    /*
+     * Menghapus target dari database
+     */
     public boolean start() {
         try {
             DBConnection dbc = DBConnection.getDatabaseConnection();
