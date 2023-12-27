@@ -55,11 +55,10 @@ public class SplashScreen {
     // driver's code
     public void start(int fVal) {
         // pembuatan outBackground (outerPane) bagan paling luar sebagai base background
-        Rectangle outBackground = createRectangle(900, 550, 60, 60, Color.rgb(20, 31, 35)); // menggunakan persegin
-                                                                                            // panjang dikarenakan
-                                                                                            // dibutuhkan rounded
-                                                                                            // corners
-
+        Rectangle outBackground = createRectangle(900, 550, 60, 60, Color.rgb(20, 31, 35));
+        /*
+         * menggunakan persegin anjang dikarenakan dibutuhkan rounded corners
+         */
         // membuat image untuk logo celengan dengan memanggil fungsi createImage (return
         // imageView type)
         ImageView logo = createImage(imgPath + "/logo/celengan_image_logo.png", 58, 58, -397, -215);
@@ -192,31 +191,6 @@ public class SplashScreen {
         carousel.startAnimation();
 
     }
-
-    // Mouse COORDINATES TRACKER: fungsi untuk mencetak koordinat x dan y dari
-    // sebuah mouse yang diklik
-    // private void setOnMouseClicked(StackPane root, Node item) {
-    // root.setOnMouseClicked(new EventHandler<MouseEvent>() {
-    // @Override
-    // public void handle(MouseEvent me) {
-    // double x = me.getSceneX();
-    // double y = me.getSceneY();
-
-    // // mengkalkulasi posisi translasi x dan y untuk mendapatkan posisi yang ideal
-    // double itemX = x - (root.getWidth() / 2); // untuk menetapkan pada tengah
-    // node root
-    // double itemY = y - (root.getHeight() / 2); // untuk menetapkan pada tengah
-    // node root
-
-    // // menetapkan posisi baru untuk item
-    // item.setTranslateX(itemX); // posisi baru untuk koordinat x
-    // item.setTranslateY(itemY); // posisi baru untuk kooordinat y
-
-    // System.out.println("Item placed at X -> " + itemX);
-    // System.out.println("Item placed at Y -> " + itemY);
-    // }
-    // });
-    // }
 
     // fungsi untuk membuat persegi panjang dengan return Node persegi
     private Rectangle createRectangle(double width, double height, double arcWidth, double arcHeight, Color color) {

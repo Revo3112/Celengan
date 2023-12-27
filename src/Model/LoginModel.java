@@ -371,7 +371,7 @@ public class LoginModel {
             Connection connection = dbc.getConnection(); // Inisialisasi variabel connection dengan method
                                                          // getConnection() dari object dbc
             // Menambah datapada tabel users
-            String sql = String.format("SELECT * FROM saldo WHERE user_id='%s'", getUserId());
+            String sql = String.format("SELECT * FROM saldo WHERE user_id=%d", getUserId());
             Statement statement = connection.createStatement(); // Membuat statement
             ResultSet result = statement.executeQuery(sql); // Execute query
             if (result.next()) {

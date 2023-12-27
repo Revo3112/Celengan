@@ -15,13 +15,19 @@ import javafx.scene.chart.PieChart;
  */
 public class PieChartData {
     // Atribut
-    static LoginModel loginModel = new LoginModel();
-    private static int user_id = loginModel.getUserId();
+    public int user_id;
+
+    // Buat sebagai Constructor untuk update user_id
+    public PieChartData() {
+        LoginModel loginModel = new LoginModel();
+        this.user_id = loginModel.getUserId();
+    }
 
     /*
      * Mengambil data pie chart dari database
      */
     public static ObservableList<PieChart.Data> pieChartData() throws SQLException {
+        PieChartData pieChartData2 = new PieChartData();
         // Membuat list data pie chart
         ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
         // Menghapus data sebelumnya
@@ -35,7 +41,7 @@ public class PieChartData {
             // Mencegah sql injection
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 // Set user_id as a parameter
-                statement.setInt(1, user_id);
+                statement.setInt(1, pieChartData2.user_id);
 
                 // Menjalankan query untuk mengambil data dari database yaitu kategori_id,
                 // tipe_kategori, dan total_nominal
@@ -91,12 +97,13 @@ public class PieChartData {
      * Mengambil nama kategori dari database berdasarkan id untuk kategori user
      */
     private static String getKategoriNameUser(int id) throws SQLException {
+        PieChartData pieChartData2 = new PieChartData();
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
         String query = "SELECT name FROM user_kategori WHERE id = ? and user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
-            statement.setInt(2, user_id);
+            statement.setInt(2, pieChartData2.user_id);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getString(1);
@@ -111,11 +118,12 @@ public class PieChartData {
      * Mengambil total pengeluaran dari database
      */
     public static double totalpengeluaran() {
+        PieChartData pieChartData2 = new PieChartData();
         DBConnection dbConnection = new DBConnection();
         Connection connection = dbConnection.getConnection();
         String query = "SELECT SUM(nominal) FROM transac where user_id = ? and tipe_transaksi = 'pengeluaran';";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, user_id);
+            statement.setInt(1, pieChartData2.user_id);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getDouble(1);

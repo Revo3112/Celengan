@@ -33,6 +33,7 @@ public class hashingregister {
         try {
             md = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
+            System.out.println(e.getMessage());
         }
         // Mengubah string menjadi byte
         byte[] hash = md.digest(password.getBytes());

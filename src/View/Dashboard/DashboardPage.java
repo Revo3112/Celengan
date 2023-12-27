@@ -205,6 +205,15 @@ public class DashboardPage {
         Hyperlink UbahSaldoHyperlink = new Hyperlink();
         UbahSaldoHyperlink.setGraphic(UbahSaldo);
         UbahSaldoHyperlink.setTranslateY(10);
+        UbahSaldoHyperlink.setOnMouseEntered(e -> {
+            UbahSaldoHyperlink.setCursor(hand);
+            UbahSaldoHyperlink.setOpacity(0.8);
+        });
+        UbahSaldoHyperlink.setOnMouseExited(e -> {
+            UbahSaldoHyperlink.setCursor(defaultCursor);
+            UbahSaldoHyperlink.setOpacity(1);
+        });
+        UbahSaldoHyperlink.setOpacity(1);
         UbahSaldoHyperlink.setOnMouseClicked(e -> sceneController.switchToTanamUang());
 
         VBox vboxKiriBawah = new VBox(UbahSaldoHyperlink);
@@ -224,8 +233,8 @@ public class DashboardPage {
          */
         // Membuat pie chart
         try {
-            PieChart pieChart = new PieChart();
             ObservableList<PieChart.Data> pieChartData = PieChartData.pieChartData();
+            PieChart pieChart = new PieChart();
             pieChart.setData(pieChartData);
 
             /*
@@ -306,14 +315,19 @@ public class DashboardPage {
              * Jika tidak ada data yang ditampilkan, maka tampilkan gambar ayam sedih
              * Jika terdapat data maka data tersebut yang akan di tampilkan
              */
-            if (pieChartData.size() == 0) {
+            // Check if there is no data and display the sad chicken image
+            if (pieChartData.isEmpty()) {
                 ImageView ayamSedih = new ImageView("/Assets/View/Pantau_Uang/ayamsedih.png");
                 ayamSedih.setFitHeight(200);
                 ayamSedih.setFitWidth(250);
                 ayamSedih.setPreserveRatio(true);
+
+                // Clear existing children and add the sad chicken image
+                pieChartPane.getChildren().clear();
                 pieChartPane.getChildren().add(ayamSedih);
                 pieChartPane.setAlignment(Pos.CENTER);
             } else {
+                pieChartPane.getChildren().clear();
                 pieChartPane.getChildren().add(pieChart);
                 pieChartPane.setAlignment(Pos.TOP_LEFT);
             }
@@ -330,6 +344,15 @@ public class DashboardPage {
 
             Hyperlink gotoPantauUangHyperlink = new Hyperlink();
             gotoPantauUangHyperlink.setGraphic(gotoPantauUang);
+            gotoPantauUangHyperlink.setOpacity(1);
+            gotoPantauUangHyperlink.setOnMouseEntered(e -> {
+                gotoPantauUangHyperlink.setCursor(hand);
+                gotoPantauUangHyperlink.setOpacity(0.8);
+            });
+            gotoPantauUangHyperlink.setOnMouseExited(e -> {
+                gotoPantauUangHyperlink.setCursor(defaultCursor);
+                gotoPantauUangHyperlink.setOpacity(1);
+            });
             gotoPantauUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPantauUang());
 
             VBox kontenGotoPantauUang = new VBox(gotoPantauUangHyperlink);
@@ -421,6 +444,15 @@ public class DashboardPage {
 
             Hyperlink mainKontenPanenUangHyperlink = new Hyperlink();
             mainKontenPanenUangHyperlink.setGraphic(mainKontenPanenUang);
+            mainKontenPanenUangHyperlink.setOpacity(1);
+            mainKontenPanenUangHyperlink.setOnMouseEntered(e -> {
+                mainKontenPanenUangHyperlink.setCursor(hand);
+                mainKontenPanenUangHyperlink.setOpacity(0.8);
+            });
+            mainKontenPanenUangHyperlink.setOnMouseExited(e -> {
+                mainKontenPanenUangHyperlink.setCursor(defaultCursor);
+                mainKontenPanenUangHyperlink.setOpacity(1);
+            });
             mainKontenPanenUangHyperlink.setOnMouseClicked(e -> sceneController.switchToPanenUang());
 
             VBox mainKontenPanenUangVBox = new VBox(mainKontenPanenUangHyperlink);
@@ -502,7 +534,7 @@ public class DashboardPage {
                         }
 
                         @Override
-                        protected void updateItem(CustomItem item, boolean empty) {
+                        public void updateItem(CustomItem item, boolean empty) {
                             super.updateItem(item, empty);
                             if (empty || item == null) {
                                 setGraphic(null);

@@ -820,7 +820,6 @@ public class LoginPage {
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
                             String newValue) {
                         // Hapus listener sementara
-
                         fieldSaldo.textProperty().removeListener(this);
                         if (newValue.replace(",", "").matches("\\d*")) { // Check inputan angka atau tidak
                             if (newValue.length() > oldValue.length()) {
