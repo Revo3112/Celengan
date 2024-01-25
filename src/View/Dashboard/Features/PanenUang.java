@@ -55,7 +55,6 @@ public class PanenUang {
      * Pembuatan property untuk kelas PanenUang
      */
     private Stage stage;
-    private String username;
     private static TampilkanSemuaTarget model = new TampilkanSemuaTarget();
     private static List<String> namaTargetList;
     private static List<Double> nominalTargetList;
@@ -65,7 +64,6 @@ public class PanenUang {
     private int userId;
     private static Cursor hand = Cursor.cursor("HAND");
     private static Cursor defaultCursor = Cursor.cursor("DEFAULT");
-    private Tooltip tooltip = new Tooltip();
     public StackPane root = new StackPane();
     private VBox scrollContentBox;
     StackPane mainPane = new StackPane();
@@ -75,14 +73,13 @@ public class PanenUang {
      */
     public PanenUang(Stage stage) {
         this.stage = stage;
-        this.username = getUsername();
         this.sceneController = new SceneController(stage); // Inisialisasi SceneController
         this.saldo = getSaldo();
         LoginModel loginModel = new LoginModel();
         this.userId = loginModel.getUserId();
-        this.namaTargetList = model.getNamaTargetList();
-        this.nominalTargetList = model.getNominalTargetList();
-        this.keteranganBarangList = model.getKeteranganBarangList();
+        PanenUang.namaTargetList = model.getNamaTargetList();
+        PanenUang.nominalTargetList = model.getNominalTargetList();
+        PanenUang.keteranganBarangList = model.getKeteranganBarangList();
     }
 
     /*
@@ -560,12 +557,6 @@ public class PanenUang {
         welcome.setTranslateY(translateY);
         welcome.toFront();
         return welcome;
-    }
-
-    // Fungsi untuk mendapatkan username
-    private String getUsername() {
-        LoginModel loginModel = new LoginModel();
-        return loginModel.getLastActiveUsers();
     }
 
     // Fungsi untuk mendapatkan saldo
@@ -1694,15 +1685,14 @@ class RightBarPanenUang {
 
         // Membuat foto profil
         ImageView profileImage = new ImageView(new Image("/Assets/View/Dashboard/Profile.png"));
-        profileImage.setFitWidth(50);
-        profileImage.setFitHeight(50);
+        profileImage.setFitWidth(80);
+        profileImage.setFitHeight(80);
         profileImage.setPreserveRatio(true);
 
         penggabunganBackgroundDenganProfile.getChildren().addAll(backgroundProfileCircle, profileCircle, profileImage);
         penggabunganBackgroundDenganProfile.setAlignment(Pos.CENTER);
         penggabunganBackgroundDenganProfile
                 .setStyle("-fx-background-color: #141F23; -fx-background-radius: 30 30 0 0;");
-
         // Membuat objek VerticalProgress
         VerticalProgress verticalProgress = new VerticalProgress(20, 100);
 

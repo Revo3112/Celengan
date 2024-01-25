@@ -4,7 +4,6 @@ import Controller.SceneController;
 import Model.BatasKritis;
 import Model.LoginModel;
 import Model.PantauPemasukanPengeluaran;
-import Model.TampilkanSemuaTarget;
 import View.Dashboard.Features.PantauUangPage.CustomItemPantau.CustomItemPantauConverter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -62,7 +61,6 @@ public class PantauUangPage {
     private SceneController sceneController; // Tambahkan property SceneController\
     private double saldo;
     private int userId;
-    private Tooltip tooltip = new Tooltip();
     private PantauPemasukanPengeluaran model;
     private List<String> keteranganBarangList;
     private List<Double> nominalBarangList;

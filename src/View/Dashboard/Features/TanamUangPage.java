@@ -4,7 +4,6 @@ import Controller.SceneController;
 import Model.BatasKritis;
 import Model.LoginModel;
 import Model.PantauPemasukanPengeluaran;
-import Model.TampilkanSemuaTarget;
 import Model.TanamUangModel;
 import Utils.AlertHelper;
 import javafx.animation.*;
@@ -64,11 +63,11 @@ public class TanamUangPage {
     private double saldo;
     private int userId;
     private static PantauPemasukanPengeluaran model = new PantauPemasukanPengeluaran();
-    
+
     // Property
     public DecimalFormat formatRupiah; // Untuk format nominal
     private ComboBox<String> combobox = new ComboBox<String>(); // Untuk kategori
-    private String tipeTanamUang = "pengeluaran"; // Untuk tipe tanam uang 
+    private String tipeTanamUang = "pengeluaran"; // Untuk tipe tanam uang
     private TextField fieldNominal = new TextField(); // Untuk field nominal
     private TextField fieldKeterangan = new TextField(); // Untuk field keterangan
     private RadioButton radioButtonCash = new RadioButton("Cash"); // Untuk radio button
@@ -76,7 +75,7 @@ public class TanamUangPage {
     private DatePicker datePickerTanggal = new DatePicker(); // Untuk tanggal
     private static Cursor hand = Cursor.cursor("HAND"); // Untuk mengubah cursor menjadi pointer
     private static Cursor defaultCursor = Cursor.cursor("DEFAULT"); // Untuk mengubah cursor menjadi default
-    StackPane mainPane = new StackPane(); // Stackpane 
+    StackPane mainPane = new StackPane(); // Stackpane
     public StackPane root = new StackPane(); // Root
 
     public TanamUangPage(Stage stage) {
@@ -89,12 +88,10 @@ public class TanamUangPage {
 
     public void start(String[] listKategoriPemasukan, String[] listKategoriPengeluaran) {
 
-        
         // -----------------------------------------------------------------------------
         // TITLE DAN LOGO TANAM UANG
         // -----------------------------------------------------------------------------
 
-        
         // Membuat title halaman Tanam Uang
         Text welcome = createText("Catat Keuanganmu,",
                 "-fx-font: 30 'Poppins Regular'; -fx-fill: #FFFFFF;", 0, 0);
@@ -134,11 +131,9 @@ public class TanamUangPage {
         HBox.setHgrow(regionTopBar, Priority.ALWAYS);
         textPane.setTranslateX(20);
 
-
         // -----------------------------------------------------------------------------
         // BUTTON PEMASUKAN DAN PENGELUARAN
         // -----------------------------------------------------------------------------
-
 
         Button buttonPemasukan = new Button("Pemasukan");
         Button buttonPengeluaran = new Button("Pengeluaran");
@@ -190,11 +185,9 @@ public class TanamUangPage {
             buttonPengeluaran.getScene().setCursor(Cursor.cursor("HAND"));
         });
 
-
         // -----------------------------------------------------------------------------
         // FORM INPUT USER
         // -----------------------------------------------------------------------------
-
 
         // Membuat form tanggal
         Label labelTanggal = new Label("Tanggal");
@@ -207,7 +200,7 @@ public class TanamUangPage {
         Label labelKategori = new Label("Kategori");
         labelKategori.setStyle("-fx-font: 20 'Poppins Medium'");
         labelKategori.setTextFill(Color.valueOf("#FFFFFF"));
-        this.combobox = new ComboBox(FXCollections.observableArrayList(listKategoriPengeluaran));
+        this.combobox = new ComboBox<String>(FXCollections.observableArrayList(listKategoriPengeluaran));
         this.combobox.setMaxWidth(this.datePickerTanggal.getPrefWidth());
         this.combobox.getStylesheets().add(getClass().getResource("/Utils/ComboBoxTanamUang.css").toExternalForm());
 
@@ -285,7 +278,7 @@ public class TanamUangPage {
         labelKeterangan.setTextFill(Color.valueOf("#FFFFFF"));
         this.fieldKeterangan.setMaxWidth(200);
         this.fieldKeterangan.getStylesheets().add(getClass().getResource("/Utils/TextField.css").toExternalForm());
-        
+
         StackPane stackPaneButton = new StackPane(buttonBG, buttonActive, buttonPengeluaran, buttonPemasukan);
         HBox hboxButtonTU = new HBox(stackPaneButton);
 
@@ -306,11 +299,9 @@ public class TanamUangPage {
         buttonActive.setArcHeight(50);
         StackPane.setAlignment(buttonActive, javafx.geometry.Pos.CENTER_LEFT);
 
-
         // -----------------------------------------------------------------------------
         // KONTEN KATEGORI TANAM UANG
         // -----------------------------------------------------------------------------
-
 
         // Membuat button edit kategori
         Hyperlink hyperlinkEdit = new Hyperlink();
@@ -357,11 +348,9 @@ public class TanamUangPage {
             // Memanggil fungsi untuk membuat konten di dalam scrollpane
             VBox scrollPaneContent = createScrollPaneContent(scrollPane, editMainPane);
 
-
             // -----------------------------------------------------------------------------
             // KONTEN POPUP KATEGORI
             // -----------------------------------------------------------------------------
-
 
             // Membuat title popup kategori
             String firstCapitalLetter = this.tipeTanamUang.substring(0, 1).toUpperCase()
@@ -389,7 +378,6 @@ public class TanamUangPage {
                 mainPane.getChildren().remove(editMainPane);
                 mainPane.getChildren().remove(backgroundMainPane);
             });
-
 
             // -----------------------------------------------------------------------------
             // KONTEN TAMBAH KATEGORI
@@ -538,11 +526,9 @@ public class TanamUangPage {
             mainPane.getChildren().addAll(backgroundMainPane, editMainPane);
         });
 
-
         // -----------------------------------------------------------------------------
         // KONTEN HISTORI KEUANGAN
         // -----------------------------------------------------------------------------
-
 
         // Membuat title histori keuangan
         Text historiKeuanganmu = createText("Histori Keuanganmu",
@@ -566,11 +552,9 @@ public class TanamUangPage {
         kontenBawahPane.setPadding(new Insets(0, 0, 0, 10));
         kontenBawahPane.setSpacing(10);
 
-
         // -----------------------------------------------------------------------------
         // SIMPAN CATATAN PEMASUKAN DAN PENGELUARAN
         // -----------------------------------------------------------------------------
-
 
         // Membuat button simpan (Hover)
         Hyperlink hyperlinkSimpan = new Hyperlink();
@@ -595,7 +579,8 @@ public class TanamUangPage {
             hyperlinkSimpan.getScene().setCursor(Cursor.cursor("DEFAULT"));
             hyperlinkSimpan.setGraphic(imageSimpan);
         });
-        // Saat button simpan diklik, maka akan menyimpan catatan yang dimasukkan oleh user ke database
+        // Saat button simpan diklik, maka akan menyimpan catatan yang dimasukkan oleh
+        // user ke database
         hyperlinkSimpan.setOnMouseClicked(e -> {
             if (isFormFilled()) {
                 // Mengambil data tanggal
@@ -621,7 +606,8 @@ public class TanamUangPage {
                     tipePembayaran = radioButtonTransfer.getText();
                 }
 
-                // Variable untuk menyimpan status dari kategori yang dipilih (default atau tidak)
+                // Variable untuk menyimpan status dari kategori yang dipilih (default atau
+                // tidak)
                 boolean isDefault = TanamUangModel.getIsKategoriDefault(selectedKategori);
 
                 // Mengambil id kategori berdasarkan tipe (default atau tidak)
@@ -650,7 +636,6 @@ public class TanamUangPage {
                 AlertHelper.alert("Mohon isi data Anda");
             }
         });
-
 
         // -----------------------------------------------------------------------------
         // LAYOUTING
@@ -737,11 +722,9 @@ public class TanamUangPage {
         mainPane.setPadding(new Insets(0, 10, 0, 0));
         mainPane.setAlignment(Pos.CENTER);
 
-
         // -----------------------------------------------------------------------------
         // SIDE BAR & RIGHTBAR
         // -----------------------------------------------------------------------------
-
 
         // Membuat sidebar
         ImageLinkPane imageLinkPane = new ImageLinkPane(this); // Mengirim referensi DashboardPage ke ImageLinkPane
@@ -755,7 +738,7 @@ public class TanamUangPage {
         HBox Rightbar = rightBar.createRightBar(this.stage, sceneController);
         Rightbar.setAlignment(Pos.CENTER_RIGHT);
 
-        // Menggabungkan sidebar dengan mainPane 
+        // Menggabungkan sidebar dengan mainPane
         HBox penggabunganMainPanedenganSideBar = new HBox(sideBar, mainPane);
         penggabunganMainPanedenganSideBar.setStyle("-fx-background-color: #0B1214;");
         penggabunganMainPanedenganSideBar.setPadding(new Insets(10, 0, 0, 0));
@@ -844,7 +827,6 @@ public class TanamUangPage {
                 deleteHyperlink.getScene().setCursor(Cursor.cursor("DEFAULT"));
                 deleteHyperlink.setGraphic(new ImageView(new Image("/Assets/View/Dashboard/Delete.png")));
             });
-
 
             // Membuat HBox untuk menampung teks namaKategori
             HBox hboxNamaKategori = new HBox(namaKategori);
@@ -1287,7 +1269,7 @@ public class TanamUangPage {
             kontenHistoriKeuanganBarang.setPadding(new Insets(10, 25, 10, 40));
             kontenHistoriKeuanganBarang.setAlignment(Pos.CENTER);
             kontenHistoriKeuanganBarang.setStyle("-fx-background-color: #213339; -fx-background-radius: 30px");
-            
+
             // Menambah kontenHistoriBarang ke kontenHistoriKeuangan
             kontenHistoriKeuangan.getChildren().add(kontenHistoriKeuanganBarang);
 
